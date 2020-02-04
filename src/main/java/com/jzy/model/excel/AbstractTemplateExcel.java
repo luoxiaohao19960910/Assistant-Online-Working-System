@@ -1,8 +1,7 @@
 package com.jzy.model.excel;
 
 import com.jzy.manager.exception.InvalidFileTypeException;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.File;
@@ -16,9 +15,8 @@ import java.io.InputStream;
  * @Date 2020/1/12 15:13
  * @Version 1.0
  **/
-@EqualsAndHashCode(callSuper = true)
-@Data
-public abstract class AbstractTemplateExcel extends DefaultExcel{
+@ToString(callSuper = true)
+public abstract class AbstractTemplateExcel extends DefaultExcel {
     private static final long serialVersionUID = 8577982569067369781L;
 
     public AbstractTemplateExcel(String inputFile) throws IOException, InvalidFileTypeException {

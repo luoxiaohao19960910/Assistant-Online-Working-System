@@ -10,6 +10,7 @@ import com.jzy.manager.exception.InvalidFileInputException;
 import com.jzy.manager.exception.InvalidParameterException;
 import com.jzy.manager.util.FileUtils;
 import com.jzy.model.CampusEnum;
+import com.jzy.model.LogLevelEnum;
 import com.jzy.model.dto.MyPage;
 import com.jzy.model.dto.search.UsefulInformationSearchCondition;
 import com.jzy.model.entity.UsefulInformation;
@@ -162,7 +163,9 @@ public class UsefulInformationServiceImpl extends AbstractServiceImpl implements
         try {
             file.transferTo(dest);
         } catch (IOException e) {
-            logger.error("id:" + id + "——常用信息配图上传失败");
+            String msg = "id:" + id + "——常用信息配图上传失败";
+            logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, null);
         }
         return fileName;
     }

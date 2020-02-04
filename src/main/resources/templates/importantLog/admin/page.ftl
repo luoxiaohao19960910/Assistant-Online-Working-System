@@ -53,6 +53,7 @@
                     <div class="layui-input-inline">
                         <select id="condition1" name="condition1" lay-filter="condition1">
                             <option value="">请选择要排序的类别</option>
+                            <option value="createTime">按创建时间排序</option>
                             <option value="level">按日志级别排序</option>
                             <option value="operatorId">按操作用户排序</option>
                             <option value="operatorIp">按ip地址排序</option>
@@ -128,6 +129,8 @@
             $("#level").append(str);
         }
 
+        $("#condition1").val('createTime');
+        $("#condition2").val('desc');
         form.render('select');
 
         //方法级渲染
@@ -156,6 +159,10 @@
 
                 // , {title: '操作', minWidth: 150, align: 'center', toolbar: '#table-content-list1'}
             ]]
+            , where: {
+                condition1: $("#condition1").val()
+                , condition2: $("#condition2").val()
+            }
             , page: true
             , limit: 10
             , limits: [5, 10, 15, 20, 50]

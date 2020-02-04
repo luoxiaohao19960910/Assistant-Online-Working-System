@@ -8,8 +8,8 @@ import com.jzy.model.dto.ClassDetailedDto;
 import com.jzy.model.entity.Teacher;
 import com.jzy.model.excel.AbstractInputExcel;
 import com.jzy.model.excel.ExcelVersionEnum;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -26,8 +26,7 @@ import java.util.Set;
  * @Date 2019/11/23 9:15
  * @Version 1.0
  **/
-@EqualsAndHashCode(callSuper = true)
-@Data
+@ToString(callSuper = true)
 public class ClassArrangementExcel extends AbstractInputExcel {
     private static final long serialVersionUID = -877510467520953391L;
 
@@ -55,11 +54,13 @@ public class ClassArrangementExcel extends AbstractInputExcel {
     /**
      * 读取到的信息封装成Teacher对象
      */
+    @Getter
     private Set<Teacher> teachers;
 
     /**
      * 读取到的信息封装成ClassDetailedDto对象
      */
+    @Getter
     private List<ClassDetailedDto> classDetailedDtos;
 
     /**
@@ -178,17 +179,6 @@ public class ClassArrangementExcel extends AbstractInputExcel {
         }
 
         testColumnNameValidity();
-    }
-
-    public static void main(String[] args) throws IOException, ExcelColumnNotFoundException, InvalidFileTypeException, ExcelTooManyRowsException {
-        ClassArrangementExcel excel = new ClassArrangementExcel("D:\\aows_resources\\toolbox\\example\\曹杨秋季助教排班.xlsx");
-        excel.readClassDetailFromExcel();
-        for (Teacher teacher : excel.getTeachers()) {
-            System.out.println(teacher);
-        }
-        for (ClassDetailedDto classDetailedDto : excel.getClassDetailedDtos()) {
-            System.out.println(classDetailedDto);
-        }
     }
 
     @Override

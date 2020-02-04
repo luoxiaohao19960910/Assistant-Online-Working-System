@@ -30,6 +30,12 @@ public class MyStringUtils {
         ipv4Pattern = Pattern.compile("^(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}$");
     }
 
+    public static boolean equalsIgnoreNullAndEmpty(final String s1, final String s2){
+        if (StringUtils.isEmpty(s1) && StringUtils.isEmpty(s2)){
+            return true;
+        }
+        return StringUtils.equals(s1, s2);
+    }
 
     /**
      * 判断输入字串是否符合用户名格式，6~20位(数字、字母、下划线)以字母开头
@@ -692,6 +698,6 @@ public class MyStringUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(MyStringUtils.isIpv6Address("2001:0db8:85a3:000:0:8A2E:0370:7334"));
+        System.out.println(StringUtils.equals(null, ""));
     }
 }

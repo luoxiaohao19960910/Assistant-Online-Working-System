@@ -9,8 +9,8 @@ import com.jzy.model.dto.StudentAndClassDetailedDto;
 import com.jzy.model.entity.Student;
 import com.jzy.model.excel.AbstractInputExcel;
 import com.jzy.model.excel.ExcelVersionEnum;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -25,8 +25,7 @@ import java.util.*;
  * @description 学生花名册用来导入数据库的
  * @date 2019/11/1 11:07
  **/
-@EqualsAndHashCode(callSuper = true)
-@Data
+@ToString(callSuper = true)
 public class StudentListImportToDatabaseExcel extends AbstractInputExcel {
     private static final long serialVersionUID = 3823535210593191680L;
 
@@ -64,11 +63,13 @@ public class StudentListImportToDatabaseExcel extends AbstractInputExcel {
     /**
      * 读取到的信息封装成Student对象
      */
+    @Getter
     private Set<Student> students;
 
     /**
      * 读取到的信息封装成StudentAndClassDto对象
      */
+    @Getter
     private List<StudentAndClassDetailedDto> studentAndClassDetailedDtos;
 
     public StudentListImportToDatabaseExcel(String inputFile) throws IOException, InvalidFileTypeException {
@@ -128,25 +129,33 @@ public class StudentListImportToDatabaseExcel extends AbstractInputExcel {
             StudentAndClassDetailedDto studentAndClassDetailedDto = new StudentAndClassDetailedDto();
             studentAndClassDetailedDto.setStudentId(studentId);
             studentAndClassDetailedDto.setClassId(classId);
-
-            Date registerTimeToDate = null;
-            try {
-                registerTimeToDate = MyTimeUtils.cstToDate(registerTime);
-            } catch (ParseException e) {
-                //cst时间转换失败
-                registerTimeToDate = MyTimeUtils.stringToDateYMDHMS(registerTime);
-                if (registerTimeToDate == null) {
-                    //yyyy-MM-dd HH:mm:ss格式的时间转换失败，这里再尝试FORMAT_YMDHMS_BACKUP格式的
-                    registerTimeToDate = MyTimeUtils.stringToDate(registerTime, MyTimeUtils.FORMAT_YMDHMS_BACKUP);
-                }
-            }
-            studentAndClassDetailedDto.setRegisterTime(registerTimeToDate);
-
+            studentAndClassDetailedDto.setRegisterTime(transferTimeStrToDate(registerTime));
             studentAndClassDetailedDto.setRemark(remark);
             studentAndClassDetailedDtos.add(studentAndClassDetailedDto);
         }
 
         return effectiveDataRowCount;
+    }
+
+    /**
+     * 把进班时间从字符串转成date对象
+     *
+     * @param time 字符串形式进班时间
+     * @return date对象时间
+     */
+    private Date transferTimeStrToDate(String time){
+        Date timeToDate = null;
+        try {
+            timeToDate = MyTimeUtils.cstToDate(time);
+        } catch (ParseException e) {
+            //cst时间转换失败
+            timeToDate = MyTimeUtils.stringToDateYMDHMS(time);
+            if (timeToDate == null) {
+                //yyyy-MM-dd HH:mm:ss格式的时间转换失败，这里再尝试FORMAT_YMDHMS_BACKUP格式的
+                timeToDate = MyTimeUtils.stringToDate(time, MyTimeUtils.FORMAT_YMDHMS_BACKUP);
+            }
+        }
+        return timeToDate;
     }
 
     /**
@@ -307,13 +316,5 @@ public class StudentListImportToDatabaseExcel extends AbstractInputExcel {
     public void resetOutput() {
         students = new HashSet<>();
         studentAndClassDetailedDtos = new ArrayList<>();
-    }
-
-    public static void main(String[] args) throws IOException, ExcelColumnNotFoundException, InvalidFileTypeException, ExcelTooManyRowsException {
-        StudentListImportToDatabaseExcel excel = new StudentListImportToDatabaseExcel("C:\\Users\\92970\\Desktop\\t\\xz花名册1 - 副本.xlsx");
-        excel.readStudentAndClassInfoFromExcel();
-        for (StudentAndClassDetailedDto dto : excel.getStudentAndClassDetailedDtos()) {
-            System.out.println(dto);
-        }
     }
 }

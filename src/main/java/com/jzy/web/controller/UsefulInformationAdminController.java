@@ -5,7 +5,9 @@ import com.github.pagehelper.PageInfo;
 import com.jzy.manager.constant.ModelConstants;
 import com.jzy.manager.exception.InvalidParameterException;
 import com.jzy.manager.util.FileUtils;
+import com.jzy.manager.util.ShiroUtils;
 import com.jzy.manager.util.UsefulInformationUtils;
+import com.jzy.model.LogLevelEnum;
 import com.jzy.model.dto.MyPage;
 import com.jzy.model.dto.search.UsefulInformationSearchCondition;
 import com.jzy.model.entity.UsefulInformation;
@@ -50,10 +52,11 @@ public class UsefulInformationAdminController extends AbstractController {
      */
     @RequestMapping("/getByBelongTo")
     @ResponseBody
-    public List<UsefulInformation> getByBelongTo(@RequestParam(value = "belongTo", required = false) String belongTo) {
+    public List<UsefulInformation> getByBelongTo(@RequestParam(value = "belongTo", required = false) String belongTo, HttpServletRequest request) {
         if (!StringUtils.isEmpty(belongTo) && !UsefulInformationUtils.isValidBelongTo(belongTo)) {
-            String msg = "getByBelongTo方法belongTo入参错误";
+            String msg = "查询常用信息getByBelongTo方法belongTo入参错误";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             return new ArrayList<>();
         }
 
@@ -155,12 +158,13 @@ public class UsefulInformationAdminController extends AbstractController {
      */
     @RequestMapping("/getRecommendedSequence")
     @ResponseBody
-    public Map<String, Object> getRecommendedSequence(@RequestParam(value = "belongTo", required = false) String belongTo) {
+    public Map<String, Object> getRecommendedSequence(@RequestParam(value = "belongTo", required = false) String belongTo, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!StringUtils.isEmpty(belongTo) && !UsefulInformationUtils.isValidBelongTo(belongTo)) {
             String msg = "getRecommendedSequence方法belongTo入参错误";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 
@@ -200,12 +204,13 @@ public class UsefulInformationAdminController extends AbstractController {
      */
     @RequestMapping("/updateById")
     @ResponseBody
-    public Map<String, Object> updateById(UsefulInformation information) {
+    public Map<String, Object> updateById(UsefulInformation information, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!UsefulInformationUtils.isValidUsefulInformationUpdateInfo(information)) {
-            String msg = "updateById方法错误入参";
+            String msg = "更新常用信息updateById方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 
@@ -223,12 +228,13 @@ public class UsefulInformationAdminController extends AbstractController {
      */
     @RequestMapping("/insert")
     @ResponseBody
-    public Map<String, Object> insert(UsefulInformation information) {
+    public Map<String, Object> insert(UsefulInformation information, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!UsefulInformationUtils.isValidUsefulInformationUpdateInfo(information)) {
-            String msg = "insert方法错误入参";
+            String msg = "添加常用信息insert方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 

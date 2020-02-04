@@ -7,6 +7,8 @@ import com.jzy.manager.constant.RedisConstants;
 import com.jzy.manager.util.MyStringUtils;
 import com.jzy.manager.util.MyTimeUtils;
 import com.jzy.manager.util.SendEmailUtils;
+import com.jzy.manager.util.ShiroUtils;
+import com.jzy.model.LogLevelEnum;
 import com.jzy.model.vo.ProblemCollection;
 import com.jzy.model.vo.echarts.EchartsFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -65,7 +68,7 @@ public class HomeController extends AbstractController {
      */
     @RequestMapping("/sendProblem")
     @ResponseBody
-    public Map<String, Object> sendProblem(ProblemCollection problemCollection) {
+    public Map<String, Object> sendProblem(ProblemCollection problemCollection, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (Constants.ON.equals(problemCollection.getHide())) {
@@ -84,8 +87,9 @@ public class HomeController extends AbstractController {
                 SendEmailUtils.sendConcurrentEncryptedEmail(problemCollection.getEmail(), "AOWS-回访", msgToSendBack);
             }
         } else {
-            String msg = "sendProblem方法错误入参";
+            String msg = "问题收集sendProblem方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             map.put("data", FAILURE);
             return map;
         }

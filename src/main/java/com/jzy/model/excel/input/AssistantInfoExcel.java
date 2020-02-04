@@ -10,8 +10,8 @@ import com.jzy.model.entity.Assistant;
 import com.jzy.model.entity.User;
 import com.jzy.model.excel.AbstractInputExcel;
 import com.jzy.model.excel.ExcelVersionEnum;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -27,8 +27,7 @@ import java.util.UUID;
  * @Date 2019/11/20 17:31
  * @Version 1.0
  **/
-@EqualsAndHashCode(callSuper = true)
-@Data
+@ToString(callSuper = true)
 public class AssistantInfoExcel extends AbstractInputExcel {
     private static final long serialVersionUID = 7188139549224217001L;
 
@@ -48,11 +47,13 @@ public class AssistantInfoExcel extends AbstractInputExcel {
     /**
      * 读取到的信息封装成user对象
      */
+    @Getter
     private List<User> users;
 
     /**
      * 读取到的信息封装成assistant对象
      */
+    @Getter
     private List<Assistant> assistants;
 
     /**

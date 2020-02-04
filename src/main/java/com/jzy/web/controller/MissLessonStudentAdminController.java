@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.jzy.manager.exception.InvalidParameterException;
 import com.jzy.manager.util.MissLessonStudentUtils;
+import com.jzy.manager.util.ShiroUtils;
+import com.jzy.model.LogLevelEnum;
 import com.jzy.model.dto.MissLessonStudentDetailedDto;
-import com.jzy.model.dto.search.MissLessonStudentSearchCondition;
 import com.jzy.model.dto.MyPage;
+import com.jzy.model.dto.search.MissLessonStudentSearchCondition;
 import com.jzy.model.entity.User;
 import com.jzy.model.vo.ResultMap;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -125,12 +128,13 @@ public class MissLessonStudentAdminController extends AbstractController {
      */
     @RequestMapping("/updateById")
     @ResponseBody
-    public Map<String, Object> updateById(MissLessonStudentDetailedDto missLessonStudentDetailedDto) {
+    public Map<String, Object> updateById(MissLessonStudentDetailedDto missLessonStudentDetailedDto, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!MissLessonStudentUtils.isValidMissLessonStudentUpdateInfo(missLessonStudentDetailedDto)) {
-            String msg = "updateById方法错误入参";
+            String msg = "编辑补课信息updateById方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 
@@ -146,12 +150,13 @@ public class MissLessonStudentAdminController extends AbstractController {
      */
     @RequestMapping("/insert")
     @ResponseBody
-    public Map<String, Object> insert(MissLessonStudentDetailedDto missLessonStudentDetailedDto) {
+    public Map<String, Object> insert(MissLessonStudentDetailedDto missLessonStudentDetailedDto, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!MissLessonStudentUtils.isValidMissLessonStudentUpdateInfo(missLessonStudentDetailedDto)) {
-            String msg = "updateById方法错误入参";
+            String msg = "添加补课信息insert方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 

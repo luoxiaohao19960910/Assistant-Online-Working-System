@@ -2,8 +2,7 @@ package com.jzy.model.excel;
 
 import com.jzy.manager.exception.ExcelTooManyRowsException;
 import com.jzy.manager.exception.InvalidFileTypeException;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.File;
@@ -17,8 +16,7 @@ import java.io.InputStream;
  * @Date 2020/1/12 12:53
  * @Version 1.0
  **/
-@EqualsAndHashCode(callSuper = true)
-@Data
+@ToString(callSuper = true)
 public class DefaultExcel extends Excel {
     private static final long serialVersionUID = 7769992970075361130L;
 
@@ -83,12 +81,15 @@ public class DefaultExcel extends Excel {
     protected boolean testRowCountValidity(int maxRowCount) throws ExcelTooManyRowsException {
         for (int sheetIdx = 0; sheetIdx < getSheetCount(); sheetIdx++) {
             int rowCount=getRowCount(sheetIdx);
-            System.out.println(rowCount);
-            System.out.println(maxRowCount);
             if (rowCount > maxRowCount) {
                 throw new ExcelTooManyRowsException(DEFAULT_MAX_ROW_COUNT, rowCount);
             }
         }
         return true;
+    }
+
+    public static void main(String[] args) throws Exception {
+        DefaultExcel excel=new DefaultExcel("C:\\Users\\92970\\Downloads\\教师和助教工作表6.0.xlsx");
+        System.out.println(excel.getSheetIndex("签到表"));
     }
 }

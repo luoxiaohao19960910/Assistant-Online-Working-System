@@ -23,7 +23,10 @@ import org.springframework.stereotype.Component;
 public class CommonLogger extends AbstractLogger {
     private final static Logger logger = LogManager.getLogger(CommonLogger.class);
 
-    private static final long METHOD_TIME_THRESHOLD = 1000;
+    /**
+     * 默认的方法耗时阈值：1500ms。耗时长于这个值记录warn日志。
+     */
+    private static final long METHOD_TIME_THRESHOLD = 1500;
 
     /**
      * A join point is in the web layer if the method is defined
@@ -133,7 +136,7 @@ public class CommonLogger extends AbstractLogger {
             String msg = methodName + "业务方法耗时严重：" + (endTime - startTime) + "ms";
             logger.warn(msg);
             User user = userService.getSessionUserInfo();
-            saveLogToDatebase(msg, LogLevelEnum.WARN, user, getIpAddress(pjp));
+            importantLogService.saveImportantLog(msg, LogLevelEnum.WARN, user, getIpAddress(pjp));
         }
         return obj;
     }

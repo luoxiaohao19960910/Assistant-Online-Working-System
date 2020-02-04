@@ -244,8 +244,6 @@ public class AssistantServiceImpl extends AbstractServiceImpl implements Assista
             if (AssistantUtils.isValidAssistantInfo(assistant)) {
                 result.add(insertAndUpdateOneAssistantFromExcel(assistant));
             } else {
-                String msg = "表格输入的助教assistant不合法!";
-                logger.error(msg);
                 result.setResult(Constants.EXCEL_INVALID_DATA);
                 invalidData.putValue(userRealNameKeyword, assistant.getAssistantName());
             }

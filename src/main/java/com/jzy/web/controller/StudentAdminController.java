@@ -5,9 +5,14 @@ import com.github.pagehelper.PageInfo;
 import com.jzy.manager.constant.Constants;
 import com.jzy.manager.exception.*;
 import com.jzy.manager.util.ClassUtils;
+import com.jzy.manager.util.ShiroUtils;
 import com.jzy.manager.util.StudentUtils;
 import com.jzy.manager.util.UserMessageUtils;
-import com.jzy.model.dto.*;
+import com.jzy.model.LogLevelEnum;
+import com.jzy.model.dto.ClassSeasonDto;
+import com.jzy.model.dto.DefaultFromExcelUpdateResult;
+import com.jzy.model.dto.MyPage;
+import com.jzy.model.dto.StudentAndClassDetailedDto;
 import com.jzy.model.dto.search.StudentAndClassSearchCondition;
 import com.jzy.model.dto.search.StudentSearchCondition;
 import com.jzy.model.entity.*;
@@ -425,12 +430,13 @@ public class StudentAdminController extends AbstractController {
      */
     @RequestMapping("/updateById")
     @ResponseBody
-    public Map<String, Object> updateById(Student student) {
+    public Map<String, Object> updateById(Student student, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!StudentUtils.isValidStudentUpdateInfo(student)) {
-            String msg = "updateById方法错误入参";
+            String msg = "编辑学生信息updateById方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 
@@ -447,12 +453,13 @@ public class StudentAdminController extends AbstractController {
      */
     @RequestMapping("/insert")
     @ResponseBody
-    public Map<String, Object> insert(Student student) {
+    public Map<String, Object> insert(Student student, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!StudentUtils.isValidStudentUpdateInfo(student)) {
-            String msg = "insert方法错误入参";
+            String msg = "添加学生insert方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 

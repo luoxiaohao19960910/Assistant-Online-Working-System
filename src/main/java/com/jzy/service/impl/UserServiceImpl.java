@@ -11,6 +11,7 @@ import com.jzy.manager.exception.InvalidEmailException;
 import com.jzy.manager.exception.InvalidFileInputException;
 import com.jzy.manager.exception.InvalidParameterException;
 import com.jzy.manager.util.*;
+import com.jzy.model.LogLevelEnum;
 import com.jzy.model.RoleEnum;
 import com.jzy.model.dto.*;
 import com.jzy.model.dto.search.UserSearchCondition;
@@ -215,7 +216,9 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
     @Override
     public boolean isValidEmailVerifyCode(EmailVerifyCode emailVerifyCode) {
         if (emailVerifyCode == null || StringUtils.isEmpty(emailVerifyCode.getCode()) || StringUtils.isEmpty(emailVerifyCode.getEmail())) {
-            logger.error("服务端收到了非法请求，请引起警惕");
+            String msg = "验证邮箱验证码时， 服务端收到了非法请求，请引起警惕";
+            logger.error(msg);
+            importantLogService.saveImportantLog(msg, LogLevelEnum.ERROR, null, null);
             return false;
         }
         ValueOperations<String, Object> vOps = redisTemplate.opsForValue();
@@ -235,12 +238,16 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
     @Override
     public long updatePasswordByEmail(String userEmail, String userPassword) {
         if (StringUtils.isEmpty(userEmail) || StringUtils.isEmpty(userPassword)) {
-            logger.error("由邮箱更改密码时，邮箱或密码入参为空");
+            String msg = "由邮箱更改密码时，邮箱或密码入参为空";
+            logger.error(msg);
+            importantLogService.saveImportantLog(msg, LogLevelEnum.ERROR, null, null);
             return 0;
         }
         User user = userMapper.getUserByEmail(userEmail);
         if (user == null) {
-            logger.error("由邮箱更改密码时，查找不到指定邮箱的用户。疑似绕过了前端请求。");
+            String msg = "由邮箱更改密码时，查找不到指定邮箱的用户。疑似绕过了前端请求。";
+            logger.error(msg);
+            importantLogService.saveImportantLog(msg, LogLevelEnum.ERROR, null, null);
             return 0;
         }
         //加密明文密码
@@ -277,8 +284,9 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
         try {
             file.transferTo(dest);
         } catch (IOException e) {
-            e.printStackTrace();
-            logger.error("id:" + id + "——用户头像上传失败");
+            String msg = "id:" + id + "——用户头像上传失败";
+            logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, null);
         }
         return fileName;
     }
@@ -761,8 +769,6 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
             if (UserUtils.isValidUserUpdateInfo(user)) {
                 result.add(insertAndUpdateOneUserFromExcel(user));
             } else {
-                String msg = "表格输入用户user不合法!";
-                logger.error(msg);
                 result.setResult(Constants.EXCEL_INVALID_DATA);
                 invalidData.putValue(userRealNameKeyword, user.getUserRealName());
             }

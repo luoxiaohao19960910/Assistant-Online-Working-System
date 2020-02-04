@@ -83,10 +83,13 @@
 
                 <a href="${ctx}/guestLogin" class="layadmin-user-jump-change layadmin-link">懒癌患者登录方式?</a>
             </div>
+            <#--<div class="layui-form-item"  align="center"><img width="66%" src="${ctx}/custom/img/background/wu_han_fight.png"></div>-->
+
         </div>
     </div>
 
     <div class="layui-trans layadmin-user-login-footer">
+        <img width="12%" src="${ctx}/custom/img/background/wu_han_fight.png"><br>
         <p>© 2019-2020 <a href="http://blog.kurochan.top/about/" target="_blank">kurochan.top</a> 版权所有 <a href="http://www.beian.miit.gov.cn" target="_blank">沪ICP备19043725号</a></p>
     </div>
 </div>

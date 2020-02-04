@@ -3,6 +3,7 @@ package com.jzy.model.excel.template;
 import com.jzy.manager.exception.InvalidFileTypeException;
 import com.jzy.model.dto.StudentAndClassDetailedWithSubjectsDto;
 import com.jzy.model.excel.AbstractTemplateExcel;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.List;
  * @description 座位表模板的模型类
  * @date 2019/10/30 14:21
  **/
+@ToString(callSuper = true)
 public class SeatTableTemplateExcel extends AbstractTemplateExcel{
     private static final long serialVersionUID = -3764653590834120925L;
 
@@ -27,9 +29,8 @@ public class SeatTableTemplateExcel extends AbstractTemplateExcel{
      *
      * @param classroom 教室号
      * @return 写入成功与否
-     * @throws IOException 写excel的io异常
      */
-    private boolean deleteOtherSheets(String classroom) throws IOException {
+    private boolean deleteOtherSheets(String classroom) {
         if (StringUtils.isEmpty(classroom)) {
             return false;
         }
@@ -50,9 +51,8 @@ public class SeatTableTemplateExcel extends AbstractTemplateExcel{
      *
      * @param data 从数据库中读取到的信息或手动输入的表格中读到的信息，以及用户输入的信息
      * @return 写入成功与否
-     * @throws IOException 写excel的io异常
      */
-    public boolean writeSeatTable(List<StudentAndClassDetailedWithSubjectsDto> data) throws IOException {
+    public boolean writeSeatTable(List<StudentAndClassDetailedWithSubjectsDto> data) {
         StudentAndClassDetailedWithSubjectsDto dto = new StudentAndClassDetailedWithSubjectsDto();
         if (data.size() > 0) {
             //取第一个对象为例，获得教室
@@ -75,7 +75,7 @@ public class SeatTableTemplateExcel extends AbstractTemplateExcel{
                     int index = Integer.parseInt(value) - 1;
                     if (index < data.size()) {
                         //座位号值大于学生数量的座位不填
-                        setValueAt(targetSheetIndex, i, j, value+" "+data.get(Integer.parseInt(value) - 1).getStudentName());
+                        write(targetSheetIndex, i, j, value+" "+data.get(Integer.parseInt(value) - 1).getStudentName());
                     }
                 }
             }

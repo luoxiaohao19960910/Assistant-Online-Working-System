@@ -6,9 +6,14 @@ import com.jzy.manager.constant.Constants;
 import com.jzy.manager.constant.ModelConstants;
 import com.jzy.manager.exception.*;
 import com.jzy.manager.util.ClassUtils;
+import com.jzy.manager.util.ShiroUtils;
 import com.jzy.manager.util.UserMessageUtils;
 import com.jzy.model.CampusEnum;
-import com.jzy.model.dto.*;
+import com.jzy.model.LogLevelEnum;
+import com.jzy.model.dto.ClassDetailedDto;
+import com.jzy.model.dto.ClassSeasonDto;
+import com.jzy.model.dto.DefaultFromExcelUpdateResult;
+import com.jzy.model.dto.MyPage;
 import com.jzy.model.dto.search.ClassSearchCondition;
 import com.jzy.model.entity.Assistant;
 import com.jzy.model.entity.Class;
@@ -326,12 +331,13 @@ public class ClassAdminController extends AbstractController {
      */
     @RequestMapping("/updateById")
     @ResponseBody
-    public Map<String, Object> updateById(ClassDetailedDto classDetailedDto) {
+    public Map<String, Object> updateById(ClassDetailedDto classDetailedDto, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!ClassUtils.isValidClassDetailedDtoInfo(classDetailedDto)) {
-            String msg = "updateById方法错误入参";
+            String msg = "编辑班级updateById方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 
@@ -348,12 +354,13 @@ public class ClassAdminController extends AbstractController {
      */
     @RequestMapping("/insert")
     @ResponseBody
-    public Map<String, Object> insert(ClassDetailedDto classDetailedDto) {
+    public Map<String, Object> insert(ClassDetailedDto classDetailedDto, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!ClassUtils.isValidClassUpdateInfo(classDetailedDto)) {
-            String msg = "insert方法错误入参";
+            String msg = "添加班级insert方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
         map.put("data", classService.insertOneClass(classDetailedDto).getResult());

@@ -71,6 +71,12 @@ public final class ExcelConstants {
     public static final String STUDENT_SCHOOL_COLUMN = "在读学校";
 
     /*===================助教工作手册表列属性名===================*/
+    public static final String START_CLASS_SHEET = "开班电话表";
+
+    public static final String SIGN_SHEET = "签到表";
+
+    public static final String CALLBACK_SHEET = "信息回访表";
+
     public static final String CAMPUS_COLUMN_2 = "校区";
 
     public static final String CLASS_ID_COLUMN_3 = "班号";

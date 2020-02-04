@@ -56,7 +56,7 @@ public class ToolboxLogger extends AbstractLogger {
         if (user != null) {
             String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")导出助教工作手册!";
             logger.info(msg);
-            saveLogToDatebase(msg, user, getIpAddress(jp));
+            importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
         }
     }
 
@@ -66,7 +66,7 @@ public class ToolboxLogger extends AbstractLogger {
         if (user != null) {
             String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")导出座位表!";
             logger.info(msg);
-            saveLogToDatebase(msg, user, getIpAddress(jp));
+            importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
         }
     }
 
@@ -76,7 +76,7 @@ public class ToolboxLogger extends AbstractLogger {
         if (user != null) {
             String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")导出学生联系方式到表单!";
             logger.info(msg);
-            saveLogToDatebase(msg, user, getIpAddress(jp));
+            importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
         }
     }
 
@@ -86,7 +86,7 @@ public class ToolboxLogger extends AbstractLogger {
         if (user != null) {
             String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")导出学生联系方式到表格!";
             logger.info(msg);
-            saveLogToDatebase(msg, user, getIpAddress(jp));
+            importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
         }
     }
 }

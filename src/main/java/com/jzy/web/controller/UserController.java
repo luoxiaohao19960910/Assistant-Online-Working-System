@@ -7,6 +7,7 @@ import com.jzy.manager.exception.InvalidPhoneException;
 import com.jzy.manager.util.FileUtils;
 import com.jzy.manager.util.ShiroUtils;
 import com.jzy.manager.util.UserUtils;
+import com.jzy.model.LogLevelEnum;
 import com.jzy.model.dto.EmailVerifyCode;
 import com.jzy.model.entity.User;
 import com.jzy.model.vo.EmailVerifyCodeSession;
@@ -120,11 +121,13 @@ public class UserController extends AbstractController {
      */
     @RequestMapping("/updateOwnInfo")
     @ResponseBody
-    public Map<String, Object> updateInfoByCurrentUser(User user) {
+    public Map<String, Object> updateInfoByCurrentUser(User user, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!UserUtils.isValidUserUpdateOwnInfo(user)) {
-            logger.error("updateInfoByUser方法错误入参");
+            String msg="更新用户个人资料updateInfoByUser方法错误入参";
+            logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException("updateInfoByUser方法错误入参");
         }
 
@@ -143,12 +146,13 @@ public class UserController extends AbstractController {
      */
     @RequestMapping("/updateOwnPassword")
     @ResponseBody
-    public Map<String, Object> updatePasswordByCurrentUser(@RequestParam("oldPassword") String userOldPassword, @RequestParam("newPassword") String userNewPassword) {
+    public Map<String, Object> updatePasswordByCurrentUser(@RequestParam("oldPassword") String userOldPassword, @RequestParam("newPassword") String userNewPassword, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!UserUtils.isValidUserPassword(userNewPassword)) {
-            String msg = "updatePasswordByCurrentUser方法错误入参";
+            String msg = "登录后更改用户资料updatePasswordByCurrentUser方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 
@@ -218,12 +222,13 @@ public class UserController extends AbstractController {
      */
     @RequestMapping("/addNewEmail")
     @ResponseBody
-    public Map<String, Object> addNewEmail(@RequestParam(value = "emailVerifyCode", required = false) String emailVerifyCode, @RequestParam("newEmail") String newEmail) {
+    public Map<String, Object> addNewEmail(@RequestParam(value = "emailVerifyCode", required = false) String emailVerifyCode, @RequestParam("newEmail") String newEmail, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!UserUtils.isValidUserEmail(newEmail)) {
             String msg = "addNewEmail方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidEmailException(msg);
         }
         User userInfoSession = userService.getSessionUserInfo();
@@ -231,11 +236,13 @@ public class UserController extends AbstractController {
         if (userInfoSession.getUserEmail() != null && userInfoSession.getUserEmail().equals(newEmail)) {
             String msg = "addNewEmail方法错误入参, 未对原有邮箱进行修改";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         } else {
             if (StringUtils.isEmpty(newEmail)) {
                 String msg = "addNewEmail方法错误入参, 新邮箱为空";
                 logger.error(msg);
+                importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
                 throw new InvalidParameterException(msg);
             }
         }
@@ -265,12 +272,13 @@ public class UserController extends AbstractController {
      */
     @RequestMapping("/modifyCurrentEmail")
     @ResponseBody
-    public Map<String, Object> modifyCurrentEmail(@RequestParam("oldEmail") String userOldEmail, @RequestParam("newEmail") String userNewEmail) {
+    public Map<String, Object> modifyCurrentEmail(@RequestParam("oldEmail") String userOldEmail, @RequestParam("newEmail") String userNewEmail, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!UserUtils.isValidUserEmail(userNewEmail)) {
             String msg = "modifyCurrentEmail方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidEmailException(msg);
         }
         User userInfoSession = userService.getSessionUserInfo();
@@ -278,11 +286,13 @@ public class UserController extends AbstractController {
         if (userInfoSession.getUserEmail() != null && userInfoSession.getUserEmail().equals(userNewEmail)) {
             String msg = "modifyCurrentEmail方法错误入参, 未对原有邮箱进行修改";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         } else {
             if (StringUtils.isEmpty(userNewEmail)) {
                 String msg = "modifyCurrentEmail方法错误入参, 新邮箱为空";
                 logger.error(msg);
+                importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
                 throw new InvalidParameterException(msg);
             }
         }

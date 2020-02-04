@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.jzy.dao.UserMessageMapper;
 import com.jzy.manager.exception.InvalidFileInputException;
 import com.jzy.manager.util.FileUtils;
+import com.jzy.model.LogLevelEnum;
 import com.jzy.model.dto.MyPage;
 import com.jzy.model.dto.UserMessageDto;
 import com.jzy.model.dto.search.UserMessageSearchCondition;
@@ -234,7 +235,9 @@ public class UserMessageServiceImpl extends AbstractServiceImpl implements UserM
         try {
             file.transferTo(dest);
         } catch (IOException e) {
-            logger.error("id:" + id + "——消息图片附件上传失败");
+            String msg = "id:" + id + "——消息图片附件上传失败";
+            logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, null);
         }
         return fileName;
     }

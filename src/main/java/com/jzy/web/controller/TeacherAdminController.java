@@ -3,7 +3,9 @@ package com.jzy.web.controller;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.jzy.manager.exception.InvalidParameterException;
+import com.jzy.manager.util.ShiroUtils;
 import com.jzy.manager.util.TeacherUtils;
+import com.jzy.model.LogLevelEnum;
 import com.jzy.model.dto.MyPage;
 import com.jzy.model.dto.search.TeacherSearchCondition;
 import com.jzy.model.entity.Teacher;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -75,12 +78,13 @@ public class TeacherAdminController extends AbstractController {
      */
     @RequestMapping("/updateById")
     @ResponseBody
-    public Map<String, Object> updateById(Teacher teacher) {
+    public Map<String, Object> updateById(Teacher teacher, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!TeacherUtils.isValidTeacherUpdateInfo(teacher)) {
-            String msg = "updateById方法错误入参";
+            String msg = "编辑教师updateById方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 
@@ -97,12 +101,13 @@ public class TeacherAdminController extends AbstractController {
      */
     @RequestMapping("/insert")
     @ResponseBody
-    public Map<String, Object> insert(Teacher teacher) {
+    public Map<String, Object> insert(Teacher teacher, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!TeacherUtils.isValidTeacherUpdateInfo(teacher)) {
-            String msg = "insert方法错误入参";
+            String msg = "添加教师insert方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
         map.put("data", teacherService.insertOneTeacher(teacher).getResult());

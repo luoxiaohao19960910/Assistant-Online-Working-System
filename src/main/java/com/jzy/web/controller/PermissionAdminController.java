@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.jzy.manager.constant.ModelConstants;
 import com.jzy.manager.exception.InvalidParameterException;
 import com.jzy.manager.util.RoleAndPermissionUtils;
+import com.jzy.manager.util.ShiroUtils;
+import com.jzy.model.LogLevelEnum;
 import com.jzy.model.dto.MyPage;
 import com.jzy.model.dto.search.RoleAndPermissionSearchCondition;
 import com.jzy.model.entity.RoleAndPermission;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -98,12 +101,13 @@ public class PermissionAdminController extends AbstractController {
      */
     @RequestMapping("/updateById")
     @ResponseBody
-    public Map<String, Object> updateById(RoleAndPermission roleAndPermission) {
+    public Map<String, Object> updateById(RoleAndPermission roleAndPermission, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!RoleAndPermissionUtils.isValidRoleAndPermissionUpdateInfo(roleAndPermission)) {
-            String msg = "updateById方法错误入参";
+            String msg = "编辑角色权限updateById方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
         map.put("data", roleAndPermissionService.updateRoleAndPermissionInfo(roleAndPermission));
@@ -121,7 +125,7 @@ public class PermissionAdminController extends AbstractController {
      */
     @RequestMapping("/insert")
     @ResponseBody
-    public Map<String, Object> insert(RoleCheckbox roleCheckbox, RoleAndPermission roleAndPermission) {
+    public Map<String, Object> insert(RoleCheckbox roleCheckbox, RoleAndPermission roleAndPermission, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         List<RoleAndPermission> roleAndPermissions = roleCheckbox.getRoleAndPermissions(roleAndPermission);
@@ -129,8 +133,9 @@ public class PermissionAdminController extends AbstractController {
         String result = FAILURE;
         for (RoleAndPermission rap : roleAndPermissions) {
             if (!RoleAndPermissionUtils.isValidRoleAndPermissionInsertInfo(rap)) {
-                String msg = "insert方法错误入参";
+                String msg = "添加角色权限insert方法错误入参";
                 logger.error(msg);
+                importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
                 throw new InvalidParameterException(msg);
             }
             result = roleAndPermissionService.insertOneRoleAndPermission(rap);

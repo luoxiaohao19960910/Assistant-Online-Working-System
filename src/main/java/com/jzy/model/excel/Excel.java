@@ -1,6 +1,7 @@
 package com.jzy.model.excel;
 
 import com.jzy.manager.exception.InvalidFileTypeException;
+import com.jzy.manager.util.MyTimeUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +31,7 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      * 工作簿对象
      */
     @Getter
+    @Setter
     protected Workbook workbook;
 
     /**
@@ -54,7 +56,7 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      */
     @Getter
     @Setter
-    private String pattern;
+    private String datePattern = MyTimeUtils.FORMAT_YMDHMS_BACKUP;
 
     /**
      * 由输入文件路径构造excel对象
@@ -75,7 +77,7 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      * @throws InvalidFileTypeException
      */
     public Excel(File file) throws IOException, InvalidFileTypeException {
-        String inputFile = file.getName();
+        String inputFile = file.getAbsolutePath();
         if (inputFile.endsWith(ExcelVersionEnum.VERSION_2003.getSuffix())) {
             version = ExcelVersionEnum.VERSION_2003;
             workbook = new HSSFWorkbook(new FileInputStream(file));
@@ -140,7 +142,7 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
         return "共有 " + getSheetCount() + "个sheet 页！";
     }
 
-    public String toString(int sheetIx) throws IOException {
+    public String toString(int sheetIx) {
         return "第 " + (sheetIx + 1) + "个sheet 页，名称： " + getSheetName(sheetIx) + "，共 " + getRowCount(sheetIx) + "行！";
     }
 
@@ -154,16 +156,15 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
         if (pathname == null) {
             return false;
         }
-        return pathname.endsWith(".xls") || pathname.endsWith(".xlsx");
+        return pathname.endsWith(ExcelVersionEnum.VERSION_2003.getSuffix()) || pathname.endsWith(ExcelVersionEnum.VERSION_2007.getSuffix());
     }
 
     /**
      * 读取 Excel 第一页所有数据
      *
      * @return
-     * @throws Exception
      */
-    public List<List<String>> read() throws Exception {
+    public List<List<String>> read() {
         return read(0, 0, getRowCount(0) - 1);
     }
 
@@ -172,9 +173,8 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      *
      * @param sheetIx 指定 sheet 页，从 0 开始
      * @return
-     * @throws Exception
      */
-    public List<List<String>> read(int sheetIx) throws Exception {
+    public List<List<String>> read(int sheetIx) {
         return read(sheetIx, 0, getRowCount(sheetIx) - 1);
     }
 
@@ -185,9 +185,8 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      * @param start   指定开始行，从 0 开始
      * @param end     指定结束行，从 0 开始
      * @return
-     * @throws Exception
      */
-    public List<List<String>> read(int sheetIx, int start, int end) throws Exception {
+    public List<List<String>> read(int sheetIx, int start, int end) {
         Sheet sheet = workbook.getSheetAt(sheetIx);
         List<List<String>> list = new ArrayList<List<String>>();
 
@@ -195,95 +194,20 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
             end = getRowCount(sheetIx);
         }
 
-        int cols = sheet.getRow(0).getLastCellNum(); // 第一行总列数
 
         for (int i = start; i <= end; i++) {
             List<String> rowList = new ArrayList<String>();
             Row row = sheet.getRow(i);
-            for (int j = 0; j < cols; j++) {
-                if (row == null) {
-                    rowList.add(null);
-                    continue;
+            if (row != null) {
+                int cols = row.getLastCellNum();
+                for (int j = 0; j < cols; j++) {
+                    rowList.add(getCellValueToString(row.getCell(j)));
                 }
-                rowList.add(getCellValueToString(row.getCell(j)));
             }
             list.add(rowList);
         }
 
         return list;
-    }
-
-    /**
-     * 将数据写入到 Excel 默认第一页中，从第1行开始写入
-     *
-     * @param rowData 数据
-     * @return
-     * @throws IOException
-     */
-    public boolean writeRow(List<List<String>> rowData) throws IOException {
-        return writeRow(0, rowData, 0);
-    }
-
-    /**
-     * 将数据写入到 Excel 新创建的 Sheet 页
-     *
-     * @param rowData   数据
-     * @param sheetName 长度为1-31，不能包含后面任一字符: ：\ / ? * [ ]
-     * @return
-     * @throws IOException
-     */
-    public boolean writeRow(List<List<String>> rowData, String sheetName, boolean isNewSheet) throws IOException {
-        Sheet sheet = null;
-        if (isNewSheet) {
-            sheet = workbook.createSheet(sheetName);
-        } else {
-            sheet = workbook.createSheet();
-        }
-        int sheetIx = workbook.getSheetIndex(sheet);
-        return writeRow(sheetIx, rowData, 0);
-    }
-
-    /**
-     * 将数据追加到sheet页最后
-     *
-     * @param rowData  数据
-     * @param sheetIx  指定 Sheet 页，从 0 开始
-     * @param isAppend 是否追加,true 追加，false 重置sheet再添加
-     * @return
-     * @throws IOException
-     */
-    public boolean writeRow(int sheetIx, List<List<String>> rowData, boolean isAppend) throws IOException {
-        if (isAppend) {
-            return writeRow(sheetIx, rowData, getRowCount(sheetIx));
-        } else {// 清空再添加
-            clearSheet(sheetIx);
-            return writeRow(sheetIx, rowData, 0);
-        }
-    }
-
-    /**
-     * 将数据写入到 Excel 指定 Sheet 页指定开始行中,指定行后面数据向后移动
-     *
-     * @param rowData  数据
-     * @param sheetIx  指定 Sheet 页，从 0 开始
-     * @param startRow 指定开始行，从 0 开始
-     * @return
-     * @throws IOException
-     */
-    public boolean writeRow(int sheetIx, List<List<String>> rowData, int startRow) throws IOException {
-        Sheet sheet = workbook.getSheetAt(sheetIx);
-        int dataSize = rowData.size();
-        if (getRowCount(sheetIx) > 0) {// 如果小于等于0，则一行都不存在
-            sheet.shiftRows(startRow, getRowCount(sheetIx), dataSize);
-        }
-        for (int i = 0; i < dataSize; i++) {
-            Row row = sheet.createRow(i + startRow);
-            for (int j = 0; j < rowData.get(i).size(); j++) {
-                Cell cell = row.createCell(j);
-                cell.setCellValue(rowData.get(i).get(j) + "");
-            }
-        }
-        return true;
     }
 
     /**
@@ -296,36 +220,11 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      * @param startRow    起始行（含）
      * @param endRow      结束行（不含）
      * @return
-     * @throws IOException
      */
-    public boolean setRepeatValueAt(int sheetIx, String value, int startColumn, int endColumn, int startRow, int endRow)
-            throws IOException {
+    public boolean write(int sheetIx, int startColumn, int endColumn, int startRow, int endRow, String value) {
         for (int i = startColumn; i < endColumn; i++) {
             for (int j = startRow; j < endRow; j++) {
-                this.setValueAt(sheetIx, j, i, value);
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 将columnData中的列数据填充到指定位置
-     *
-     * @param sheetIx     sheet号
-     * @param columnData  [[第一列数据], [第二列数据], [第三列数据], ....]
-     * @param startRow    起始的行位置
-     * @param startColumn 起始的列位置
-     * @return
-     * @throws IOException
-     */
-    public boolean modifyColumn(int sheetIx, List<List<String>> columnData, int startRow, int startColumn)
-            throws IOException {
-        int dataColumnCount = columnData.size();
-        for (int i = startColumn; i < startColumn + dataColumnCount; i++) {
-            int rowCount = columnData.get(i - startColumn).size();
-            for (int j = startRow; j < startRow + rowCount; j++) {
-                // 修改第j行，第i列元素的值
-                this.setValueAt(sheetIx, j, i, columnData.get(i - startColumn).get(j - startRow));
+                write(sheetIx, j, i, value);
             }
         }
         return true;
@@ -334,98 +233,61 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
     /**
      * 设置cell 样式
      *
-     * @param sheetIx 指定 Sheet 页，从 0 开始
+     * @param sheetIx  指定 Sheet 页，从 0 开始
      * @param rowIndex 指定行，从 0 开始
      * @param colIndex 指定列，从 0 开始
-     * @param style 要设置样式
+     * @param style    要设置样式
      * @return
-     * @throws IOException
      */
-    public boolean setStyle(int sheetIx, int rowIndex, int colIndex, CellStyle style) throws IOException {
+    public boolean setStyle(int sheetIx, int rowIndex, int colIndex, CellStyle style) {
         Sheet sheet = workbook.getSheetAt(sheetIx);
         // sheet.autoSizeColumn(colIndex, true);// 设置列宽度自适应
 //        sheet.setColumnWidth(colIndex, 4000);
-
+        if (isRowNull(sheetIx, rowIndex) || isCellNull(sheetIx, rowIndex, colIndex)) {
+            return false;
+        }
         Cell cell = sheet.getRow(rowIndex).getCell(colIndex);
         cell.setCellStyle(style);
-
         return true;
     }
 
     /**
      * 获得cell样式
      *
-     * @param sheetIx 指定 Sheet 页，从 0 开始
+     * @param sheetIx  指定 Sheet 页，从 0 开始
      * @param rowIndex 行索引
      * @param colIndex 列索引
      * @return cell样式
-     * @throws IOException
      */
-    public CellStyle getStyle(int sheetIx, int rowIndex, int colIndex) throws IOException {
+    public CellStyle getStyle(int sheetIx, int rowIndex, int colIndex) {
         Sheet sheet = workbook.getSheetAt(sheetIx);
-
-        Cell cell = sheet.getRow(rowIndex).getCell(colIndex);
-
+        Row row = sheet.getRow(rowIndex);
+        if (row == null) {
+            return null;
+        }
+        Cell cell = row.getCell(colIndex);
+        if (cell == null) {
+            return null;
+        }
         return cell.getCellStyle();
     }
 
     /**
      * 设置单元格背景颜色，但不改变单元格原有样式
      *
-     * @param sheetIx 指定 Sheet 页，从 0 开始
-     * @param rowIndex 行索引
-     * @param colIndex 列索引
+     * @param sheetIx    指定 Sheet 页，从 0 开始
+     * @param rowIndex   行索引
+     * @param colIndex   列索引
      * @param colorIndex 颜色的索引值
      * @return
-     * @throws IOException
      */
-    public boolean updateCellBackgroundColor(int sheetIx, int rowIndex, int colIndex, short colorIndex) throws IOException {
-        CellStyle cellStyle = getWorkbook().createCellStyle();
+    public boolean updateCellBackgroundColor(int sheetIx, int rowIndex, int colIndex, short colorIndex) {
+        CellStyle cellStyle = workbook.createCellStyle();
         cellStyle.cloneStyleFrom(getStyle(sheetIx, rowIndex, colIndex));
         cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);  //填充单元格
         cellStyle.setFillForegroundColor(colorIndex);
         setStyle(sheetIx, rowIndex, colIndex, cellStyle);
-
         return true;
-    }
-
-    /**
-     * 设置样式
-     *
-     * @param type 1：标题 2：第一行
-     * @return
-     */
-    public CellStyle makeStyle(int type) {
-        CellStyle style = workbook.createCellStyle();
-
-        DataFormat format = workbook.createDataFormat();
-        style.setDataFormat(format.getFormat("@"));// // 内容样式 设置单元格内容格式是文本
-        style.setAlignment(CellStyle.ALIGN_CENTER);// 内容居中
-
-        // style.setBorderTop(CellStyle.BORDER_THIN);// 边框样式
-        // style.setBorderRight(CellStyle.BORDER_THIN);
-        // style.setBorderBottom(CellStyle.BORDER_THIN);
-        // style.setBorderLeft(CellStyle.BORDER_THIN);
-
-        Font font = workbook.createFont();// 文字样式
-
-        if (type == 1) {
-            // style.setFillForegroundColor(HSSFColor.LIGHT_BLUE.index);//颜色样式
-            // 前景颜色
-            // style.setFillBackgroundColor(HSSFColor.LIGHT_BLUE.index);//背景色
-            // style.setFillPattern(CellStyle.ALIGN_FILL);// 填充方式
-            font.setBold(true);
-            font.setFontHeight((short) 500);
-        }
-
-        if (type == 2) {
-            font.setBold(true);
-            font.setFontHeight((short) 300);
-        }
-
-        style.setFont(font);
-
-        return style;
     }
 
     /**
@@ -448,9 +310,8 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      * @param sheetIx  指定 Sheet 页，从 0 开始
      * @param rowIndex 指定开始行，从 0 开始
      * @return true 不为空，false 不行为空
-     * @throws IOException
      */
-    public boolean isRowNull(int sheetIx, int rowIndex) throws IOException {
+    public boolean isRowNull(int sheetIx, int rowIndex) {
         Sheet sheet = workbook.getSheetAt(sheetIx);
         return sheet.getRow(rowIndex) == null;
     }
@@ -461,9 +322,8 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      * @param sheetIx  指定 sheet 页，从 0 开始
      * @param rowIndex 指定创建行，从 0 开始
      * @return
-     * @throws IOException
      */
-    public boolean createRow(int sheetIx, int rowIndex) throws IOException {
+    public boolean createRow(int sheetIx, int rowIndex) {
         Sheet sheet = workbook.getSheetAt(sheetIx);
         sheet.createRow(rowIndex);
         return true;
@@ -476,12 +336,11 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      * @param rowIndex 指定开始行，从 0 开始
      * @param colIndex 指定开始列，从 0 开始
      * @return true 行不为空，false 行为空
-     * @throws IOException
      */
-    public boolean isCellNull(int sheetIx, int rowIndex, int colIndex) throws IOException {
+    public boolean isCellNull(int sheetIx, int rowIndex, int colIndex) {
         Sheet sheet = workbook.getSheetAt(sheetIx);
-        if (!isRowNull(sheetIx, rowIndex)) {
-            return false;
+        if (isRowNull(sheetIx, rowIndex)) {
+            return true;
         }
         Row row = sheet.getRow(rowIndex);
         return row.getCell(colIndex) == null;
@@ -494,12 +353,13 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      * @param rowIndex 指定行，从 0 开始
      * @param colIndex 指定创建列，从 0 开始
      * @return true 列为空，false 行不为空
-     * @throws IOException
      */
-    public boolean createCell(int sheetIx, int rowIndex, int colIndex) throws IOException {
+    public boolean createCell(int sheetIx, int rowIndex, int colIndex) {
         Sheet sheet = workbook.getSheetAt(sheetIx);
-        Row row = sheet.getRow(rowIndex);
-        row.createCell(colIndex);
+        if (isRowNull(sheetIx, rowIndex)) {
+            createRow(sheetIx, rowIndex);
+        }
+        sheet.getRow(rowIndex).createCell(colIndex);
         return true;
     }
 
@@ -540,20 +400,16 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      * @param colIndex 指定列，从0开始
      * @param value    值
      * @return
-     * @throws IOException
      */
-    public boolean setValueAt(int sheetIx, int rowIndex, int colIndex, String value) throws IOException {
+    public boolean write(int sheetIx, int rowIndex, int colIndex, String value) {
         Sheet sheet = workbook.getSheetAt(sheetIx);
-        Row row = sheet.getRow(rowIndex);
-        if (row == null) {
+        if (isRowNull(sheetIx, rowIndex)) {
             createRow(sheetIx, rowIndex);
         }
-        Cell cell = sheet.getRow(rowIndex).getCell(colIndex);
-        if (cell == null) {
-            this.createCell(sheetIx, rowIndex, colIndex);
-            cell = sheet.getRow(rowIndex).getCell(colIndex);
+        if (isCellNull(sheetIx, rowIndex, colIndex)) {
+            createCell(sheetIx, rowIndex, colIndex);
         }
-        cell.setCellValue(value);
+        sheet.getRow(rowIndex).getCell(colIndex).setCellValue(value);
         return true;
     }
 
@@ -570,26 +426,70 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
             return null;
         }
         Sheet sheet = workbook.getSheetAt(sheetIx);
-        return getCellValueToString(sheet.getRow(rowIndex).getCell(colIndex));
+        Row row = sheet.getRow(rowIndex);
+        if (row == null) {
+            return null;
+        }
+        return getCellValueToString(row.getCell(colIndex));
     }
 
     /**
-     * 重置指定行的值
+     * 重置指定行的值。从第0列开始
      *
      * @param rowData  数据
      * @param sheetIx  指定 Sheet 页，从 0 开始
      * @param rowIndex 指定行，从0开始
      * @return
-     * @throws IOException
      */
-    public boolean setRowValue(int sheetIx, List<String> rowData, int rowIndex) throws IOException {
-        Sheet sheet = workbook.getSheetAt(sheetIx);
-        Row row = sheet.getRow(rowIndex);
-        for (int i = 0; i < rowData.size(); i++) {
-            row.getCell(i).setCellValue(rowData.get(i));
+    public boolean writeRow(int sheetIx, int rowIndex, List<String> rowData) {
+        return writeRow(sheetIx, rowIndex, 0, rowData);
+    }
+
+    /**
+     * 重置指定行的值
+     *
+     * @param sheetIx     指定 Sheet 页，从 0 开始
+     * @param rowIndex    指定行，从0开始
+     * @param startColumn 从第几列开始写
+     * @param rowData     数据
+     * @return
+     */
+    public boolean writeRow(int sheetIx, int rowIndex, int startColumn, List<String> rowData) {
+        for (int i = startColumn; i < startColumn + rowData.size(); i++) {
+            write(sheetIx, rowIndex, i, rowData.get(i - startColumn));
         }
         return true;
     }
+
+    /**
+     * 重置指定列的值，从第0行开始写
+     *
+     * @param columnData  数据
+     * @param sheetIx     指定 Sheet 页，从 0 开始
+     * @param columnIndex 指定行，从0开始
+     * @return
+     */
+    public boolean writeColumn(int sheetIx, int columnIndex, List<String> columnData) {
+        return writeRow(sheetIx, 0, columnIndex, columnData);
+    }
+
+
+    /**
+     * 重置指定列的值
+     *
+     * @param sheetIx     指定 Sheet 页，从 0 开始
+     * @param startRow    从第几行开始
+     * @param columnIndex 指定行，从0开始
+     * @param columnData  数据
+     * @return
+     */
+    public boolean writeColumn(int sheetIx, int startRow, int columnIndex, List<String> columnData) {
+        for (int i = startRow; i < startRow + columnData.size(); i++) {
+            write(sheetIx, i, columnIndex, columnData.get(i - startRow));
+        }
+        return true;
+    }
+
 
     /**
      * 返回指定行的值的集合
@@ -600,8 +500,8 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      */
     public List<String> getRowValue(int sheetIx, int rowIndex) {
         Sheet sheet = workbook.getSheetAt(sheetIx);
-        Row row = sheet.getRow(rowIndex);
         List<String> list = new ArrayList<String>();
+        Row row = sheet.getRow(rowIndex);
         if (row == null) {
             list.add(null);
         } else {
@@ -613,23 +513,26 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
     }
 
     /**
-     * 返回列的值的集合
+     * 返回列的值的集合，从startRowIndex行开始
      *
-     * @param sheetIx  指定 Sheet 页，从 0 开始
-     * @param rowIndex 指定行，从0开始
-     * @param colIndex 指定列，从0开始
+     * @param sheetIx       指定 Sheet 页，从 0 开始
+     * @param startRowIndex 指定行，从0开始
+     * @param colIndex      指定列，从0开始
      * @return
      */
-    public List<String> getColumnValue(int sheetIx, int rowIndex, int colIndex) {
+    public List<String> getColumnValue(int sheetIx, int startRowIndex, int colIndex) {
         Sheet sheet = workbook.getSheetAt(sheetIx);
         List<String> list = new ArrayList<String>();
-        for (int i = rowIndex; i < getRowCount(sheetIx); i++) {
+        if (sheet == null) {
+            return list;
+        }
+        for (int i = startRowIndex; i < getRowCount(sheetIx); i++) {
             Row row = sheet.getRow(i);
             if (row == null) {
                 list.add(null);
                 continue;
             }
-            list.add(getCellValueToString(sheet.getRow(i).getCell(colIndex)));
+            list.add(getCellValueToString(row.getCell(colIndex)));
         }
         return list;
     }
@@ -657,9 +560,8 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      * @param sheetIx 指定 Sheet 页，从 0 开始，//
      * @param name
      * @return
-     * @throws IOException
      */
-    public boolean setSheetName(int sheetIx, String name) throws IOException {
+    public boolean setSheetName(int sheetIx, String name) {
         workbook.setSheetName(sheetIx, name);
         return true;
     }
@@ -669,10 +571,12 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      *
      * @param sheetIx 指定 Sheet 页，从 0 开始
      * @return
-     * @throws IOException
      */
-    public String getSheetName(int sheetIx) throws IOException {
+    public String getSheetName(int sheetIx) {
         Sheet sheet = workbook.getSheetAt(sheetIx);
+        if (sheet == null) {
+            return null;
+        }
         return sheet.getSheetName();
     }
 
@@ -691,21 +595,19 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      *
      * @param sheetIx 指定 Sheet 页，从 0 开始
      * @return
-     * @throws IOException
      */
-    public boolean removeSheetAt(int sheetIx) throws IOException {
+    public boolean removeSheetAt(int sheetIx) {
         workbook.removeSheetAt(sheetIx);
         return true;
     }
 
     /**
-     * @return boolean
-     * @author JinZhiyun
-     * @description 删除指定名称的sheet
-     * @date 15:25 2019/10/30
-     * @Param [sheetName]
-     **/
-    public boolean removeSheetByName(String sheetName) throws IOException {
+     * 删除指定名称的sheet
+     *
+     * @param sheetName sheet名称
+     * @return
+     */
+    public boolean removeSheetByName(String sheetName) {
         workbook.removeSheetAt(getSheetIndex(sheetName));
         return true;
     }
@@ -716,9 +618,8 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      * @param sheetIx  指定 Sheet 页，从 0 开始
      * @param rowIndex 指定行，从0开始
      * @return
-     * @throws IOException
      */
-    public boolean removeRow(int sheetIx, int rowIndex) throws IOException {
+    public boolean removeRow(int sheetIx, int rowIndex) {
         Sheet sheet = workbook.getSheetAt(sheetIx);
         int lastRowNum = sheet.getLastRowNum();
         if (rowIndex >= 0 && rowIndex < lastRowNum) {
@@ -740,11 +641,10 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      * @param rowIndexStart 起始行（含）
      * @param rowIndexEnd   结束行（不含）
      * @return
-     * @throws IOException
      */
-    public boolean removeRows(int sheetIx, int rowIndexStart, int rowIndexEnd) throws IOException {
+    public boolean removeRows(int sheetIx, int rowIndexStart, int rowIndexEnd) {
         for (int i = rowIndexEnd - 1; i >= rowIndexStart; i--) {
-            this.removeRow(sheetIx, i);
+            removeRow(sheetIx, i);
         }
         return true;
     }
@@ -764,9 +664,8 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      *
      * @param sheetIx 指定 Sheet 页，从 0 开始
      * @return
-     * @throws IOException
      */
-    public boolean clearSheet(int sheetIx) throws IOException {
+    public boolean clearSheet(int sheetIx) {
         String sheetName = getSheetName(sheetIx);
         removeSheetAt(sheetIx);
         workbook.createSheet(sheetName);
@@ -842,8 +741,8 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
             case Cell.CELL_TYPE_NUMERIC:
                 if (HSSFDateUtil.isCellDateFormatted(cell)) {
                     Date date = cell.getDateCellValue();
-                    if (pattern != null) {
-                        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+                    if (datePattern != null) {
+                        SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
                         strCell = sdf.format(date);
                     } else {
                         strCell = date.toString();

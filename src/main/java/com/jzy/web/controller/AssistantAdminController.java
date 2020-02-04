@@ -5,7 +5,9 @@ import com.github.pagehelper.PageInfo;
 import com.jzy.manager.constant.ModelConstants;
 import com.jzy.manager.exception.InvalidParameterException;
 import com.jzy.manager.util.AssistantUtils;
+import com.jzy.manager.util.ShiroUtils;
 import com.jzy.model.CampusEnum;
+import com.jzy.model.LogLevelEnum;
 import com.jzy.model.dto.search.AssistantSearchCondition;
 import com.jzy.model.dto.MyPage;
 import com.jzy.model.entity.Assistant;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,12 +87,13 @@ public class AssistantAdminController extends AbstractController {
      */
     @RequestMapping("/updateById")
     @ResponseBody
-    public Map<String, Object> updateById(Assistant assistant) {
+    public Map<String, Object> updateById(Assistant assistant, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!AssistantUtils.isValidAssistantUpdateInfo(assistant)) {
-            String msg = "updateById方法错误入参";
+            String msg = "编辑助教updateById方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 
@@ -106,12 +110,13 @@ public class AssistantAdminController extends AbstractController {
      */
     @RequestMapping("/insert")
     @ResponseBody
-    public Map<String, Object> insert(Assistant assistant) {
+    public Map<String, Object> insert(Assistant assistant, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!AssistantUtils.isValidAssistantUpdateInfo(assistant)) {
-            String msg = "insert方法错误入参";
+            String msg = "添加助教insert方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
         map.put("data", assistantService.insertOneAssistant(assistant).getResult());

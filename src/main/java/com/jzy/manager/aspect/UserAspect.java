@@ -55,7 +55,7 @@ public class UserAspect extends AbstractLogger {
         if (user != null) {
             String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")更新了用户的资料。请求方法：" + methodName;
             logger.info(msg);
-            saveLogToDatebase(msg, user, getIpAddress(jp));
+            importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
         }
     }
 
@@ -74,7 +74,7 @@ public class UserAspect extends AbstractLogger {
             if (user != null) {
                 String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")上传了头像。头像文件名：" + fileName;
                 logger.info(msg);
-                saveLogToDatebase(msg, user, getIpAddress(jp));
+                importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
             }
         }
     }

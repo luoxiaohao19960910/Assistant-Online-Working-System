@@ -70,6 +70,13 @@ public class DataImportLogger extends AbstractLogger {
     }
 
     /**
+     * 导入座位表模板的切面
+     */
+    @Pointcut("execution(* com.jzy.web.controller.ToolboxController.assistantTutorialTemplateImport(..)) ")
+    public void importAssistantTutorialTemplatePoint() {
+    }
+
+    /**
      * 助教和用户导入日志记录，仅输出"成功"和"需要引起注意的"
      *
      * @param jp  连接点
@@ -81,7 +88,7 @@ public class DataImportLogger extends AbstractLogger {
         if (user != null) {
             String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")助教信息导入" + calculableImportSuccessMsg(map);
             logger.info(msg);
-            saveLogToDatebase(msg, user, getIpAddress(jp));
+            importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
         }
     }
 
@@ -97,7 +104,7 @@ public class DataImportLogger extends AbstractLogger {
         if (user != null) {
             String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")排班信息导入" + calculableImportSuccessMsg(map);
             logger.info(msg);
-            saveLogToDatebase(msg, user, getIpAddress(jp));
+            importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
         }
     }
 
@@ -113,7 +120,7 @@ public class DataImportLogger extends AbstractLogger {
         if (user != null) {
             String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")花名册学生信息导入" + calculableImportSuccessMsg(map);
             logger.info(msg);
-            saveLogToDatebase(msg, user, getIpAddress(jp));
+            importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
         }
     }
 
@@ -129,7 +136,7 @@ public class DataImportLogger extends AbstractLogger {
         if (user != null) {
             String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")学生学校统计信息导入" + calculableImportSuccessMsg(map);
             logger.info(msg);
-            saveLogToDatebase(msg, user, getIpAddress(jp));
+            importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
         }
     }
 
@@ -171,7 +178,6 @@ public class DataImportLogger extends AbstractLogger {
         return s;
     }
 
-
     /**
      * 座位表导入日志记录
      *
@@ -184,7 +190,23 @@ public class DataImportLogger extends AbstractLogger {
         if (user != null) {
             String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")座位表模板导入" + generalImportSuccessMsg(map);
             logger.info(msg);
-            saveLogToDatebase(msg, user, getIpAddress(jp));
+            importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
+        }
+    }
+
+    /**
+     * 教师和助教工作手册导入日志记录
+     *
+     * @param jp  连接点
+     * @param map 原方法的返回值，json
+     */
+    @AfterReturning(returning = "map", pointcut = "importAssistantTutorialTemplatePoint()")
+    public void importAssistantTutorialTemplateLog(JoinPoint jp, Map<String, Object> map) {
+        User user = userService.getSessionUserInfo();
+        if (user != null) {
+            String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")教师和助教工作手册模板导入" + generalImportSuccessMsg(map);
+            logger.info(msg);
+            importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
         }
     }
 

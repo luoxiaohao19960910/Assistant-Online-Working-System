@@ -186,8 +186,6 @@ public class StudentServiceImpl extends AbstractServiceImpl implements StudentSe
                     studentsToInsert.add(student);
                 }
             } else {
-                String msg = "学生花名册读取到的student不合法!";
-                logger.error(msg);
                 result.setResult(Constants.EXCEL_INVALID_DATA);
                 invalidData.putValue(studentIdKeyword, student.getStudentId());
                 invalidData.putValue(studentPhoneKeyword, student.getStudentPhone());
@@ -265,8 +263,6 @@ public class StudentServiceImpl extends AbstractServiceImpl implements StudentSe
                     studentsToInsert.add(student);
                 }
             } else {
-                String msg = "学生花名册读取到的student不合法!";
-                logger.error(msg);
                 result.setResult(Constants.EXCEL_INVALID_DATA);
                 invalidData.putValue(studentIdKeyword, student.getStudentId());
                 invalidData.putValue(classIdKeyword, null);
@@ -344,8 +340,6 @@ public class StudentServiceImpl extends AbstractServiceImpl implements StudentSe
                     studentsToInsert.add(student);
                 }
             } else {
-                String msg = "学生花名册读取到的student学校不合法!";
-                logger.error(msg);
                 result.setResult(Constants.EXCEL_INVALID_DATA);
                 invalidData.putValue(studentIdKeyword, student.getStudentId());
                 invalidData.putValue(studentSchoolKeyword, student.getStudentSchool());

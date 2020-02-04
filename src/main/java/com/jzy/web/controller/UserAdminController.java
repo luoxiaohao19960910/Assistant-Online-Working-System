@@ -5,7 +5,9 @@ import com.github.pagehelper.PageInfo;
 import com.jzy.manager.constant.Constants;
 import com.jzy.manager.constant.ModelConstants;
 import com.jzy.manager.exception.*;
+import com.jzy.manager.util.ShiroUtils;
 import com.jzy.manager.util.UserUtils;
+import com.jzy.model.LogLevelEnum;
 import com.jzy.model.RoleEnum;
 import com.jzy.model.dto.DefaultFromExcelUpdateResult;
 import com.jzy.model.dto.MyPage;
@@ -84,6 +86,7 @@ public class UserAdminController extends AbstractController {
         } else {
             String msg = userSessionInfo.getId() + "用户突破了权限!";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, null);
             throw new NoAuthorizationException(msg);
         }
         return userSessionInfo.getUserRole();
@@ -201,12 +204,13 @@ public class UserAdminController extends AbstractController {
      */
     @RequestMapping("/updateById")
     @ResponseBody
-    public Map<String, Object> updateById(User user) {
+    public Map<String, Object> updateById(User user, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!UserUtils.isValidUserUpdateInfo(user)) {
-            String msg = "updateById方法错误入参";
+            String msg = "更新用户信息updateById方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
         map.put("data", userService.updateUserInfo(user));
@@ -222,12 +226,13 @@ public class UserAdminController extends AbstractController {
      */
     @RequestMapping("/insert")
     @ResponseBody
-    public Map<String, Object> insert(User user) {
+    public Map<String, Object> insert(User user, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!UserUtils.isValidUserInsertInfo(user)) {
-            String msg = "updateById方法错误入参";
+            String msg = "添加用户insert方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 

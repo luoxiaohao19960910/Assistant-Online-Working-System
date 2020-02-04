@@ -6,6 +6,7 @@ import com.jzy.dao.StudentAndClassMapper;
 import com.jzy.manager.constant.Constants;
 import com.jzy.manager.constant.ExcelConstants;
 import com.jzy.manager.exception.InvalidParameterException;
+import com.jzy.manager.util.MyStringUtils;
 import com.jzy.manager.util.StudentAndClassUtils;
 import com.jzy.model.dto.*;
 import com.jzy.model.dto.echarts.*;
@@ -169,8 +170,6 @@ public class StudentAndClassServiceImpl extends AbstractServiceImpl implements S
                     studentAndClassesToInsert.add(studentAndClassDetailedDto);
                 }
             } else {
-                String msg = "输入学生花名册表中读取到的studentAndClassDetailedDtos不合法!";
-                logger.error(msg);
                 result.setResult(Constants.EXCEL_INVALID_DATA);
                 invalidData.putValue(studentIdKeyword, studentAndClassDetailedDto.getStudentId());
                 invalidData.putValue(classIdKeyword, studentAndClassDetailedDto.getClassId());
@@ -351,7 +350,7 @@ public class StudentAndClassServiceImpl extends AbstractServiceImpl implements S
             condition.setStudentId(dto.getStudentId());
             //查出当前学生迄今为止所有的上课记录
             List<StudentAndClassDetailedDto> allRecords = studentAndClassMapper.listStudentAndClassesWithSubjectsByStudentId(condition);
-            ClassSeasonDto currentSeason = classService.getCurrentClassSeason();
+            ClassSeasonDto currentSeason = new ClassSeasonDto(dto.getClassYear(), dto.getClassSeason(), dto.getClassSubSeason());
             for (StudentAndClassDetailedDto record : allRecords) {
                 ClassSeasonDto recordSeason = new ClassSeasonDto(record.getClassYear(), record.getClassSeason(), record.getClassSubSeason());
                 if (recordSeason.compareTo(currentSeason) < 0) {
@@ -366,12 +365,15 @@ public class StudentAndClassServiceImpl extends AbstractServiceImpl implements S
             condition.setClassSeason(dto.getClassSeason());
             condition.setClassSubSeason(dto.getClassSubSeason());
             //查出当前年份-季度下该学生的所有上课记录
-            List<StudentAndClassDetailedDto> recordsInCurrentSeason = studentAndClassMapper.listStudentAndClassesWithSubjectsByStudentId(condition);
-
+//            List<StudentAndClassDetailedDto> recordsInCurrentSeason = studentAndClassMapper.listStudentAndClassesWithSubjectsByStudentId(condition);
             List<String> subjects = new ArrayList<>();
-            for (StudentAndClassDetailedDto record : recordsInCurrentSeason) {
-                if (!StringUtils.isEmpty(record.getClassSubject())) {
-                    subjects.add(record.getClassSubject());
+            for (StudentAndClassDetailedDto record : allRecords) {
+                if (MyStringUtils.equalsIgnoreNullAndEmpty(dto.getClassYear(), record.getClassYear())
+                        && MyStringUtils.equalsIgnoreNullAndEmpty(dto.getClassSeason(), record.getClassSeason())
+                        && MyStringUtils.equalsIgnoreNullAndEmpty(dto.getClassYear(), record.getClassYear())) {
+                    if (!StringUtils.isEmpty(record.getClassSubject())) {
+                        subjects.add(record.getClassSubject());
+                    }
                 }
             }
             //读取设置该学生所有修读的学科

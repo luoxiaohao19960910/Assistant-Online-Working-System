@@ -1,7 +1,5 @@
 package com.jzy.manager.constant;
 
-import com.jzy.model.dto.ClassSeasonDto;
-
 /**
  * @author JinZhiyun
  * @version 1.0
@@ -39,13 +37,6 @@ public final class ModelConstants {
     public static final String SUB_SEASONS_MODEL_KEY = "subSeasons";
 
     /**
-     * 值为所有班级编码所对应的model键
-     *     舍弃下拉select中渲染全部班级编码的方式，使用input后端搜索渲染。2019/12/16
-     */
-    @Deprecated
-    public static final String CLASS_IDS_MODEL_KEY = "classIds";
-
-    /**
      * 值为所有年级所对应的model键
      */
     public static final String GRADES_MODEL_KEY = "grades";
@@ -64,20 +55,6 @@ public final class ModelConstants {
      * 值为所有日志级别所对应的model键
      */
     public static final String LEVELS_MODEL_KEY = "levels";
-
-    /**
-     * 值为当前年份所对应的model键
-     *      改用对象{@link ClassSeasonDto}包装
-     */
-    @Deprecated
-    public static final String CURRENT_YEAR_MODEL_KEY = "currentYear";
-
-    /**
-     * 值为当前季度所对应的model键
-     *      改用对象{@link ClassSeasonDto}包装
-     */
-    @Deprecated
-    public static final String CURRENT_SEASON_MODEL_KEY = "currentSeason";
 
     /**
      * 值为当前开课年份季度分期所对应的model键
@@ -120,24 +97,9 @@ public final class ModelConstants {
     public static final String CLASS_EDIT_MODEL_KEY = "classEdit";
 
     /**
-     * 跳转编辑学员上课信息iframe页面时，存放的model键
-     */
-    public static final String STUDENT_AND_CLASS_EDIT_MODEL_KEY = "studentAndClassEdit";
-
-    /**
      * 跳转预览班级iframe页面时，存放的model键
      */
     public static final String CLASS_PREVIEW_MODEL_KEY = "classPreview";
-
-    /**
-     * 跳转编辑学生iframe页面时，存放的model键
-     */
-    public static final String STUDENT_EDIT_MODEL_KEY = "studentEdit";
-
-    /**
-     * 跳转编辑补课学生iframe页面时，存放的model键
-     */
-    public static final String MISS_LESSON_STUDENT_EDIT_MODEL_KEY = "missLessonStudentEdit";
 
     /**
      * 跳转系统公告推送页面时，存放的model键

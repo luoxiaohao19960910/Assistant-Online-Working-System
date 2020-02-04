@@ -9,6 +9,7 @@ import com.jzy.model.excel.AbstractInputExcel;
 import com.jzy.model.excel.ExcelVersionEnum;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.util.*;
  * @description 学生花名册用来导入数据库的。同时用户要扫描并填充的空学校统计表也用该对象封装
  * @date 2019/11/1 11:07
  **/
+@ToString(callSuper = true)
 public class StudentSchoolExcel extends AbstractInputExcel {
     private static final long serialVersionUID = 3823535210593191680L;
 
@@ -191,7 +193,7 @@ public class StudentSchoolExcel extends AbstractInputExcel {
                 school = student.getStudentSchool();
             }
 
-            setValueAt(sheetIx, i, columnIndexOfStudentSchool, school);
+            write(sheetIx, i, columnIndexOfStudentSchool, school);
         }
 
 
@@ -245,12 +247,5 @@ public class StudentSchoolExcel extends AbstractInputExcel {
         }
 
         testColumnNameValidity();
-    }
-
-    public static void main(String[] args) throws IOException, ExcelColumnNotFoundException, InvalidFileTypeException {
-        StudentSchoolExcel excel = new StudentSchoolExcel("C:\\Users\\92970\\Desktop\\1.xlsx");
-        excel.getValueAt(0, 1, 0);
-        excel.setValueAt(0, 1, 1, "1");
-
     }
 }

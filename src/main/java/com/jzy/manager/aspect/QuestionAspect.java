@@ -50,7 +50,7 @@ public class QuestionAspect extends AbstractLogger {
         if (user != null) {
             String msg="用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")更新了懒癌登陆问题信息!";
             logger.info(msg);
-            saveLogToDatebase(msg, user, getIpAddress(jp));
+            importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
         }
     }
 

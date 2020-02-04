@@ -2,8 +2,7 @@ package com.jzy.model.excel;
 
 import com.jzy.manager.exception.ExcelColumnNotFoundException;
 import com.jzy.manager.exception.InvalidFileTypeException;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.File;
@@ -17,8 +16,7 @@ import java.io.InputStream;
  * @Date 2020/1/12 15:13
  * @Version 1.0
  **/
-@EqualsAndHashCode(callSuper = true)
-@Data
+@ToString(callSuper = true)
 public abstract class AbstractInputExcel extends DefaultExcel {
     private static final long serialVersionUID = 7458303551368759495L;
 

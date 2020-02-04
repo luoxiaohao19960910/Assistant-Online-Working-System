@@ -43,7 +43,7 @@ public class MissLessonStudentAspect extends AbstractLogger {
         if (user != null) {
             String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")开设补课单成功。补课学生信息：" + missLessonStudentDetailedDto;
             logger.info(msg);
-            saveLogToDatebase(msg, user, getIpAddress(jp));
+            importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
         }
     }
 }

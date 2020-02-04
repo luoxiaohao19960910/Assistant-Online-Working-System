@@ -205,8 +205,6 @@ public class ClassServiceImpl extends AbstractServiceImpl implements ClassServic
                 UpdateResult resultTmp = insertAndUpdateOneClassFromExcel(classDetailedDto);
                 result.add(resultTmp);
             } else {
-                String msg = "输入助教排班表中读取到的classDetailedDtos不合法！";
-                logger.error(msg);
                 result.setResult(Constants.EXCEL_INVALID_DATA);
                 invalidData.putValue(teacherNameKeyword, classDetailedDto.getTeacherName());
                 invalidData.putValue(classIdKeyword, classDetailedDto.getClassId());

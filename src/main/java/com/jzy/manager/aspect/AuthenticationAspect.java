@@ -57,11 +57,11 @@ public class AuthenticationAspect extends AbstractLogger {
                 return;
             }
             message = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")通过" + methodName + "方法登录成功";
-            saveLogToDatebase(message, user, operatorIp);
+            importantLogService.saveImportantLog(message, user, operatorIp);
         } else {
             //登录失败日志
             message = "ip=" + operatorIp + "通过" + methodName + "方法登录失败。失败原因：" + data;
-            saveLogToDatebase(message, null, operatorIp);
+            importantLogService.saveImportantLog(message, null, operatorIp);
         }
 
         logger.info(message);

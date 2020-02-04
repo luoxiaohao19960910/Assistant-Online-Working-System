@@ -7,16 +7,14 @@ import com.jzy.manager.exception.InvalidFileTypeException;
 import com.jzy.model.dto.StudentAndClassDetailedWithSubjectsDto;
 import com.jzy.model.excel.AbstractInputExcel;
 import com.jzy.model.excel.ExcelVersionEnum;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author JinZhiyun
@@ -25,8 +23,7 @@ import java.util.Map;
  * @description 学生花名册用户手动上传（未开启黑魔法时）
  * @date 2019/11/1 11:07
  **/
-@EqualsAndHashCode(callSuper = true)
-@Data
+@ToString(callSuper = true)
 public class StudentListUploadByUserExcel extends AbstractInputExcel {
     private static final long serialVersionUID = 5477415462970462167L;
 
@@ -44,6 +41,7 @@ public class StudentListUploadByUserExcel extends AbstractInputExcel {
     /**
      * 读取到的信息封装成StudentAndClassDto对象
      */
+    @Getter
     private List<StudentAndClassDetailedWithSubjectsDto> output;
 
     /**
@@ -144,14 +142,6 @@ public class StudentListUploadByUserExcel extends AbstractInputExcel {
         }
 
         testColumnNameValidity();
-    }
-
-    public static void main(String[] args) throws IOException {
-        Map<Integer, String> map = new HashMap<>();
-        map.put(1, "a");
-        map.put(1, "2");
-        map.remove(1);
-        System.out.println(map.get(1));
     }
 
     @Override

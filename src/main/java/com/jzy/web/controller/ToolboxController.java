@@ -6,7 +6,11 @@ import com.jzy.manager.constant.ModelConstants;
 import com.jzy.manager.exception.*;
 import com.jzy.manager.util.*;
 import com.jzy.model.CampusEnum;
-import com.jzy.model.dto.*;
+import com.jzy.model.LogLevelEnum;
+import com.jzy.model.dto.ClassDetailedDto;
+import com.jzy.model.dto.MissManyDaysLessonStudentDetailedDto;
+import com.jzy.model.dto.StudentAndClassDetailedDto;
+import com.jzy.model.dto.StudentAndClassDetailedWithSubjectsDto;
 import com.jzy.model.dto.search.StudentAndClassSearchCondition;
 import com.jzy.model.entity.*;
 import com.jzy.model.entity.Class;
@@ -232,6 +236,7 @@ public class ToolboxController extends AbstractController {
             e.printStackTrace();
             String msg = "exportAssistantTutorialWithoutSeatTable下载文件失败";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
         }
 
         return SUCCESS;
@@ -285,6 +290,7 @@ public class ToolboxController extends AbstractController {
             e.printStackTrace();
             String msg = "exportAssistantTutorialAndSeatTable下载文件失败";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
         }
 
         return SUCCESS;
@@ -386,12 +392,11 @@ public class ToolboxController extends AbstractController {
 
             //下载处理好的文件
             FileUtils.downloadFile(request, response, excel, FileUtils.TEMPLATES.get(2));
-        } catch (InvalidFileTypeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-            String msg = "exportSeatTable下载文件失败";
+            String msg = "exportSeatTable下载文件失败。exception message:" + e.getMessage();
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
         }
 
         return SUCCESS;
@@ -525,12 +530,11 @@ public class ToolboxController extends AbstractController {
                     sendEmailToOriginalAndCurrentClassAssistant(originalUserWithMessage, currentUserWithMessage);
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            String msg = "exportAssistantMissLessonTable下载文件失败";
+            String msg = "exportAssistantMissLessonTable下载文件失败。exception message:" + e.getMessage();
             logger.error(msg);
-        } catch (InvalidFileTypeException e) {
-            e.printStackTrace();
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
         }
 
         return SUCCESS;
@@ -695,6 +699,43 @@ public class ToolboxController extends AbstractController {
     }
 
     /**
+     * 学管工具箱中导入模板表格的范例下载
+     *
+     * @param request
+     * @param response
+     * @param type     不同的type对应不同的文件 {@link FileUtils}
+     * @param campus   指定校区下的模板
+     * @return
+     */
+    @RequestMapping("/assistantAdministrator/downloadTemplate/{type}")
+    public String downloadTemplate(HttpServletRequest request, HttpServletResponse response, @PathVariable String type, @RequestParam("campus") String campus) {
+        int typeVal = Integer.parseInt(type);
+        if (typeVal <= 0) {
+            String msg = "downloadTemplate方法入参错误!";
+            logger.error(msg);
+            throw new InvalidParameterException(msg);
+        }
+
+        try {
+            String filePathAndNameToRead = null;
+            if (typeVal == 1) {
+                filePathAndNameToRead = filePathProperties.getToolboxAssistantTutorialTemplatePathAndName(campus);
+            } else if (typeVal == 2) {
+                filePathAndNameToRead = filePathProperties.getToolboxSeatTableTemplatePathAndName(campus);
+            }
+            String downloadFileName = FileUtils.TEMPLATES.get(typeVal);
+            //下载文件
+            FileUtils.downloadFile(request, response, filePathAndNameToRead, downloadFileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            String msg = "downloadTemplate下载文件失败";
+            logger.error(msg);
+            return FAILURE;
+        }
+        return SUCCESS;
+    }
+
+    /**
      * 跳转学管模板导入页面
      *
      * @param model
@@ -756,7 +797,9 @@ public class ToolboxController extends AbstractController {
                 if (CampusAndClassroomUtils.isValidCampusAndClassroomUpdateInfo(campusAndClassroom)) {
                     campusAndClassroomService.insertOneCampusAndClassroom(campusAndClassroom);
                 } else {
-                    logger.error("上传模板失败");
+                    String msg = "上传模板失败";
+                    logger.error(msg);
+                    importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
                     map.put("msg", FAILURE);
                     return map;
                 }
@@ -786,6 +829,56 @@ public class ToolboxController extends AbstractController {
             return map;
         }
 
+        map.put("msg", SUCCESS);
+        return map;
+    }
+
+
+    /**
+     * 导入座位表模板。如果捕获异常，马上返回前端。
+     *
+     * @param file        上传的表格
+     * @param classCampus 选择导入的校区
+     * @param request
+     * @return
+     */
+    @RequestMapping("/assistantAdministrator/assistantTutorialTemplateImport")
+    @ResponseBody
+    public Map<String, Object> assistantTutorialTemplateImport(@RequestParam(value = "file", required = false) MultipartFile file, @RequestParam(value = "classCampus", required = false) String classCampus, HttpServletRequest request) {
+        Map<String, Object> map2 = new HashMap<>(1);
+        Map<String, Object> map = new HashMap<>(3);
+        //返回layui规定的文件上传模块JSON格式
+        map.put("code", 0);
+        map2.put("src", "");
+        map.put("data", map2);
+
+        if (StringUtils.isEmpty(classCampus) || !ClassUtils.isValidClassCampus(classCampus)) {
+            map.put("msg", "campusInvalid");
+            return map;
+        }
+
+        if (file == null || file.isEmpty()) {
+            String msg = "上传文件为空";
+            logger.error(msg);
+            throw new InvalidFileInputException(msg);
+        }
+
+
+        if (!Excel.isExcel(file.getOriginalFilename())) {
+            String msg = "上传文件不是excel";
+            logger.error(msg);
+            throw new InvalidFileInputException(msg);
+        }
+
+        try {
+            String filePathAndName = filePathProperties.getToolboxAssistantTutorialTemplatePathAndName(classCampus);
+            File dest = new File(filePathAndName);
+            file.transferTo(dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+            map.put("msg", FAILURE);
+            return map;
+        }
         map.put("msg", SUCCESS);
         return map;
     }
@@ -904,6 +997,7 @@ public class ToolboxController extends AbstractController {
             e.printStackTrace();
             String msg = "downloadStudentSchool下载文件失败";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             return FAILURE;
         }
 
@@ -979,12 +1073,11 @@ public class ToolboxController extends AbstractController {
 
             //下载处理好的文件
             FileUtils.downloadFile(request, response, excel, fileName + version.getSuffix());
-        } catch (InvalidFileTypeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-            String msg = "exportStudentPhoneToExcel下载文件失败";
+            String msg = "exportStudentPhoneToExcel下载文件失败。exception message:" + e.getMessage();
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
         }
 
         return SUCCESS;

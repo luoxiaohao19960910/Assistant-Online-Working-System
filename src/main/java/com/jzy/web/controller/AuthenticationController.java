@@ -11,6 +11,7 @@ import com.jzy.manager.util.CodeUtils;
 import com.jzy.manager.util.CookieUtils;
 import com.jzy.manager.util.MyStringUtils;
 import com.jzy.manager.util.ShiroUtils;
+import com.jzy.model.LogLevelEnum;
 import com.jzy.model.RoleEnum;
 import com.jzy.model.dto.EmailVerifyCode;
 import com.jzy.model.entity.Question;
@@ -245,7 +246,9 @@ public class AuthenticationController extends AbstractController {
         String requiredSliderAuth = (String) session.getAttribute(SessionConstants.REQUIRE_SLIDER_AUTH_SESSION_KEY);
         if (!isUsualIpAddress(input.getUserName(), request) && !Constants.YES.equals(requiredSliderAuth)) {
             //未经过testIp请求的可疑ip异常，可能是机器爆破等攻击方式
-            logger.error("绕过滑块验证的可疑登录请求!");
+            String msg = "绕过滑块验证的可疑登录请求!";
+            logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             map.put("data", result);
             return map;
         }
@@ -321,7 +324,9 @@ public class AuthenticationController extends AbstractController {
             map.put("data", result);
         } catch (AuthenticationException e) {
             //其他异常
-            logger.error("未知的登录错误!");
+            String msg = "未知的登录错误!";
+            logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             map.put("data", result);
         }
 
@@ -338,14 +343,16 @@ public class AuthenticationController extends AbstractController {
      */
     @RequestMapping("/sendVerifyCodeToEmail")
     @ResponseBody
-    public Map<String, Object> sendVerifyCodeToEmail(@RequestParam("userEmail") String userEmail) {
+    public Map<String, Object> sendVerifyCodeToEmail(@RequestParam("userEmail") String userEmail, HttpServletRequest request) {
         Map<String, Object> map = new HashMap(1);
         ShiroUtils.setSessionAttribute(SessionConstants.USER_EMAIL_SESSION_KEY, new EmailVerifyCodeSession(userEmail, false));
         try {
             userService.sendVerifyCodeToEmail(userEmail);
             map.put("msg", SUCCESS);
         } catch (Exception e) {
-            logger.error("邮箱验证码发送失败!");
+            String errorMsg = "邮箱验证码发送失败!";
+            logger.error(errorMsg);
+            importantLogService.saveImportantLogBySessionUser(errorMsg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             map.put("msg", FAILURE);
             e.printStackTrace();
         }
@@ -385,17 +392,19 @@ public class AuthenticationController extends AbstractController {
      */
     @RequestMapping("/resetPassword")
     @ResponseBody
-    public Map<String, Object> resetPassword(User user) {
+    public Map<String, Object> resetPassword(User user, HttpServletRequest request) {
         Map<String, Object> map = new HashMap(1);
         if (!MyStringUtils.isPassword(user.getUserPassword())) {
-            String msg = "错误的用户密码入参!";
+            String msg = "根据邮箱重置密码错误的用户密码入参!";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
         EmailVerifyCodeSession emailVerifyCodeSession = (EmailVerifyCodeSession) ShiroUtils.getSessionAttribute(SessionConstants.USER_EMAIL_SESSION_KEY);
         if (emailVerifyCodeSession == null) {
             String msg = "在session中的邮箱验证码auth对象EmailVerifyCodeSession为空";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
         userService.updatePasswordByEmail(emailVerifyCodeSession.getUserEmail(), user.getUserPassword());

@@ -188,8 +188,6 @@ public class TeacherServiceImpl extends AbstractServiceImpl implements TeacherSe
             if (TeacherUtils.isValidTeacherInfo(teacher)) {
                 result.add(insertAndUpdateOneTeacherFromExcel(teacher));
             } else {
-                String msg = "输入排班表中读取到的teacher不合法!";
-                logger.error(msg);
                 result.setResult(Constants.EXCEL_INVALID_DATA);
                 invalidData.putValue(teacherNameKeyword, teacher.getTeacherName());
                 invalidData.putValue(classIdKeyword, null);

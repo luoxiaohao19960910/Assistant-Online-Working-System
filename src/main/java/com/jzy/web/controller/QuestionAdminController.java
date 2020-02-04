@@ -5,9 +5,11 @@ import com.github.pagehelper.PageInfo;
 import com.jzy.manager.constant.Constants;
 import com.jzy.manager.exception.InvalidParameterException;
 import com.jzy.manager.util.QuestionUtils;
+import com.jzy.manager.util.ShiroUtils;
+import com.jzy.model.LogLevelEnum;
 import com.jzy.model.dto.MyPage;
-import com.jzy.model.dto.search.QuestionSearchCondition;
 import com.jzy.model.dto.QuestionWithCreatorDto;
+import com.jzy.model.dto.search.QuestionSearchCondition;
 import com.jzy.model.entity.Question;
 import com.jzy.model.vo.ResultMap;
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,12 +81,13 @@ public class QuestionAdminController extends AbstractController {
      */
     @RequestMapping("/updateById")
     @ResponseBody
-    public Map<String, Object> updateById(Question question) {
+    public Map<String, Object> updateById(Question question, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!QuestionUtils.isValidQuestionUpdateInfo(question)) {
-            String msg = "updateById方法错误入参";
+            String msg = "编辑小问题updateById方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 
@@ -112,12 +116,13 @@ public class QuestionAdminController extends AbstractController {
      */
     @RequestMapping("/insert")
     @ResponseBody
-    public Map<String, Object> insert(@RequestParam(value = "anonymous", required = false) String anonymous, Question question) {
+    public Map<String, Object> insert(@RequestParam(value = "anonymous", required = false) String anonymous, Question question, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!QuestionUtils.isValidQuestionUpdateInfo(question)) {
-            String msg = "insert方法错误入参";
+            String msg = "添加小问题insert方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 

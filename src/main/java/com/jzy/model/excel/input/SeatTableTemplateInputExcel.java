@@ -8,8 +8,8 @@ import com.jzy.manager.util.CampusAndClassroomUtils;
 import com.jzy.model.entity.CampusAndClassroom;
 import com.jzy.model.excel.AbstractInputExcel;
 import com.jzy.model.excel.ExcelVersionEnum;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -24,8 +24,7 @@ import java.util.List;
  * @Date 2019/11/28 11:34
  * @Version 1.0
  **/
-@EqualsAndHashCode(callSuper = true)
-@Data
+@ToString(callSuper = true)
 public class SeatTableTemplateInputExcel extends AbstractInputExcel {
     private static final long serialVersionUID = -4498593702973804852L;
 
@@ -40,8 +39,8 @@ public class SeatTableTemplateInputExcel extends AbstractInputExcel {
     /**
      * 从座位表模板中读取的教室
      */
+    @Getter
     private List<CampusAndClassroom> campusAndClassrooms;
-
 
     /**
      * 根据输入输入的座位表读取教室信息

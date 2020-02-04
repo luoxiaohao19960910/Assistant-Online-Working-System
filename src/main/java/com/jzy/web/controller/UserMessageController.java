@@ -6,9 +6,13 @@ import com.jzy.manager.constant.Constants;
 import com.jzy.manager.constant.ModelConstants;
 import com.jzy.manager.exception.InvalidParameterException;
 import com.jzy.manager.util.FileUtils;
+import com.jzy.manager.util.ShiroUtils;
 import com.jzy.manager.util.UserMessageUtils;
 import com.jzy.model.CampusEnum;
-import com.jzy.model.dto.*;
+import com.jzy.model.LogLevelEnum;
+import com.jzy.model.dto.MyPage;
+import com.jzy.model.dto.UserMessageDto;
+import com.jzy.model.dto.UserSendTo;
 import com.jzy.model.dto.search.UserMessageSearchCondition;
 import com.jzy.model.dto.search.UserSendToSearchCondition;
 import com.jzy.model.entity.User;
@@ -121,6 +125,7 @@ public class UserMessageController extends AbstractController {
         if (message == null || StringUtils.isEmpty(message.getMessagePicture()) || !FileUtils.isImage(message.getMessagePicture())) {
             String msg = "getPicture方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 
@@ -281,7 +286,7 @@ public class UserMessageController extends AbstractController {
      */
     @RequestMapping("/insertSendMessage")
     @ResponseBody
-    public Map<String, Object> insertSendMessage(@RequestParam(value = "hide", required = false) String hide, UserMessage message) {
+    public Map<String, Object> insertSendMessage(@RequestParam(value = "hide", required = false) String hide, UserMessage message, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!Constants.ON.equals(hide)) {
@@ -294,6 +299,7 @@ public class UserMessageController extends AbstractController {
         if (!UserMessageUtils.isValidUserMessageUpdateInfo(message)) {
             String msg = "insertSendMessage方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidParameterException(msg);
         }
 
@@ -391,7 +397,7 @@ public class UserMessageController extends AbstractController {
      */
     @RequestMapping("/many/insertSendMessage")
     @ResponseBody
-    public Map<String, Object> manyInsertSendMessage(@RequestParam(value = "hide", required = false) String hide, @RequestParam("userIds") String ids, UserMessage message) {
+    public Map<String, Object> manyInsertSendMessage(@RequestParam(value = "hide", required = false) String hide, @RequestParam("userIds") String ids, UserMessage message, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         Long userId = null;
@@ -414,8 +420,9 @@ public class UserMessageController extends AbstractController {
             userMessage.setMessageRemark(message.getMessageRemark());
 
             if (!UserMessageUtils.isValidUserMessageUpdateInfo(userMessage)) {
-                String msg = "insertSendMessage方法错误入参";
+                String msg = "manyInsertSendMessage方法错误入参";
                 logger.error(msg);
+                importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
                 throw new InvalidParameterException(msg);
             }
             userMessages.add(userMessage);
@@ -451,7 +458,7 @@ public class UserMessageController extends AbstractController {
      */
     @RequestMapping("/all/insertSendMessage")
     @ResponseBody
-    public Map<String, Object> allInsertSendMessage(@RequestParam(value = "hide", required = false) String hide, UserMessage message) {
+    public Map<String, Object> allInsertSendMessage(@RequestParam(value = "hide", required = false) String hide, UserMessage message, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         Long userId = null;
@@ -474,8 +481,9 @@ public class UserMessageController extends AbstractController {
             userMessage.setMessageRemark(message.getMessageRemark());
 
             if (!UserMessageUtils.isValidUserMessageUpdateInfo(userMessage)) {
-                String msg = "insertSendMessage方法错误入参";
+                String msg = "allInsertSendMessage方法错误入参";
                 logger.error(msg);
+                importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
                 throw new InvalidParameterException(msg);
             }
             userMessages.add(userMessage);

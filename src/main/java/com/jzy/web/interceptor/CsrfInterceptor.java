@@ -1,11 +1,13 @@
 package com.jzy.web.interceptor;
 
-import com.jzy.manager.aspect.AbstractLogger;
 import com.jzy.manager.constant.Constants;
 import com.jzy.manager.util.ShiroUtils;
 import com.jzy.model.LogLevelEnum;
+import com.jzy.service.ImportantLogService;
+import com.jzy.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -23,8 +25,15 @@ import javax.servlet.http.HttpServletResponse;
  * 并且得到的参数等于cookies 中保存的值，而且还要等于session 中的值，那么就是合法的）
  * @date 2019/10/11 8:42
  **/
-public class CsrfInterceptor extends AbstractLogger implements HandlerInterceptor {
+public class CsrfInterceptor implements HandlerInterceptor {
     private final static Logger logger = LogManager.getLogger(CsrfInterceptor.class);
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ImportantLogService importantLogService;
+
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -49,7 +58,7 @@ public class CsrfInterceptor extends AbstractLogger implements HandlerIntercepto
             String ip = ShiroUtils.getClientIpAddress(request);
             String msg = "可疑CSRF请求！" + "from ip: " + ip;
             logger.error(msg);
-            saveLogToDatebase(msg, LogLevelEnum.ERROR, userService.getSessionUserInfo(), ip);
+            importantLogService.saveImportantLog(msg, LogLevelEnum.ERROR, userService.getSessionUserInfo(), ip);
             request.getRequestDispatcher("/400").forward(request, response);
         }
 

@@ -122,6 +122,15 @@
                 and l.operator_ip like #{operatorIpLike}
             </if>
         </where>
+        <if test="condition1 == 'createTime'">
+            order by l.create_time
+            <if test="condition2 == 'asc'">
+                asc
+            </if>
+            <if test="condition2 == 'desc'">
+                desc
+            </if>
+        </if>
         <if test="condition1 == 'level'">
             order by l.level
             <if test="condition2 == 'asc'">

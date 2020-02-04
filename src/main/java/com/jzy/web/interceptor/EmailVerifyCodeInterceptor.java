@@ -1,13 +1,15 @@
 package com.jzy.web.interceptor;
 
 
-import com.jzy.manager.aspect.AbstractLogger;
 import com.jzy.manager.constant.SessionConstants;
 import com.jzy.manager.util.ShiroUtils;
 import com.jzy.model.LogLevelEnum;
 import com.jzy.model.vo.EmailVerifyCodeSession;
+import com.jzy.service.ImportantLogService;
+import com.jzy.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -21,8 +23,14 @@ import javax.servlet.http.HttpServletResponse;
  * @description 邮箱验证码校验拦截器
  * @date 2019/10/11 12:45
  **/
-public class EmailVerifyCodeInterceptor extends AbstractLogger implements HandlerInterceptor {
+public class EmailVerifyCodeInterceptor implements HandlerInterceptor {
     private final static Logger logger = LogManager.getLogger(EmailVerifyCodeInterceptor.class);
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ImportantLogService importantLogService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -30,7 +38,7 @@ public class EmailVerifyCodeInterceptor extends AbstractLogger implements Handle
         if (!emailVerifyCodeSession.isAuth()) {
             String msg = "邮箱验证码校验出错，疑似绕过验证码攻击";
             logger.error(msg);
-            saveLogToDatebase(msg, LogLevelEnum.ERROR, userService.getSessionUserInfo(), ShiroUtils.getClientIpAddress(request));
+            importantLogService.saveImportantLog(msg, LogLevelEnum.ERROR, userService.getSessionUserInfo(), ShiroUtils.getClientIpAddress(request));
             return false;
         } else {
             return true;

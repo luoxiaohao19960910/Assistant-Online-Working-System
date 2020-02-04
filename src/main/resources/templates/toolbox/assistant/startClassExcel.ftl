@@ -224,6 +224,21 @@
         });
 
         $("#campus").val('${classCampus!""}');
+        $("#classroom").empty();
+        $("#classroom").append('<option value="">请选择教室</option>');
+        var campus_name = $("#campus").val();
+        $.ajax({
+            type: "get",
+            data: {campusName: campus_name},
+            url: "${ctx}/class/listClassroomsByCampus",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var json = data[i];
+                    $("#classroom").append('<option value="' + json + '">' + json + '</option>');
+                }
+                form.render('select');
+            }
+        });
         $("#classId").val('${classId!""}');
 
         form.render();

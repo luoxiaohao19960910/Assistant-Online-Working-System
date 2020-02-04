@@ -6,8 +6,8 @@ import com.jzy.manager.exception.ExcelTooManyRowsException;
 import com.jzy.manager.exception.InvalidFileTypeException;
 import com.jzy.model.excel.AbstractInputExcel;
 import com.jzy.model.excel.ExcelVersionEnum;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -22,8 +22,7 @@ import java.util.List;
  * @description 单独用来制作座位表的用户手动上传的文件
  * @date 2019/10/30 12:49
  **/
-@EqualsAndHashCode(callSuper = true)
-@Data
+@ToString(callSuper = true)
 public class StudentListForSeatTableUploadByUserExcel extends AbstractInputExcel {
     private static final long serialVersionUID = 7525649970044104312L;
 
@@ -38,6 +37,7 @@ public class StudentListForSeatTableUploadByUserExcel extends AbstractInputExcel
     /**
      * 按顺序存储学员姓名列中的元素，该顺序将于座位表的先后顺序对应
      */
+    @Getter
     private List<String> studentNames = new ArrayList<>();
 
     /**
