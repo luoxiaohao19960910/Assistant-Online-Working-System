@@ -244,7 +244,7 @@ public class TeacherServiceImpl extends AbstractServiceImpl implements TeacherSe
             return FAILURE;
         }
 
-        if (!StringUtils.isEmpty(teacher.getTeacherWorkId())) {
+        if (StringUtils.isNotEmpty(teacher.getTeacherWorkId())) {
             //新工号不为空
             if (isModifiedAndRepeatedTeacherWorkId(originalTeacher, teacher)) {
                 //工号修改过了，判断是否与已存在的工号冲突

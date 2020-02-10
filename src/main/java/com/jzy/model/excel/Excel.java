@@ -679,7 +679,7 @@ public abstract class Excel implements Serializable, Resettable, ExcelValidity {
      * @throws IOException
      */
     public void submitWrite() throws IOException {
-        if (!StringUtils.isEmpty(inputFilePath)) {
+        if (StringUtils.isNotEmpty(inputFilePath)) {
             os = new FileOutputStream(new File(inputFilePath));
             submitWrite(os);
         } else {

@@ -167,7 +167,7 @@ public class UserMessageServiceImpl extends AbstractServiceImpl implements UserM
     private UserMessage dealWithInsertingUserMessagePicture(UserMessage userMessage) {
         if (!userMessage.isWelcomePicture()) {
             //如果不是欢迎图片，就要做重命名
-            if (!StringUtils.isEmpty(userMessage.getMessagePicture())) {
+            if (StringUtils.isNotEmpty(userMessage.getMessagePicture())) {
                 //如果用户上传了新图片
                 renameUserMessagePicture(userMessage);
             } else {
@@ -187,7 +187,7 @@ public class UserMessageServiceImpl extends AbstractServiceImpl implements UserM
     private void deleteUserMessagePicture(UserMessage userMessage) {
         if (!userMessage.isWelcomePicture()) {
             //不是欢迎图片
-            if (!StringUtils.isEmpty(userMessage.getMessagePicture())) {
+            if (StringUtils.isNotEmpty(userMessage.getMessagePicture())) {
                 FileUtils.deleteFile(filePathProperties.getUserMessagePictureDirectory() + userMessage.getMessagePicture());
             }
         }
@@ -269,7 +269,7 @@ public class UserMessageServiceImpl extends AbstractServiceImpl implements UserM
     private List<UserMessage> dealWithUserMessagesPicturesByCopyingAndDelete(List<UserMessage> userMessages) throws Exception {
         String originalFile = "";
         for (UserMessage message : userMessages) {
-            if (!StringUtils.isEmpty(message.getMessagePicture())) {
+            if (StringUtils.isNotEmpty(message.getMessagePicture())) {
                 //如果用户上传了新图片
                 //将上传的新图片文件重名为含日期时间的newUserIconName，该新文件名用来保存到数据库
                 originalFile = message.getMessagePicture();
@@ -283,7 +283,7 @@ public class UserMessageServiceImpl extends AbstractServiceImpl implements UserM
         }
 
         //删除原来上传的文件
-        if (!StringUtils.isEmpty(originalFile)) {
+        if (StringUtils.isNotEmpty(originalFile)) {
             FileUtils.deleteFile(filePathProperties.getUserMessagePictureDirectory() + originalFile);
         }
 

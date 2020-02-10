@@ -28,7 +28,7 @@ public class RoleAndPermissionUtils {
     }
 
     public static boolean isValidPerm(String perm) {
-        return !StringUtils.isEmpty(perm) && perm.length() <= 100;
+        return StringUtils.isNotEmpty(perm) && perm.length() <= 100;
     }
 
     public static boolean isValidRemark(String remark) {

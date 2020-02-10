@@ -65,7 +65,7 @@ public class ClassServiceImpl extends AbstractServiceImpl implements ClassServic
             throw new InvalidParameterException("输入对象不能为空");
         }
 
-        if (!StringUtils.isEmpty(classDetailedDto.getTeacherName())) {
+        if (StringUtils.isNotEmpty(classDetailedDto.getTeacherName())) {
             //修改后的教师姓名不为空
             if (teacherService.getTeacherByName(classDetailedDto.getTeacherName()) == null) {
                 //修改后的教师姓名不存在
@@ -81,7 +81,7 @@ public class ClassServiceImpl extends AbstractServiceImpl implements ClassServic
             throw new InvalidParameterException("输入对象不能为空");
         }
 
-        if (!StringUtils.isEmpty(classDetailedDto.getAssistantName())) {
+        if (StringUtils.isNotEmpty(classDetailedDto.getAssistantName())) {
             //修改后的助教姓名不为空
             if (assistantService.getAssistantByName(classDetailedDto.getAssistantName()) == null) {
                 //修改后的助教姓名不存在
@@ -263,7 +263,7 @@ public class ClassServiceImpl extends AbstractServiceImpl implements ClassServic
         current.setClassSubSeason(classSeason.getClassSubSeason());
 
         for (ClassDetailedDto classDetailedDto : classDetailedDtos) {
-            if (!StringUtils.isEmpty(classDetailedDto.getClassYear())) {
+            if (StringUtils.isNotEmpty(classDetailedDto.getClassYear())) {
                 classDetailedDto.setParsedClassYear();
             }
 

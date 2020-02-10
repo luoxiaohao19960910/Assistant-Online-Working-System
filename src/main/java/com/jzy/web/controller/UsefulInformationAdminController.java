@@ -53,7 +53,7 @@ public class UsefulInformationAdminController extends AbstractController {
     @RequestMapping("/getByBelongTo")
     @ResponseBody
     public List<UsefulInformation> getByBelongTo(@RequestParam(value = "belongTo", required = false) String belongTo, HttpServletRequest request) {
-        if (!StringUtils.isEmpty(belongTo) && !UsefulInformationUtils.isValidBelongTo(belongTo)) {
+        if (StringUtils.isNotEmpty(belongTo) && !UsefulInformationUtils.isValidBelongTo(belongTo)) {
             String msg = "查询常用信息getByBelongTo方法belongTo入参错误";
             logger.error(msg);
             importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
@@ -161,7 +161,7 @@ public class UsefulInformationAdminController extends AbstractController {
     public Map<String, Object> getRecommendedSequence(@RequestParam(value = "belongTo", required = false) String belongTo, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
-        if (!StringUtils.isEmpty(belongTo) && !UsefulInformationUtils.isValidBelongTo(belongTo)) {
+        if (StringUtils.isNotEmpty(belongTo) && !UsefulInformationUtils.isValidBelongTo(belongTo)) {
             String msg = "getRecommendedSequence方法belongTo入参错误";
             logger.error(msg);
             importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));

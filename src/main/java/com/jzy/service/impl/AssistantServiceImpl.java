@@ -140,7 +140,7 @@ public class AssistantServiceImpl extends AbstractServiceImpl implements Assista
             return FAILURE;
         }
 
-        if (!StringUtils.isEmpty(assistant.getAssistantWorkId())) {
+        if (StringUtils.isNotEmpty(assistant.getAssistantWorkId())) {
             //新工号不为空
             if (isModifiedAndRepeatedAssistantWorkId(originalAssistant, assistant)) {
                 return WORK_ID_REPEAT;

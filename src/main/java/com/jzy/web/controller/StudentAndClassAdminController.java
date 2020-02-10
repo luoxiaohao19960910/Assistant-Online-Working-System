@@ -56,7 +56,7 @@ public class StudentAndClassAdminController extends AbstractController {
         model.addAttribute(ModelConstants.CLASS_ID_MODEL_KEY, clazz.getClassId());
 
         ClassSeasonDto currentClassSeason = classService.getCurrentClassSeason();
-        if (!StringUtils.isEmpty(clazz.getClassId())) {
+        if (StringUtils.isNotEmpty(clazz.getClassId())) {
             //如果是从'查看该班学生'跳转而来的，手动将指定班级的'年份-季度-分期'set好
             currentClassSeason.setClassYear(clazz.getClassYear());
             currentClassSeason.setClassSeason(clazz.getClassSeason());

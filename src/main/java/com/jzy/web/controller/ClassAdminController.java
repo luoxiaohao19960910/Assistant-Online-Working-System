@@ -142,16 +142,16 @@ public class ClassAdminController extends AbstractController {
             List<ClassDetailedDto> classDetailedDtos = excel.getClassDetailedDtos();
             for (ClassDetailedDto classDetailedDto : classDetailedDtos) {
                 classDetailedDto.setClassYear(clazz.getClassYear());
-                if (!StringUtils.isEmpty(clazz.getClassSeason())) {
+                if (StringUtils.isNotEmpty(clazz.getClassSeason())) {
                     classDetailedDto.setClassSeason(clazz.getClassSeason());
                 }
-                if (!StringUtils.isEmpty(clazz.getClassSubSeason())) {
+                if (StringUtils.isNotEmpty(clazz.getClassSubSeason())) {
                     classDetailedDto.setClassSubSeason(clazz.getClassSubSeason());
                 }
 
                 if (!parseClassIdChecked) {
                     //未开启自动解析
-                    if (!StringUtils.isEmpty(clazz.getClassCampus())) {
+                    if (StringUtils.isNotEmpty(clazz.getClassCampus())) {
                         classDetailedDto.setClassCampus(clazz.getClassCampus());
                     }
                 }
@@ -220,7 +220,7 @@ public class ClassAdminController extends AbstractController {
      */
     private void sendMessageToUser(Class clazz) throws Exception {
         String campus = clazz.getClassCampus();
-        if (!StringUtils.isEmpty(campus)) {
+        if (StringUtils.isNotEmpty(campus)) {
             ClassSeasonDto classSeasonDto = new ClassSeasonDto(clazz.getClassYear(), clazz.getClassSeason(), clazz.getClassSubSeason());
             List<Assistant> assistants = assistantService.listAssistantsByClassSeasonAndCampus(classSeasonDto, campus);
             List<Long> userIds = new ArrayList<>();

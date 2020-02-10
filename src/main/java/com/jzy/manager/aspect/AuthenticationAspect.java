@@ -33,8 +33,7 @@ public class AuthenticationAspect extends AbstractLogger {
     @AfterReturning(returning = "map", pointcut = "loginTestPoints()")
     public void afterLoginTest(JoinPoint jp, Map<String, Object> map) {
         Object data = map.get("data");
-        //原ajax返回的登录成功与否信息描述
-        String returnMsg = "";
+        //原ajax返回的登录成功与否
         boolean isLogin = false;
         //判断原方法是否返回success，即是否登录成功
         if (data instanceof String) {

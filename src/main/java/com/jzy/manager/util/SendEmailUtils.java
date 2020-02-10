@@ -204,7 +204,7 @@ public class SendEmailUtils {
 
         @Override
         public void run() {
-            if (!StringUtils.isEmpty(addressTo)) {
+            if (StringUtils.isNotEmpty(addressTo)) {
                 SendEmailUtils.sendEncryptedEmail(addressTo, subject, message);
             }
         }
@@ -253,7 +253,7 @@ public class SendEmailUtils {
 
         @Override
         public void run() {
-            if (!StringUtils.isEmpty(addressTo)) {
+            if (StringUtils.isNotEmpty(addressTo)) {
                 SendEmailUtils.sendMail(addressTo, subject, message);
             }
         }

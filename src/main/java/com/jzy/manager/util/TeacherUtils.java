@@ -21,7 +21,7 @@ public class TeacherUtils {
     }
 
     public static boolean isValidTeacherName(String teacherName) {
-        return !StringUtils.isEmpty(teacherName) && teacherName.length() <= 50;
+        return StringUtils.isNotEmpty(teacherName) && teacherName.length() <= 50;
     }
 
     public static boolean isValidTeacherSex(String teacherSex) {

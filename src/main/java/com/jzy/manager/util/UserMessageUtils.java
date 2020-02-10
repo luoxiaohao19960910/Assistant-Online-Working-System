@@ -26,11 +26,11 @@ public class UserMessageUtils {
     }
 
     public static boolean isValidMessageTitle(String messageTitle) {
-        return !StringUtils.isEmpty(messageTitle) && messageTitle.length() <= 100;
+        return StringUtils.isNotEmpty(messageTitle) && messageTitle.length() <= 100;
     }
 
     public static boolean isValidMessageContent(String messageContent) {
-        return !StringUtils.isEmpty(messageContent) && messageContent.length() <= 1000;
+        return StringUtils.isNotEmpty(messageContent) && messageContent.length() <= 1000;
     }
 
     public static boolean isValidMessagePicture(String messagePicture) {

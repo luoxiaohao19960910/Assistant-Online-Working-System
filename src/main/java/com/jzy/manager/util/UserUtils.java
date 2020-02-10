@@ -45,7 +45,7 @@ public class UserUtils {
     }
 
     public static boolean isValidUserRealName(String userRealName) {
-        return !StringUtils.isEmpty(userRealName) && userRealName.length() <= 50;
+        return StringUtils.isNotEmpty(userRealName) && userRealName.length() <= 50;
     }
 
     public static boolean isValidUserRole(String userRole) {

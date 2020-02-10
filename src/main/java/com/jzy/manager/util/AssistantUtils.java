@@ -22,7 +22,7 @@ public class AssistantUtils {
     }
 
     public static boolean isValidAssistantName(String assistantName) {
-        return !StringUtils.isEmpty(assistantName) && assistantName.length() <= 50;
+        return StringUtils.isNotEmpty(assistantName) && assistantName.length() <= 50;
     }
 
     public static boolean isValidAssistantSex(String assistantSex) {

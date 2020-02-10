@@ -20,11 +20,6 @@ public class QuestionUtils {
     }
 
     /**
-     * 永真答案
-     */
-    private static final String ALWAYS_TRUE_ANSWER = Question.ALWAYS_TRUE_ANSWER;
-
-    /**
      * 问题总数
      */
     private static final int QUESTION_COUNT = 4;
@@ -113,7 +108,7 @@ public class QuestionUtils {
      * @return
      */
     public static boolean isAlwaysTrueAnswer(String inputAnswer) {
-        return ALWAYS_TRUE_ANSWER.equals(inputAnswer);
+        return Question.ALWAYS_TRUE_ANSWER.equals(inputAnswer);
     }
 
     /**
@@ -143,9 +138,10 @@ public class QuestionUtils {
         return false;
     }
 
+    //==============================================================//
 
     public static boolean isValidContent(String content) {
-        return !StringUtils.isEmpty(content) && content.length() <= 500;
+        return StringUtils.isNotEmpty(content) && content.length() <= 500;
     }
 
     /**
@@ -159,7 +155,7 @@ public class QuestionUtils {
     }
 
     public static boolean isValidAnswer(String answer) {
-        return !StringUtils.isEmpty(answer) && answer.length() <= 100;
+        return StringUtils.isNotEmpty(answer) && answer.length() <= 100;
     }
 
     public static boolean isValidAnswer2(String answer2) {

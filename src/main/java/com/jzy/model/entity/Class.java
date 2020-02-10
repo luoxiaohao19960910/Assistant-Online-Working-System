@@ -174,7 +174,7 @@ public class Class extends BaseEntity {
      * @return
      */
     public static String parseYear(String year) {
-        if (!StringUtils.isEmpty(year)) {
+        if (StringUtils.isNotEmpty(year)) {
             int idx = year.indexOf('-');
             if (idx >= 0) {
                 String parsedYear = year.substring(0, year.indexOf('-'));
@@ -191,7 +191,7 @@ public class Class extends BaseEntity {
      */
     public void setParsedClassId(String classId) {
         this.classId = classId;
-        if (StringUtils.isEmpty(classId) || classId.length() < 12) {
+        if (StringUtils.isEmpty(classId) || classId.length() != 12) {
             //不符合新东方2019年编码规范，不解析，直接常规setClassId
             return;
         } else {

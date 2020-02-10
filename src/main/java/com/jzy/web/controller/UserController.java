@@ -62,7 +62,7 @@ public class UserController extends AbstractController {
     @RequestMapping("/setEmail")
     public String setEmail() {
         User user = userService.getSessionUserInfo();
-        if (!StringUtils.isEmpty(user.getUserEmail())) {
+        if (StringUtils.isNotEmpty(user.getUserEmail())) {
             //已绑定
             return "user/set/modifyCurrentEmail";
         }
@@ -316,12 +316,13 @@ public class UserController extends AbstractController {
      */
     @RequestMapping("/modifyCurrentPhone")
     @ResponseBody
-    public Map<String, Object> modifyCurrentPhone(@RequestParam("newPhone") String userNewPhone) {
+    public Map<String, Object> modifyCurrentPhone(@RequestParam("newPhone") String userNewPhone, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!UserUtils.isValidUserPhone(userNewPhone)) {
             String msg = "modifyCurrentPhone方法错误入参";
             logger.error(msg);
+            importantLogService.saveImportantLogBySessionUser(msg, LogLevelEnum.ERROR, ShiroUtils.getClientIpAddress(request));
             throw new InvalidPhoneException(msg);
         }
         User userInfoSession = userService.getSessionUserInfo();

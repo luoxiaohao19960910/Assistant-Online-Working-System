@@ -76,7 +76,7 @@ public class HomeController extends AbstractController {
         }
 
 
-        if (!StringUtils.isEmpty(problemCollection.getContent())) {
+        if (StringUtils.isNotEmpty(problemCollection.getContent())) {
             String msgToSend = problemCollection.getContent() + "\n\n姓名: " + problemCollection.getRealName() + "\n邮箱: " + problemCollection.getEmail();
 
             SendEmailUtils.sendConcurrentEncryptedEmail(SendEmailUtils.FROM, problemCollection.getTitle(), msgToSend);

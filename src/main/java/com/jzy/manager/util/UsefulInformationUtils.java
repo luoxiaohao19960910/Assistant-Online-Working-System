@@ -32,11 +32,11 @@ public class UsefulInformationUtils {
     private static final long SEQUENCE_INTERVAL = UsefulInformation.DEFAULT_SEQUENCE_INTERVAL;
 
     public static boolean isValidTitle(String title) {
-        return !StringUtils.isEmpty(title) && title.length() <= 100;
+        return StringUtils.isNotEmpty(title) && title.length() <= 100;
     }
 
     public static boolean isValidContent(String content) {
-        return !StringUtils.isEmpty(content) && content.length() <= 200;
+        return StringUtils.isNotEmpty(content) && content.length() <= 200;
     }
 
     public static boolean isValidImage(String image) {
@@ -44,7 +44,7 @@ public class UsefulInformationUtils {
     }
 
     public static boolean isValidBelongTo(String belongTo) {
-        return !StringUtils.isEmpty(belongTo) && (DEFAULT_BELONG_TO.equals(belongTo) || CampusEnum.hasCampusName(belongTo))
+        return StringUtils.isNotEmpty(belongTo) && (DEFAULT_BELONG_TO.equals(belongTo) || CampusEnum.hasCampusName(belongTo))
                 && belongTo.length() <= 50;
     }
 

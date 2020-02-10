@@ -17,7 +17,7 @@ public class StudentUtils {
     }
 
     public static boolean isValidStudentId(String studentId) {
-        return !StringUtils.isEmpty(studentId) && studentId.length() <= 32;
+        return StringUtils.isNotEmpty(studentId) && studentId.length() <= 32;
     }
 
     public static boolean isValidStudentName(String studentName) {

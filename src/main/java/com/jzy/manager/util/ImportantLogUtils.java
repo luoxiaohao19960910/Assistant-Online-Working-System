@@ -15,7 +15,7 @@ public class ImportantLogUtils {
     }
 
     public static boolean isValidLogMessage(String message) {
-        return !StringUtils.isEmpty(message) && message.length() <= 1000;
+        return StringUtils.isNotEmpty(message) && message.length() <= 1000;
     }
 
     public static boolean isValidLogLevel(String level) {

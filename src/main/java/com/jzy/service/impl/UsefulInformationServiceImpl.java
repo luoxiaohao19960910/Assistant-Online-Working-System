@@ -225,7 +225,7 @@ public class UsefulInformationServiceImpl extends AbstractServiceImpl implements
      * @param newInformation      更新后的常用信息
      */
     private void dealWithUpdatingUsefulInformationImage(UsefulInformation originalInformation, UsefulInformation newInformation) {
-        if (!StringUtils.isEmpty(newInformation.getImage())) {
+        if (StringUtils.isNotEmpty(newInformation.getImage())) {
             //如果用户上传了新配图
             //删除原信息配图
             deleteInformationImage(originalInformation);
@@ -243,7 +243,7 @@ public class UsefulInformationServiceImpl extends AbstractServiceImpl implements
      * @param information 要更新的信息
      */
     private void deleteInformationImage(UsefulInformation information) {
-        if (!StringUtils.isEmpty(information.getImage())) {
+        if (StringUtils.isNotEmpty(information.getImage())) {
             if (!information.isDefaultImage()) {
                 //如果原来的配图不是默认配图，需要将原来的配图删除
                 FileUtils.deleteFile(filePathProperties.getUsefulInformationImageDirectory() + information.getImage());
@@ -293,7 +293,7 @@ public class UsefulInformationServiceImpl extends AbstractServiceImpl implements
      * @param information 插入的常用信息
      */
     private void dealWithInsertingUsefulInformationImage(UsefulInformation information) {
-        if (!StringUtils.isEmpty(information.getImage())) {
+        if (StringUtils.isNotEmpty(information.getImage())) {
             //如果用户上传了新配图
             renameInformationImage(information);
         } else {

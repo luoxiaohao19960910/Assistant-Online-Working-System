@@ -13,10 +13,11 @@ import org.apache.commons.lang3.StringUtils;
  * @date 2019/12/5 18:26
  **/
 public class CampusAndClassroomUtils {
-    private CampusAndClassroomUtils(){}
+    private CampusAndClassroomUtils() {
+    }
 
     public static boolean isValidCampus(String campus) {
-        return !StringUtils.isEmpty(campus) && CampusEnum.hasCampusName(campus) && campus.length() <= 20;
+        return StringUtils.isNotEmpty(campus) && CampusEnum.hasCampusName(campus) && campus.length() <= 20;
     }
 
     /**
@@ -27,18 +28,18 @@ public class CampusAndClassroomUtils {
      * @return
      */
     public static boolean isValidClassroom(String classroom) {
-        boolean base=!StringUtils.isEmpty(classroom) && classroom.length() <= 10;
-        if (!base){
+        boolean base = StringUtils.isNotEmpty(classroom) && classroom.length() <= 10;
+        if (!base) {
             return false;
         }
 
-        if (StringUtils.isNumeric(classroom)){
+        if (StringUtils.isNumeric(classroom)) {
             return true;
         }
 
-        if (MyStringUtils.isLetter(classroom.charAt(classroom.length()-1))){
+        if (MyStringUtils.isLetter(classroom.charAt(classroom.length() - 1))) {
             //最后一个是字母
-            if (StringUtils.isNumeric(classroom.substring(0, classroom.length()-1))){
+            if (StringUtils.isNumeric(classroom.substring(0, classroom.length() - 1))) {
                 return true;
             }
         }
@@ -61,7 +62,7 @@ public class CampusAndClassroomUtils {
      */
     public static boolean isValidCampusAndClassroomInfo(CampusAndClassroom campusAndClassroom) {
         return campusAndClassroom != null && isValidCampus(campusAndClassroom.getCampus()) && isValidClassroom(campusAndClassroom.getClassroom())
-               && isValidClassroomCapacity(campusAndClassroom.getClassroomCapacity()) && isValidRemark(campusAndClassroom.getRemark());
+                && isValidClassroomCapacity(campusAndClassroom.getClassroomCapacity()) && isValidRemark(campusAndClassroom.getRemark());
     }
 
     /**

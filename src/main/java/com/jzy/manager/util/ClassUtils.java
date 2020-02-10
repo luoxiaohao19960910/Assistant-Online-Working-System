@@ -19,7 +19,7 @@ public class ClassUtils {
 
 
     public static boolean isValidClassId(String classId) {
-        return !StringUtils.isEmpty(classId) && classId.length() <= 32;
+        return StringUtils.isNotEmpty(classId) && classId.length() <= 32;
     }
 
     public static boolean isValidClassName(String className) {

@@ -37,7 +37,7 @@ public class RedisOperationImpl implements RedisOperation {
 
     @Override
     public void expireKey(String key) {
-        if (!StringUtils.isEmpty(key)) {
+        if (StringUtils.isNotEmpty(key)) {
             redisTemplate.expire(key, 0, TimeUnit.SECONDS);
         }
     }

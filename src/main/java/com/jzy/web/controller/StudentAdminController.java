@@ -260,7 +260,7 @@ public class StudentAdminController extends AbstractController {
         if (clazz != null) {
             clazz.setParsedClassYear();
             String campus = clazz.getClassCampus();
-            if (!StringUtils.isEmpty(campus)) {
+            if (StringUtils.isNotEmpty(campus)) {
                 ClassSeasonDto classSeasonDto = new ClassSeasonDto(clazz.getClassYear(), clazz.getClassSeason(), clazz.getClassSubSeason());
                 List<Assistant> assistants = assistantService.listAssistantsByClassSeasonAndCampus(classSeasonDto, campus);
                 List<Long> userIds = new ArrayList<>();

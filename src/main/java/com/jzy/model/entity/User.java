@@ -96,10 +96,10 @@ public class User extends BaseEntity {
         this.setUserSalt(uuid);
         if (StringUtils.isEmpty(this.getUserPassword())) {
             //若密码为空
-            if (!StringUtils.isEmpty(this.getUserIdCard())) {
+            if (StringUtils.isNotEmpty(this.getUserIdCard())) {
                 //若身份证不为空,默认密码设为身份证
                 this.setUserPassword(ShiroUtils.encryptUserPassword(this.getUserIdCard(), uuid));
-            } else if (!StringUtils.isEmpty(this.getUserPhone())) {
+            } else if (StringUtils.isNotEmpty(this.getUserPhone())) {
                 //若手机号不为空,默认密码设为手机号
                 this.setUserPassword(ShiroUtils.encryptUserPassword(this.getUserPhone(), uuid));
             } else {

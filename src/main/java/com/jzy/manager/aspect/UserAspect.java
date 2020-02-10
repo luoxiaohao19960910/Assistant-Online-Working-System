@@ -69,7 +69,7 @@ public class UserAspect extends AbstractLogger {
     public void uploadUserIconLog(JoinPoint jp, Map<String, Object> map) {
         Map map2 = (Map) map.get("data");
         String fileName = (String) map2.get("src");
-        if (!StringUtils.isEmpty(fileName)) {
+        if (StringUtils.isNotEmpty(fileName)) {
             User user = userService.getSessionUserInfo();
             if (user != null) {
                 String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")上传了头像。头像文件名：" + fileName;

@@ -643,11 +643,11 @@ public class ToolboxController extends AbstractController {
      */
     private void sendEmailToOriginalAndCurrentClassAssistant(UserWithMessage originalUserWithMessage, UserWithMessage currentUserWithMessage) {
         String title = "AOWS-重要提醒";
-        if (originalUserWithMessage != null && originalUserWithMessage.getUser() != null && !StringUtils.isEmpty(originalUserWithMessage.getUser().getUserEmail())) {
+        if (originalUserWithMessage != null && originalUserWithMessage.getUser() != null && StringUtils.isNotEmpty(originalUserWithMessage.getUser().getUserEmail())) {
             String content1 = originalUserWithMessage.getMessage() + "\n前往查看详情" + Constants.INDEX + "。";
             SendEmailUtils.sendConcurrentEncryptedEmail(originalUserWithMessage.getUser().getUserEmail(), title, content1);
         }
-        if (currentUserWithMessage != null && currentUserWithMessage.getUser() != null && !StringUtils.isEmpty(currentUserWithMessage.getUser().getUserEmail())) {
+        if (currentUserWithMessage != null && currentUserWithMessage.getUser() != null && StringUtils.isNotEmpty(currentUserWithMessage.getUser().getUserEmail())) {
             String content2 = currentUserWithMessage.getMessage() + "\n前往查看详情" + Constants.INDEX + "。";
             SendEmailUtils.sendConcurrentEncryptedEmail(currentUserWithMessage.getUser().getUserEmail(), title, content2);
         }

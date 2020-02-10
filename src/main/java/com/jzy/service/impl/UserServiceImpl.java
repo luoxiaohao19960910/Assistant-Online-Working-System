@@ -298,7 +298,7 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
             return FAILURE;
         }
 
-        if (!StringUtils.isEmpty(user.getUserIdCard())) {
+        if (StringUtils.isNotEmpty(user.getUserIdCard())) {
             //新身份证不为空
             if (isModifiedAndRepeatedUserIdCard(originalUser, user)) {
                 //身份证修改过了，判断是否与已存在的身份证冲突
@@ -334,7 +334,7 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
      * @param newUser      更新后的用户信息
      */
     private void dealWithUpdatingUserIcon(User originalUser, User newUser) {
-        if (!StringUtils.isEmpty(newUser.getUserIcon())) {
+        if (StringUtils.isNotEmpty(newUser.getUserIcon())) {
             //如果用户上传了新头像
             //删除原头像，如果有的话
             deleteUserIcon(originalUser);
@@ -352,7 +352,7 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
      * @param user 指定的用户
      */
     private void deleteUserIcon(User user) {
-        if (!StringUtils.isEmpty(user.getUserIcon())) {
+        if (StringUtils.isNotEmpty(user.getUserIcon())) {
             if (!user.isDefaultUserIcon()) {
                 //如果用户原来的头像不是默认头像，需要将原来的头像删除
                 FileUtils.deleteFile(filePathProperties.getUploadUserIconPath() + user.getUserIcon());
@@ -468,7 +468,7 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
             return FAILURE;
         }
 
-        if (!StringUtils.isEmpty(user.getUserWorkId())) {
+        if (StringUtils.isNotEmpty(user.getUserWorkId())) {
             //新工号不为空
             if (isModifiedAndRepeatedUserWorkId(originalUser, user)) {
                 //工号修改过了，判断是否与已存在的工号冲突
@@ -479,7 +479,7 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
             user.setUserWorkId(null);
         }
 
-        if (!StringUtils.isEmpty(user.getUserIdCard())) {
+        if (StringUtils.isNotEmpty(user.getUserIdCard())) {
             //新身份证不为空
             if (isModifiedAndRepeatedUserIdCard(originalUser, user)) {
                 //身份证修改过了，判断是否与已存在的身份证冲突
@@ -494,7 +494,7 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
             return NAME_REPEAT;
         }
 
-        if (!StringUtils.isEmpty(user.getUserEmail())) {
+        if (StringUtils.isNotEmpty(user.getUserEmail())) {
             //新邮箱不为空
             if (isModifiedAndRepeatedUserEmail(originalUser, user)) {
                 //邮箱修改过了，判断是否与已存在的邮箱冲突
@@ -504,7 +504,7 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
             user.setUserEmail(null);
         }
 
-        if (!StringUtils.isEmpty(user.getUserPhone())) {
+        if (StringUtils.isNotEmpty(user.getUserPhone())) {
             //新手机不为空
             if (isModifiedAndRepeatedUserPhone(originalUser, user)) {
                 //电话修改过了，判断是否与已存在的电话冲突
@@ -604,7 +604,7 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
         if (user == null) {
             return new UpdateResult(FAILURE);
         }
-        if (!StringUtils.isEmpty(user.getUserWorkId())) {
+        if (StringUtils.isNotEmpty(user.getUserWorkId())) {
             //新工号不为空
             if (isRepeatedUserWorkId(user)) {
                 //添加的工号已存在
@@ -632,7 +632,7 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
         if (user == null) {
             return new UpdateResult(FAILURE);
         }
-        if (!StringUtils.isEmpty(user.getUserIdCard())) {
+        if (StringUtils.isNotEmpty(user.getUserIdCard())) {
             //新身份证不为空
             if (isRepeatedUserIdCard(user)) {
                 //添加的身份证已存在
@@ -648,7 +648,7 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
             return new UpdateResult(NAME_REPEAT);
         }
 
-        if (!StringUtils.isEmpty(user.getUserEmail())) {
+        if (StringUtils.isNotEmpty(user.getUserEmail())) {
             //新邮箱不为空
             if (isRepeatedUserEmail(user)) {
                 //添加的邮箱已存在
@@ -658,7 +658,7 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
             user.setUserEmail(null);
         }
 
-        if (!StringUtils.isEmpty(user.getUserPhone())) {
+        if (StringUtils.isNotEmpty(user.getUserPhone())) {
             //新手机不为空
             if (isRepeatedUserPhone(user)) {
                 //添加的电话已存在
@@ -824,7 +824,7 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
             return FAILURE;
         }
 
-        if (!StringUtils.isEmpty(newUser.getUserIdCard())) {
+        if (StringUtils.isNotEmpty(newUser.getUserIdCard())) {
             //新身份证不为空
             if (isModifiedAndRepeatedUserIdCard(originalUser, newUser)) {
                 //身份证修改过了，判断是否与已存在的身份证冲突
@@ -839,7 +839,7 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
             return NAME_REPEAT;
         }
 
-        if (!StringUtils.isEmpty(newUser.getUserEmail())) {
+        if (StringUtils.isNotEmpty(newUser.getUserEmail())) {
             //新邮箱不为空
             if (isModifiedAndRepeatedUserEmail(originalUser, newUser)) {
                 //邮箱修改过了，判断是否与已存在的邮箱冲突
@@ -849,7 +849,7 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
             newUser.setUserEmail(null);
         }
 
-        if (!StringUtils.isEmpty(newUser.getUserPhone())) {
+        if (StringUtils.isNotEmpty(newUser.getUserPhone())) {
             //新手机不为空
             if (isModifiedAndRepeatedUserPhone(originalUser, newUser)) {
                 //电话修改过了，判断是否与已存在的电话冲突

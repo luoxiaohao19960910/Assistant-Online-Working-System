@@ -6,7 +6,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -20,18 +19,38 @@ public class MyStringUtils {
     private MyStringUtils() {
     }
 
-    private static Pattern ipv6Pattern;
-    private static Pattern ipv4Pattern;
+    /**
+     * 用户名格式。6~20位(数字、字母、下划线)以字母开头
+     */
+    private static Pattern userNamePattern = Pattern.compile("^[a-zA-Z](\\w){5,19}$");
 
-    static {
-        // ipv6
-        ipv6Pattern = Pattern.compile("^((([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){1,7}:)|(([0-9A-Fa-f]{1,4}:){6}:[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){5}(:[0-9A-Fa-f]{1,4}){1,2})|(([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){1,3})|(([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){1,4})|(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){1,5})|([0-9A-Fa-f]{1,4}:(:[0-9A-Fa-f]{1,4}){1,6})|(:(:[0-9A-Fa-f]{1,4}){1,7})|(([0-9A-Fa-f]{1,4}:){6}(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3})|(([0-9A-Fa-f]{1,4}:){5}:(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3})|(([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){0,1}:(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3})|(([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){0,2}:(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3})|(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){0,3}:(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3})|([0-9A-Fa-f]{1,4}:(:[0-9A-Fa-f]{1,4}){0,4}:(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3})|(:(:[0-9A-Fa-f]{1,4}){0,5}:(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}))$");
-        // ipv4
-        ipv4Pattern = Pattern.compile("^(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}$");
-    }
+    /**
+     * 密码格式。6~20个字符(数字、字母、下划线)
+     */
+    private static Pattern passwordPattern = Pattern.compile("^(\\w){6,20}$");
 
-    public static boolean equalsIgnoreNullAndEmpty(final String s1, final String s2){
-        if (StringUtils.isEmpty(s1) && StringUtils.isEmpty(s2)){
+    /**
+     * 邮箱格式。
+     */
+    private static Pattern emailPattern = Pattern.compile("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$");
+
+    /**
+     * 手机格式。
+     */
+    private static Pattern phonePattern = Pattern.compile("^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$");
+
+    /**
+     * ipv6格式
+     */
+    private static Pattern ipv6Pattern = Pattern.compile("^((([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){1,7}:)|(([0-9A-Fa-f]{1,4}:){6}:[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){5}(:[0-9A-Fa-f]{1,4}){1,2})|(([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){1,3})|(([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){1,4})|(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){1,5})|([0-9A-Fa-f]{1,4}:(:[0-9A-Fa-f]{1,4}){1,6})|(:(:[0-9A-Fa-f]{1,4}){1,7})|(([0-9A-Fa-f]{1,4}:){6}(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3})|(([0-9A-Fa-f]{1,4}:){5}:(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3})|(([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){0,1}:(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3})|(([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){0,2}:(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3})|(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){0,3}:(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3})|([0-9A-Fa-f]{1,4}:(:[0-9A-Fa-f]{1,4}){0,4}:(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3})|(:(:[0-9A-Fa-f]{1,4}){0,5}:(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}))$");
+
+    /**
+     * ipv4格式
+     */
+    private static Pattern ipv4Pattern = Pattern.compile("^(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}$");
+
+    public static boolean equalsIgnoreNullAndEmpty(final String s1, final String s2) {
+        if (StringUtils.isEmpty(s1) && StringUtils.isEmpty(s2)) {
             return true;
         }
         return StringUtils.equals(s1, s2);
@@ -47,8 +66,7 @@ public class MyStringUtils {
         if (userName == null) {
             return false;
         }
-        final String regex = "^[a-zA-Z](\\w){5,19}$";
-        return userName.matches(regex);
+        return userNamePattern.matcher(userName).matches();
     }
 
     /**
@@ -61,8 +79,7 @@ public class MyStringUtils {
         if (password == null) {
             return false;
         }
-        final String regex = "^(\\w){6,20}$";
-        if (!password.matches(regex)) {
+        if (!passwordPattern.matcher(password).matches()) {
             return false;
         }
         if (isEmail(password)) {
@@ -84,8 +101,7 @@ public class MyStringUtils {
         if (email == null) {
             return false;
         }
-        final String emailRegex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
-        return email.matches(emailRegex);
+        return emailPattern.matcher(email).matches();
     }
 
     /**
@@ -105,17 +121,10 @@ public class MyStringUtils {
      * @return
      */
     public static boolean isPhone(String phone) {
-        if (phone == null) {
+        if (phone == null || phone.length() != 11) {
             return false;
         }
-        String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
-        if (phone.length() != 11) {
-            return false;
-        } else {
-            Pattern p = Pattern.compile(regex);
-            Matcher m = p.matcher(phone);
-            return m.matches();
-        }
+        return phonePattern.matcher(phone).matches();
     }
 
     /**
@@ -154,7 +163,7 @@ public class MyStringUtils {
         /**
          * 每位加权因子
          */
-        private static int power[] = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5,
+        private static int[] power = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5,
                 8, 4, 2};
 
         /**
@@ -530,12 +539,12 @@ public class MyStringUtils {
         int count = 0;
         char[] arr = string.toCharArray();
         for (int i = 0; i < arr.length; i++) {
-            if ('0' <= arr[i] && '9' >= arr[i]) {
+            if (isNumber(arr[i])) {
                 //当前的是数字
                 count = 1;//初始化计算器
                 int index = i;//在后面的循环存储截至索引
                 for (int j = i + 1; j < arr.length; j++) {
-                    if ('0' <= arr[j] && '9' >= arr[j]) {
+                    if (isNumber(arr[j])) {
                         count++;
                         index = j;
                     } else {
@@ -569,14 +578,14 @@ public class MyStringUtils {
 
         //最长数字子串下一个字符的index
         int nextCharIdx = string.indexOf(maxLenNumberStr) + maxLenNumberStr.length();
-        if (nextCharIdx >= string.length()){
+        if (nextCharIdx >= string.length()) {
             //最长数字子串已经是当前string的末尾
             return maxLenNumberStr;
         }
 
         char nextChar = string.charAt(nextCharIdx);
         if (isLetter(nextChar)) {
-//            下一个字符是字母的话
+            //下一个字符是字母的话
             result = maxLenNumberStr + nextChar;
         } else {
             result = maxLenNumberStr;
@@ -591,13 +600,18 @@ public class MyStringUtils {
      * @return
      */
     public static boolean isLetter(char c) {
-        if (((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))) {
-            return true;
-        } else {
-            return false;
-        }
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }
 
+    /**
+     * 判断一个字符是否为数字
+     *
+     * @param c 输入字符
+     * @return
+     */
+    public static boolean isNumber(char c) {
+        return c >= '0' && c <= '9';
+    }
 
     /**
      * 获得输入字串中有效的时间区间串，如输入："(具体以课表为准)周六8:15-10:45(11.2,11.9休息,11.3,11.4上课)"
@@ -630,12 +644,12 @@ public class MyStringUtils {
         }
 
         int start = 0, end = lastIdx + 3;
-        if (string.charAt(firstIdx - 1) - '0' >= 0 && string.charAt(firstIdx - 1) - '0' <= 9) {
+        if (isNumber(string.charAt(firstIdx - 1))) {
             //第一个冒号的前一位是数字
             if (firstIdx - 1 == 0) {
                 //如果第一个冒号前只有一位
                 start = firstIdx - 1;
-            } else if (string.charAt(firstIdx - 2) - '0' >= 0 && string.charAt(firstIdx - 2) - '0' <= 9) {
+            } else if (isNumber(string.charAt(firstIdx - 2))) {
                 //第一个冒号的前第二位是数字
                 start = firstIdx - 2;
             } else {
@@ -648,25 +662,12 @@ public class MyStringUtils {
     }
 
     /**
-     * 判断str子串是否可能是32位的uuid的形式
-     *
-     * @param str 输入字符串
-     * @return 是否可能是uuid
-     */
-    public static boolean isProbableUUID32(String str) {
-        if (str == null || str.length() != 32) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * 是否是合法的ip地址，ipv4或ipv6
      *
      * @param ip 输入地址
      * @return 是否合法
      */
-    public static boolean isIpAddress(String ip){
+    public static boolean isIpAddress(String ip) {
         return isIpv4Address(ip) || isIpv6Address(ip);
     }
 
@@ -676,7 +677,7 @@ public class MyStringUtils {
      * @param ip 输入地址
      * @return 是否合法
      */
-    public static boolean isIpv4Address(String ip){
+    public static boolean isIpv4Address(String ip) {
         if (ip == null) {
             return false;
         }
@@ -689,7 +690,7 @@ public class MyStringUtils {
      * @param ip 输入地址
      * @return 是否合法
      */
-    public static boolean isIpv6Address(String ip){
+    public static boolean isIpv6Address(String ip) {
         if (ip == null) {
             return false;
         }
@@ -698,6 +699,6 @@ public class MyStringUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(StringUtils.equals(null, ""));
+        System.out.println(isPhone("13681864361"));
     }
 }

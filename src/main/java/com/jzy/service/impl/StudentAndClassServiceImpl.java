@@ -272,7 +272,7 @@ public class StudentAndClassServiceImpl extends AbstractServiceImpl implements S
         List<StudentAndClassDetailedDto> studentAndClassDetailedDtos = studentAndClassMapper.listStudentAndClasses(condition);
         for (int i = 0; i < studentAndClassDetailedDtos.size(); i++) {
             StudentAndClassDetailedDto studentAndClassDetailedDto = studentAndClassDetailedDtos.get(i);
-            if (!StringUtils.isEmpty(studentAndClassDetailedDto.getClassYear())) {
+            if (StringUtils.isNotEmpty(studentAndClassDetailedDto.getClassYear())) {
                 studentAndClassDetailedDto.setClassYear(Class.parseYear(studentAndClassDetailedDto.getClassYear()));
                 studentAndClassDetailedDtos.set(i, studentAndClassDetailedDto);
             }
@@ -371,7 +371,7 @@ public class StudentAndClassServiceImpl extends AbstractServiceImpl implements S
                 if (MyStringUtils.equalsIgnoreNullAndEmpty(dto.getClassYear(), record.getClassYear())
                         && MyStringUtils.equalsIgnoreNullAndEmpty(dto.getClassSeason(), record.getClassSeason())
                         && MyStringUtils.equalsIgnoreNullAndEmpty(dto.getClassYear(), record.getClassYear())) {
-                    if (!StringUtils.isEmpty(record.getClassSubject())) {
+                    if (StringUtils.isNotEmpty(record.getClassSubject())) {
                         subjects.add(record.getClassSubject());
                     }
                 }
