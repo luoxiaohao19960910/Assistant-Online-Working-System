@@ -9,6 +9,7 @@ import com.jzy.model.dto.ClassSeasonDto;
 import com.jzy.model.entity.Class;
 import com.jzy.model.entity.User;
 import com.jzy.model.vo.Announcement;
+import com.jzy.model.vo.PayAnnouncement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -40,7 +41,7 @@ public class SystemController extends AbstractController {
      */
     @RequestMapping("/announcement")
     public String announcement(Model model) {
-        Announcement announcement = (Announcement) hashOps.get(RedisConstants.ANNOUNCEMENT_SYSTEM_KEY, Constants.BASE_ANNOUNCEMENT.toString());
+        Announcement announcement = (Announcement) hashOps.get(RedisConstants.ANNOUNCEMENT_KEY, Constants.BASE_ANNOUNCEMENT.toString());
         model.addAttribute(ModelConstants.ANNOUNCEMENT_EDIT_MODEL_KEY, announcement == null ? new Announcement() : announcement);
         return "system/announcement";
     }
@@ -66,18 +67,16 @@ public class SystemController extends AbstractController {
             announcement.setPermanent(true);
         }
         announcement.setRead(false);
-        announcement.parse();
-
 
         //推id为-2的公告，即缓存公告
-        hashOps.put(RedisConstants.ANNOUNCEMENT_SYSTEM_KEY, Constants.BASE_ANNOUNCEMENT.toString(), announcement);
+        hashOps.put(RedisConstants.ANNOUNCEMENT_KEY, Constants.BASE_ANNOUNCEMENT.toString(), announcement);
 
         //如果是永久有效的公告，读取的时候只要读id=-2的即可，所以不用对每个用户id都保存缓存。
         if (!announcement.isPermanent()) {
             //推游客的公告
-            hashOps.put(RedisConstants.ANNOUNCEMENT_SYSTEM_KEY, Constants.GUEST_ID.toString(), announcement);
+            hashOps.put(RedisConstants.ANNOUNCEMENT_KEY, Constants.GUEST_ID.toString(), announcement);
             for (User user : users) {
-                hashOps.put(RedisConstants.ANNOUNCEMENT_SYSTEM_KEY, user.getId().toString(), announcement);
+                hashOps.put(RedisConstants.ANNOUNCEMENT_KEY, user.getId().toString(), announcement);
             }
         }
 
@@ -97,9 +96,10 @@ public class SystemController extends AbstractController {
 
         List<User> users = userService.listAllUsers();
 
-        hashOps.delete(RedisConstants.ANNOUNCEMENT_SYSTEM_KEY, Constants.GUEST_ID.toString());
+        hashOps.delete(RedisConstants.ANNOUNCEMENT_KEY, Constants.GUEST_ID.toString());
+        hashOps.delete(RedisConstants.ANNOUNCEMENT_KEY, Constants.BASE_ANNOUNCEMENT.toString());
         for (User user : users) {
-            hashOps.delete(RedisConstants.ANNOUNCEMENT_SYSTEM_KEY, user.getId().toString());
+            hashOps.delete(RedisConstants.ANNOUNCEMENT_KEY, user.getId().toString());
         }
 
         map.put("data", SUCCESS);
@@ -153,4 +153,53 @@ public class SystemController extends AbstractController {
         map.put("data", SUCCESS);
         return map;
     }
+
+    /**
+     * 跳转支付公告推送，从缓存中取上次的公告添加到model
+     *
+     * @return
+     */
+    @RequestMapping("/payAnnouncement")
+    public String payAnnouncement(Model model) {
+        PayAnnouncement announcement = (PayAnnouncement) valueOps.get(RedisConstants.PAY_ANNOUNCEMENT_KEY);
+        model.addAttribute(ModelConstants.PAY_ANNOUNCEMENT_EDIT_MODEL_KEY, announcement == null ? new PayAnnouncement() : announcement);
+        return "system/payAnnouncement";
+    }
+
+    /**
+     * 发布支付推送。同时置所有用户的支付状态为未支付，即清除所有用户状态缓存。
+     *
+     * @param announcement 推送的信息
+     * @return
+     */
+    @RequestMapping("/pushPayAnnouncement")
+    @ResponseBody
+    public Map<String, Object> pushPayAnnouncement(PayAnnouncement announcement) {
+        Map<String, Object> map = new HashMap<>(1);
+
+        valueOps.set(RedisConstants.PAY_ANNOUNCEMENT_KEY, announcement);
+        //清除所有用户支付成功状态
+        redisOperation.expireKey(RedisConstants.PAY_ANNOUNCEMENT_USER_STATUS_KEY);
+
+        map.put("data", SUCCESS);
+        return map;
+    }
+
+    /**
+     * 清除推送。同时置所有用户的支付状态为未支付，即清除所有用户状态缓存。
+     *
+     * @return
+     */
+    @RequestMapping("/deletePayAnnouncement")
+    @ResponseBody
+    public Map<String, Object> deletePayAnnouncement() {
+        Map<String, Object> map = new HashMap<>(1);
+
+        redisOperation.expireKey(RedisConstants.PAY_ANNOUNCEMENT_KEY);
+        redisOperation.expireKey(RedisConstants.PAY_ANNOUNCEMENT_USER_STATUS_KEY);
+
+        map.put("data", SUCCESS);
+        return map;
+    }
+
 }

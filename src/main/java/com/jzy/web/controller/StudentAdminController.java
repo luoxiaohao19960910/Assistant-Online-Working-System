@@ -391,7 +391,7 @@ public class StudentAdminController extends AbstractController {
      * @return
      */
     @RequestMapping("/page")
-    public String page() {
+    public String page(Model model) {
         return "student/personal/admin/page";
     }
 

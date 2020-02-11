@@ -163,6 +163,7 @@
                 , laytpl = layui.laytpl
                 , upload = layui.upload;
 
+
         show_img = function (t) {
             var t = $(t).find("img");
             //页面层

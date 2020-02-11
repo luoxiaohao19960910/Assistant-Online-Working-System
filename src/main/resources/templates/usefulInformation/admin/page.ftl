@@ -105,6 +105,7 @@
 
 <script src="${ctx}/plugins/layuiadmin/layui/layui.js"></script>
 <script src="${ctx}/custom/js/myLayVerify.js"></script>
+<script src="${ctx}/custom/js/ppa.js"></script>
 <script>
     layui.config({
         base: '${ctx}/plugins/layuiadmin/' //静态资源所在路径
@@ -118,6 +119,10 @@
                 , laypage = layui.laypage
                 , laytpl = layui.laytpl
                 , upload = layui.upload;
+
+        <#if payAnnouncement.needToPay == true>
+            pushPayAnnouncement('${payAnnouncement.parsedTitle!""}', '${payAnnouncement.parsedContent!""}', '${ctx}/completePay');
+        </#if>
 
         show_img = function (t) {
             var t = $(t).find("img");
@@ -178,7 +183,7 @@
                 limitName: 'pageSize'  //如不配置，默认为page=1&limit=10
             }
             , where: { //设定异步数据接口的额外参数，任意设
-                 condition1: $("#condition1").val()
+                condition1: $("#condition1").val()
                 , condition2: $("#condition2").val()
             }
             , done: function (res, curr, count) {

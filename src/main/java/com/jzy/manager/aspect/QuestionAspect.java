@@ -2,14 +2,12 @@ package com.jzy.manager.aspect;
 
 import com.jzy.manager.constant.RedisConstants;
 import com.jzy.model.entity.User;
-import com.jzy.service.RedisOperation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,9 +21,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class QuestionAspect extends AbstractLogger {
     private final static Logger logger = LogManager.getLogger(QuestionAspect.class);
-
-    @Autowired
-    private RedisOperation redisOperation;
 
     @Pointcut("execution(* com.jzy.service.QuestionService.insert*(..)) " +
             "|| execution(* com.jzy.service.QuestionService.update*(..))" +

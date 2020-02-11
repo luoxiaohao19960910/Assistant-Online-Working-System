@@ -107,9 +107,19 @@ public final class ModelConstants {
     public static final String ANNOUNCEMENT_EDIT_MODEL_KEY = "announcementEdit";
 
     /**
+     * 跳转收费公告推送页面时，存放的model键
+     */
+    public static final String PAY_ANNOUNCEMENT_EDIT_MODEL_KEY = "payAnnouncementEdit";
+
+    /**
      * 跳转主页面时，存放的关于公告信息的model键
      */
     public static final String ANNOUNCEMENT_MODEL_KEY = "announcement";
+
+    /**
+     * 跳转页面时，存放的关于收费公告信息的model键
+     */
+    public static final String PAY_ANNOUNCEMENT_MODEL_KEY = "payAnnouncement";
 
     /**
      * 跳转控制台页面时，存放的关于常用信息归属类别的model键

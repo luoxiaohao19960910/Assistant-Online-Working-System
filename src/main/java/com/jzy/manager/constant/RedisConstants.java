@@ -56,7 +56,17 @@ public final class RedisConstants {
     /**
      * 系统公告的键
      */
-    public static final String ANNOUNCEMENT_SYSTEM_KEY = SYSTEM_KEY + ":announcement";
+    public static final String ANNOUNCEMENT_KEY = SYSTEM_KEY + ":announcement";
+
+    /**
+     * 收费公告的键
+     */
+    public static final String PAY_ANNOUNCEMENT_KEY = SYSTEM_KEY + ":payAnnouncement";
+
+    /**
+     * 收费公告的用户支付状态的键
+     */
+    public static final String PAY_ANNOUNCEMENT_USER_STATUS_KEY = PAY_ANNOUNCEMENT_KEY+ ":userStatus";
 
     /**
      * 校区-教室列表缓存的键

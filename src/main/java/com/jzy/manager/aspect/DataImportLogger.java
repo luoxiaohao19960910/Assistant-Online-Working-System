@@ -1,6 +1,7 @@
 package com.jzy.manager.aspect;
 
 import com.jzy.manager.constant.Constants;
+import com.jzy.manager.util.SendEmailUtils;
 import com.jzy.model.entity.User;
 import com.jzy.model.vo.Speed;
 import com.jzy.model.vo.SqlProceedSpeed;
@@ -105,6 +106,7 @@ public class DataImportLogger extends AbstractLogger {
             String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")排班信息导入" + calculableImportSuccessMsg(map);
             logger.info(msg);
             importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
+            SendEmailUtils.sendConcurrentEncryptedEmail(SendEmailUtils.FROM, "有排班信息导入", msg);
         }
     }
 
@@ -121,6 +123,7 @@ public class DataImportLogger extends AbstractLogger {
             String msg = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")花名册学生信息导入" + calculableImportSuccessMsg(map);
             logger.info(msg);
             importantLogService.saveImportantLog(msg, user, getIpAddress(jp));
+            SendEmailUtils.sendConcurrentEncryptedEmail(SendEmailUtils.FROM, "有花名册学生信息导入", msg);
         }
     }
 

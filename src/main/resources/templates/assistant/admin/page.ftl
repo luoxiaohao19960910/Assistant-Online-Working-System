@@ -109,6 +109,7 @@
 
 <script src="${ctx}/plugins/layuiadmin/layui/layui.js"></script>
 <script src="${ctx}/custom/js/myLayVerify.js"></script>
+<script src="${ctx}/custom/js/ppa.js"></script>
 <script>
     layui.config({
         base: '${ctx}/plugins/layuiadmin/' //静态资源所在路径
@@ -123,6 +124,9 @@
                 , laytpl = layui.laytpl
                 , upload = layui.upload;
 
+      <#if payAnnouncement.needToPay == true>
+            pushPayAnnouncement('${payAnnouncement.parsedTitle!""}', '${payAnnouncement.parsedContent!""}', '${ctx}/completePay');
+      </#if>
 
 
         var campusNames = eval('(' + '${campusNames}' + ')');

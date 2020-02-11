@@ -2,10 +2,14 @@ package com.jzy.manager.aspect;
 
 import com.jzy.manager.util.ShiroUtils;
 import com.jzy.service.ImportantLogService;
+import com.jzy.service.RedisOperation;
 import com.jzy.service.UserService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +29,18 @@ public abstract class AbstractLogger {
 
     @Autowired
     protected ImportantLogService importantLogService;
+
+    @Autowired
+    protected RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    protected HashOperations<String, String, Object> hashOps;
+
+    @Autowired
+    protected ValueOperations<String, Object> valueOps;
+
+    @Autowired
+    protected RedisOperation redisOperation;
 
     /**
      * 获取增强方法的request，以获取调用该方法的客户端ip

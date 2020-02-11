@@ -100,7 +100,6 @@
             ,closeBtn: 0
         });
 
-
         //方法级渲染
         table.render({
             elem: '#questionTable'

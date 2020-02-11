@@ -241,16 +241,19 @@
                         </a>
                         <dl class="layui-nav-child">
                             <dd class="layui-nav-itemed">
-                                <a href="javascript:;">系统设置</a>
+                                <a href="javascript:;">公告推送</a>
                                 <dl class="layui-nav-child">
-                                    <dd><a lay-href="${ctx}/system/intelliClassSeason/page">智能校历</a></dd>
+                                    <dd><a lay-href="${ctx}/system/announcement">主页公告</a></dd>
                                 </dl>
                                 <dl class="layui-nav-child">
-                                    <dd><a lay-href="${ctx}/permission/admin/page">权限管理</a></dd>
+                                    <dd><a lay-href="${ctx}/system/payAnnouncement">收费公告</a></dd>
                                 </dl>
-                                <dl class="layui-nav-child">
-                                    <dd><a lay-href="${ctx}/system/announcement">公告推送</a></dd>
-                                </dl>
+                            </dd>
+                            <dd class="layui-nav-itemed">
+                                <a lay-href="${ctx}/system/intelliClassSeason/page">智能校历</a>
+                            </dd>
+                            <dd class="layui-nav-itemed">
+                                <a lay-href="${ctx}/permission/admin/page">权限管理</a>
                             </dd>
                             <dd class="layui-nav-itemed">
                                 <a lay-href="${ctx}/importantLog/admin/page">日志管理</a>
@@ -315,7 +318,6 @@
                 , laytpl = layui.laytpl
                 , upload = layui.upload
                 , laydate = layui.laydate;
-
 
 
         <#--console.log('${announcement}')-->

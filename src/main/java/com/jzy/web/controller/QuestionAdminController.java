@@ -44,7 +44,7 @@ public class QuestionAdminController extends AbstractController {
      * @return
      */
     @RequestMapping("/page")
-    public String page() {
+    public String page(Model model) {
         return "question/admin/page";
     }
 

@@ -140,22 +140,23 @@ public class AuthenticationController extends AbstractController {
         User user = userService.getSessionUserInfo();
         Announcement announcement = new Announcement();
 
-        Announcement baseAnnouncement = (Announcement) hashOps.get(RedisConstants.ANNOUNCEMENT_SYSTEM_KEY, Constants.BASE_ANNOUNCEMENT.toString());
+        Announcement baseAnnouncement = (Announcement) hashOps.get(RedisConstants.ANNOUNCEMENT_KEY, Constants.BASE_ANNOUNCEMENT.toString());
         if (baseAnnouncement != null) {
             if (baseAnnouncement.isPermanent()) {
                 //如果是永久公告，读id=-2的公告即可
                 announcement = baseAnnouncement;
             } else {
-                if (!hashOps.hasKey(RedisConstants.ANNOUNCEMENT_SYSTEM_KEY, user.getId().toString())) {
+                if (!hashOps.hasKey(RedisConstants.ANNOUNCEMENT_KEY, user.getId().toString())) {
                     //已读公告，即缓存无
                     announcement.setRead(true);
                 } else {
-                    announcement = (Announcement) hashOps.get(RedisConstants.ANNOUNCEMENT_SYSTEM_KEY, user.getId().toString());
+                    announcement = (Announcement) hashOps.get(RedisConstants.ANNOUNCEMENT_KEY, user.getId().toString());
                     //阅后即焚，则清除缓存
-                    hashOps.delete(RedisConstants.ANNOUNCEMENT_SYSTEM_KEY, user.getId().toString());
+                    hashOps.delete(RedisConstants.ANNOUNCEMENT_KEY, user.getId().toString());
 
                 }
             }
+            announcement.parse();
         } else {
             //没有任何公告，read置为false，这样前台不会显示公告
             announcement.setRead(true);

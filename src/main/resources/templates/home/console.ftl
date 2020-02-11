@@ -356,13 +356,21 @@
                          data-anim="fade"
                          lay-filter="news">
                         <div carousel-item>
-                            <div><a href="http://blog.kurochan.top/2020/01/10/%E4%BC%98%E8%83%BD%E5%8A%A9%E6%95%99%E5%9C%A8%E7%BA%BF%E5%B7%A5%E4%BD%9C%E5%B9%B3%E5%8F%B0%E7%AE%A1%E7%90%86%E6%8C%87%E5%8D%97/" target="_blank"
-                                    class="layui-bg-blue">平台详细管理指南</a></div>
-                            <div><a href="http://blog.kurochan.top/2020/01/01/%E8%A1%A8%E6%A0%BC%E5%AF%BC%E5%85%A5%E6%89%8B%E6%9C%BA%E9%80%9A%E8%AE%AF%E5%BD%95%E6%96%B9%E6%B3%95/" target="_blank" class="layui-bg-red">表格导入手机通讯录</a></div>
-                            <div><a href="http://blog.kurochan.top/2020/01/01/%E4%BC%98%E8%83%BD%E5%8A%A9%E6%95%99%E5%9C%A8%E7%BA%BF%E5%B7%A5%E4%BD%9C%E5%B9%B3%E5%8F%B0%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" target="_blank"
-                                    class="layui-bg-green">平台详细使用指南</a></div>
-                            <div><a href="http://blog.kurochan.top/2020/01/01/%E4%BC%98%E8%83%BD%E5%8A%A9%E6%95%99%E5%9C%A8%E7%BA%BF%E5%B7%A5%E4%BD%9C%E5%B9%B3%E5%8F%B0%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/#%E5%BC%80%E7%8F%AD%E5%81%9A%E8%A1%A8%E6%8C%87%E5%8D%97" target="_blank"
-                                    class="layui-bg-blue">开班做表指南</a></div>
+                            <div>
+                                <a href="http://blog.kurochan.top/2020/01/10/%E4%BC%98%E8%83%BD%E5%8A%A9%E6%95%99%E5%9C%A8%E7%BA%BF%E5%B7%A5%E4%BD%9C%E5%B9%B3%E5%8F%B0%E7%AE%A1%E7%90%86%E6%8C%87%E5%8D%97/"
+                                   target="_blank"
+                                   class="layui-bg-blue">平台详细管理指南</a></div>
+                            <div>
+                                <a href="http://blog.kurochan.top/2020/01/01/%E8%A1%A8%E6%A0%BC%E5%AF%BC%E5%85%A5%E6%89%8B%E6%9C%BA%E9%80%9A%E8%AE%AF%E5%BD%95%E6%96%B9%E6%B3%95/"
+                                   target="_blank" class="layui-bg-red">表格导入手机通讯录</a></div>
+                            <div>
+                                <a href="http://blog.kurochan.top/2020/01/01/%E4%BC%98%E8%83%BD%E5%8A%A9%E6%95%99%E5%9C%A8%E7%BA%BF%E5%B7%A5%E4%BD%9C%E5%B9%B3%E5%8F%B0%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"
+                                   target="_blank"
+                                   class="layui-bg-green">平台详细使用指南</a></div>
+                            <div>
+                                <a href="http://blog.kurochan.top/2020/01/01/%E4%BC%98%E8%83%BD%E5%8A%A9%E6%95%99%E5%9C%A8%E7%BA%BF%E5%B7%A5%E4%BD%9C%E5%B9%B3%E5%8F%B0%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/#%E5%BC%80%E7%8F%AD%E5%81%9A%E8%A1%A8%E6%8C%87%E5%8D%97"
+                                   target="_blank"
+                                   class="layui-bg-blue">开班做表指南</a></div>
                         <#--<div><a href="http://www.layui.com/admin/#get" target="_blank" class="layui-bg-blue">获得-->
                         <#--layui 官方后台模板系统</a></div>-->
                         </div>
@@ -409,6 +417,7 @@
 <script src="${ctx}/custom/js/img.js"></script>
 
 <script src="${ctx}/plugins/layuiadmin/layui/layui.js"></script>
+<script src="${ctx}/custom/js/ppa.js"></script>
 <script>
     layui.config({
         base: '${ctx}/plugins/layuiadmin/' //静态资源所在路径
@@ -426,9 +435,11 @@
                 , util = layui.util
                 , upload = layui.upload
                 , carousel = layui.carousel
-                ,flow = layui.flow;
+                , flow = layui.flow;
 
-        // flow.lazyimg();
+        <#if payAnnouncement.needToPay == true>
+            pushPayAnnouncement('${payAnnouncement.parsedTitle!""}', '${payAnnouncement.parsedContent!""}', '${ctx}/completePay');
+        </#if>
 
         /**
          * 获取与当前时间最邻近的nextMonthDay天nextMonthHour时0分0秒的日期
@@ -551,7 +562,6 @@
         // });
 
 
-
         show_img = function (img) {
             var imgUrl = '${ctx}/usefulInformation/admin/getImage?image=' + img;
             getImageWidth(imgUrl, function (w, h) {
@@ -638,13 +648,13 @@
         // <div class="layui-timeline-content layui-text">                                <p>欢迎使用<em>AOWS-优能助教在线工作平台</em>！</p>                     <p>为了您的账号安全，请尽快修改默认密码。也推荐绑定安全邮箱便于找回密码以及安全验证！</p>                          <p>常用功能： </p>                                <ul>                                    <li>我的班级信息：左边菜单栏>信息管理>班级信息，点击按钮"查询我的班级"。</li>                                    <li>做开班表格：完成1中的操作后，点击表格中的"开班做表"，跳转做表页面后，点击输出相应表格即可。</li>                                    <li>学生上课信息：左边菜单栏>信息管理>学员信息>上课信息，可以查询指定学生的上课记录。</li>                                    <li>登录方式之懒癌登录：懒癌登录方式的答案，可以在"左边菜单栏>懒癌登录问题一览"查询。你也可以将自己喜欢的问题添加到问题的随机池中！</li>                                    <li>用户角色权限说明：管理员>学管>助教长>助教=教师>游客。可在：用户>个人信息>基本资料，查看自己的角色。通过"懒癌登录"的用户角色是游客。</li>                                </ul>                          <p>使用中遇到的任何问题都可以向我<a lay-href="/problemCollection">反馈</a>~</p>                                         <p align="right"><a href="http://blog.kurochan.top/about/" target="_blank">kuro</a>    <p>                                         <p align="right">2019-12-8    <p>                            </div>
 
         //图片轮播
-        var b=1920/1080;
-        var w=$("#test-carousel-img").width();
+        var b = 1920 / 1080;
+        var w = $("#test-carousel-img").width();
         carousel.render({
             elem: '#test-carousel-img'
-            ,width: '100%' //设置容器宽度
-            ,height:(w/b).toString()+'px'
-            ,interval: 3000
+            , width: '100%' //设置容器宽度
+            , height: (w / b).toString() + 'px'
+            , interval: 3000
         });
 
     });

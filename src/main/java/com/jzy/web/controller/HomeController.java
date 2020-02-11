@@ -9,6 +9,8 @@ import com.jzy.manager.util.MyTimeUtils;
 import com.jzy.manager.util.SendEmailUtils;
 import com.jzy.manager.util.ShiroUtils;
 import com.jzy.model.LogLevelEnum;
+import com.jzy.model.RoleEnum;
+import com.jzy.model.entity.User;
 import com.jzy.model.vo.ProblemCollection;
 import com.jzy.model.vo.echarts.EchartsFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -171,6 +173,27 @@ public class HomeController extends AbstractController {
         map.put("xAxisData", xAxisData);
         map.put("series", series);
         map.put("seriesData2", seriesData2);
+        return map;
+    }
+
+
+    /**
+     * 用户完成支付，将缓存中该用户置为已支付
+     *
+     * @return
+     */
+    @RequestMapping("/completePay")
+    @ResponseBody
+    public Map<String, Object> completePay() {
+        Map<String, Object> map = new HashMap<>(1);
+
+        User user=userService.getSessionUserInfo();
+
+        if ((RoleEnum.ASSISTANT.equals(user.getUserRole()) || RoleEnum.ASSISTANT_MASTER.equals(user.getUserRole()))){
+            hashOps.put(RedisConstants.PAY_ANNOUNCEMENT_USER_STATUS_KEY, user.getId().toString(), true);
+        }
+
+        map.put("data", SUCCESS);
         return map;
     }
 }
