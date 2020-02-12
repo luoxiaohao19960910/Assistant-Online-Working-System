@@ -118,11 +118,12 @@
                 , table = layui.table
                 , laypage = layui.laypage
                 , laytpl = layui.laytpl
-                , upload = layui.upload;
+                , upload = layui.upload
+                , util = layui.util;
 
-        <#if payAnnouncement.needToPay == true>
-            pushPayAnnouncement('${payAnnouncement.parsedTitle!""}', '${payAnnouncement.parsedContent!""}', '${ctx}/completePay');
-        </#if>
+               <#if payStatus.needToPay == true>
+            pushPayAnnouncement('${payAnnouncement.parsedTitle!""}', '${payAnnouncement.parsedContent!""}', '${payStatus.startDate?string('yyyy-MM-dd HH:mm:ss')}','${payStatus.expirationDate?string('yyyy-MM-dd HH:mm:ss')}','${ctx}/completePay');
+               </#if>
 
         show_img = function (t) {
             var t = $(t).find("img");

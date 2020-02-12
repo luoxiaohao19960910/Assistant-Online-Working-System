@@ -144,13 +144,11 @@
      spring.redis.password = 123
      ```
 
-   - 如果有必要可以修改当前项目部署端口和部署路径（可选）
+   - 如果有必要可以修改当前项目部署端口（可选）
 
      ```properties
      #端口
      server.port= 80
-     #项目部署路径
-     server.context-path= /
      ```
 
 4. *进入src/main/resources查看log4j2.xml，如果有必要可以修改日志输出路径rootPath，目前在D://warlogs//logs-aows下，你可选择不修改跳过此步。*

@@ -461,19 +461,19 @@ public class UserMessageController extends AbstractController {
     public Map<String, Object> allInsertSendMessage(@RequestParam(value = "hide", required = false) String hide, UserMessage message, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
-        Long userId = null;
+        Long userFromId = null;
         if (!Constants.ON.equals(hide)) {
             //未开匿名
-            userId = userService.getSessionUserInfo().getId();
+            userFromId = userService.getSessionUserInfo().getId();
         }
 
-        List<User> users = userService.listAllUsers();
+        List<Long> userIds = userService.listAllUserIds();
 
-        List<UserMessage> userMessages = new ArrayList<>(users.size());
-        for (User user : users) {
+        List<UserMessage> userMessages = new ArrayList<>(userIds.size());
+        for (Long userId : userIds) {
             UserMessage userMessage = new UserMessage();
-            userMessage.setUserId(user.getId());
-            userMessage.setUserFromId(userId);
+            userMessage.setUserId(userId);
+            userMessage.setUserFromId(userFromId);
             userMessage.setMessageTitle(message.getMessageTitle());
             userMessage.setMessageContent(message.getMessageContent());
             userMessage.setMessagePicture(message.getMessagePicture());

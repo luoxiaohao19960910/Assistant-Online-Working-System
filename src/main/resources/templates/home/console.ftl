@@ -409,6 +409,7 @@
                     <p>我们期待你的加入，一起为助教工作献出一份力！请砸此邮箱：929703621@qq.com</p>
                     <p>—— 酷乐（<a href="http://blog.kurochan.top/about/" target="_blank">kurochan.top</a>）</p>
                 </div>
+
             </div>
         </div>
     </div>
@@ -437,9 +438,10 @@
                 , carousel = layui.carousel
                 , flow = layui.flow;
 
-        <#if payAnnouncement.needToPay == true>
-            pushPayAnnouncement('${payAnnouncement.parsedTitle!""}', '${payAnnouncement.parsedContent!""}', '${ctx}/completePay');
+        <#if payStatus.needToPay == true>
+            pushPayAnnouncement('${payAnnouncement.parsedTitle!""}', '${payAnnouncement.parsedContent!""}', '${payStatus.startDate?string('yyyy-MM-dd HH:mm:ss')}','${payStatus.expirationDate?string('yyyy-MM-dd HH:mm:ss')}','${ctx}/completePay');
         </#if>
+
 
         /**
          * 获取与当前时间最邻近的nextMonthDay天nextMonthHour时0分0秒的日期

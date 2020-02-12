@@ -262,6 +262,15 @@
             </if>
         </if>
     </select>
+    <select id="listAllUserIds" resultType="_long">
+        select u.id from user u;
+    </select>
+    <select id="listUsersByIds" resultMap="BaseResultMap">
+        select * from user where id in
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 
     <update id="updatePasswordByEmail" parameterType="com.jzy.model.entity.User">
         UPDATE user

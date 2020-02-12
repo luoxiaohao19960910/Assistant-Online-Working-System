@@ -75,6 +75,21 @@ public interface UserService {
     List<User> listAllUsers();
 
     /**
+     * 根据指定的id集合查询出相应的用户
+     *
+     * @param userIds 指定的id集合
+     * @return 符合条件用户集合
+     */
+    List<User> listUsersByIds(List<Long> userIds);
+
+    /**
+     * 查询出所有的用户id
+     *
+     * @return 所有用户id集合
+     */
+    List<Long> listAllUserIds();
+
+    /**
      * 根据用户名查询出用户信息
      *
      * @param userName 用户名
@@ -344,4 +359,13 @@ public interface UserService {
      * @return 分页结果
      */
     PageInfo<UserSendTo> listUsersSendTo(MyPage myPage, UserSendToSearchCondition condition);
+
+    /**
+     * 根据id集合查询用户分页结果
+     *
+     * @param myPage 分页{页号，每页数量}
+     * @param ids id集合
+     * @return 分页结果
+     */
+    PageInfo<User> listUsers(MyPage myPage, List<Long> ids);
 }

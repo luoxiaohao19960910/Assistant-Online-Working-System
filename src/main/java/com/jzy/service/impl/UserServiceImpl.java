@@ -126,6 +126,19 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
     }
 
     @Override
+    public List<User> listUsersByIds(List<Long> userIds) {
+        if (userIds == null || userIds.size() == 0) {
+            return new ArrayList<>();
+        }
+        return userMapper.listUsersByIds(userIds);
+    }
+
+    @Override
+    public List<Long> listAllUserIds() {
+        return userMapper.listAllUserIds();
+    }
+
+    @Override
     public User getUserByName(String userName) {
         return StringUtils.isEmpty(userName) ? null : userMapper.getUserByName(userName);
     }
@@ -906,4 +919,13 @@ public class UserServiceImpl extends AbstractServiceImpl implements UserService 
         return new PageInfo<>(users);
     }
 
+    @Override
+    public PageInfo<User> listUsers(MyPage myPage, List<Long> ids) {
+        if (ids == null || ids.size() == 0){
+            return new PageInfo<>(new ArrayList<User>());
+        }
+        PageHelper.startPage(myPage.getPageNum(), myPage.getPageSize());
+        List<User> users = userMapper.listUsersByIds(ids);
+        return new PageInfo<>(users);
+    }
 }

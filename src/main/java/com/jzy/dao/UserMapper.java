@@ -170,4 +170,19 @@ public interface UserMapper {
      * @return 符合条件的用户信息 {@link UserSendTo}
      */
     List<UserSendTo> listUsersSendTo(UserSendToSearchCondition condition);
+
+    /**
+     * 查询出所有的用户id
+     *
+     * @return 所有用户id集合
+     */
+    List<Long> listAllUserIds();
+
+    /**
+     * 根据指定的id集合查询出相应的用户
+     *
+     * @param userIds 指定的id集合
+     * @return 符合条件用户集合
+     */
+    List<User> listUsersByIds(List<Long> userIds);
 }

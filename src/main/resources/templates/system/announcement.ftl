@@ -43,7 +43,7 @@
                         <div class="layui-form-item" id="div-classroom">
                             <label class="layui-form-label">内容</label>
                             <div class="layui-input-block">
-                                <textarea name="content" id="content" style="width: 1000px; height: 600px;" class="layui-textarea"
+                                <textarea name="content" id="content" style="height: 400px;" class="layui-textarea"
                                           lay-verType="tips" lay-verify="required"
                                           placeholder="请输入">${announcementEdit.content!""}</textarea>
                             </div>

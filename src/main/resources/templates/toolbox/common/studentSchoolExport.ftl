@@ -96,9 +96,9 @@
                 , autocomplete = layui.autocomplete;
 
 
-                        <#if payAnnouncement.needToPay == true>
-            pushPayAnnouncement('${payAnnouncement.parsedTitle!""}', '${payAnnouncement.parsedContent!""}', '${ctx}/completePay');
-                        </#if>
+                              <#if payStatus.needToPay == true>
+            pushPayAnnouncement('${payAnnouncement.parsedTitle!""}', '${payAnnouncement.parsedContent!""}', '${payStatus.startDate?string('yyyy-MM-dd HH:mm:ss')}','${payStatus.expirationDate?string('yyyy-MM-dd HH:mm:ss')}','${ctx}/completePay');
+                              </#if>
 
         upload.render({
             elem: '#upload-school'

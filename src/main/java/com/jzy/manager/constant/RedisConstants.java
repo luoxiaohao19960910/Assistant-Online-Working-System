@@ -16,6 +16,11 @@ public final class RedisConstants {
     }
 
     /**
+     * 分隔符
+     */
+    private static final String SEPERATOR = ":";
+
+    /**
      * 根键
      */
     private static final String ROOT_KEY = "aows";
@@ -64,9 +69,16 @@ public final class RedisConstants {
     public static final String PAY_ANNOUNCEMENT_KEY = SYSTEM_KEY + ":payAnnouncement";
 
     /**
-     * 收费公告的用户支付状态的键
+     * 收费公告的用户支付状态的根键
      */
-    public static final String PAY_ANNOUNCEMENT_USER_STATUS_KEY = PAY_ANNOUNCEMENT_KEY+ ":userStatus";
+    public static final String PAY_ANNOUNCEMENT_USER_STATUS_KEY = PAY_ANNOUNCEMENT_KEY + ":userStatus";
+
+    /**
+     * 收费公告的具体某个用户支付状态的键
+     */
+    public static String getPayAnnouncementUserStatusKey(Long userId) {
+        return PAY_ANNOUNCEMENT_USER_STATUS_KEY + SEPERATOR + (userId == null ? "" : userId.toString());
+    }
 
     /**
      * 校区-教室列表缓存的键
@@ -139,7 +151,7 @@ public final class RedisConstants {
      * @return 缓存的键
      */
     public static String getIndexVisitorStatisticsKey(Date date) {
-        return INDEX_VISITOR_STATISTICS_KEY + ":" + MyTimeUtils.dateToStringYMD(date);
+        return INDEX_VISITOR_STATISTICS_KEY + SEPERATOR + MyTimeUtils.dateToStringYMD(date);
     }
 
     /**
@@ -163,7 +175,7 @@ public final class RedisConstants {
      * @return 缓存的键
      */
     public static String getInfoManagementVisitorStatisticsKey(Date date) {
-        return INFO_MANAGEMENT_VISITOR_STATISTICS_KEY + ":" + MyTimeUtils.dateToStringYMD(date);
+        return INFO_MANAGEMENT_VISITOR_STATISTICS_KEY + SEPERATOR + MyTimeUtils.dateToStringYMD(date);
     }
 
     /**

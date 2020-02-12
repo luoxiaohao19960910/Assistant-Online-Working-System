@@ -345,23 +345,56 @@ public class MyTimeUtils {
         return days;
     }
 
+    /**
+     * 获取当前时间的secondsInterval秒后的时间
+     *
+     * @param secondsInterval 多少秒后
+     * @return secondsInterval秒后的时间
+     */
+    public static Date getSecondsAfter(int secondsInterval) {
+        return getSecondsAfter(new Date(), secondsInterval);
+    }
+
+    /**
+     * 获取date的secondsInterval秒后的时间
+     *
+     * @param date         指定date
+     * @param secondsInterval 多少秒后
+     * @return secondsInterval秒后的时间
+     */
+    public static Date getSecondsAfter(Date date, int secondsInterval) {
+        if (date == null) {
+            return null;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.SECOND, secondsInterval);
+        return calendar.getTime();
+    }
+
+    /**
+     * 获取当前时间的secondsInterval秒前的时间
+     *
+     * @param secondsInterval 多少秒前
+     * @return secondsInterval秒前的时间
+     */
+    public static Date getSecondsBefore(int secondsInterval) {
+        return getSecondsBefore(new Date(), secondsInterval);
+    }
+
+    /**
+     * 获取date的secondsInterval秒前的时间
+     *
+     * @param date         指定date
+     * @param secondsInterval 多少秒前
+     * @return secondsInterval秒前的时间
+     */
+    public static Date getSecondsBefore(Date date, int secondsInterval) {
+        return getSecondsAfter(date, 0-secondsInterval);
+    }
+
     public static void main(String[] args) {
-        String day = "2020-1-19";
-        Calendar c = Calendar.getInstance();
-        Date date = null;
-        try {
-            date = new SimpleDateFormat("yyyy-MM-dd").parse(day);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        List<Date> days = getPastDays(date, 29);
-        System.out.println(days.size());
-        for (Date dayyy : days) {
-            System.out.println(dateToStringYMD(dayyy));
-        }
-
-
-        System.out.println(getCurrentHour());
+        System.out.println(dateToStringYMDHMS(new Date()));
+        System.out.println(dateToStringYMDHMS(getSecondsBefore(10)));
     }
 }

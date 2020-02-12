@@ -1,15 +1,20 @@
 package com.jzy.web.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.PageInfo;
 import com.jzy.manager.constant.Constants;
 import com.jzy.manager.constant.ModelConstants;
 import com.jzy.manager.constant.RedisConstants;
 import com.jzy.model.CampusEnum;
 import com.jzy.model.dto.ClassSeasonDto;
+import com.jzy.model.dto.MyPage;
+import com.jzy.model.dto.UserWithPayStatus;
 import com.jzy.model.entity.Class;
 import com.jzy.model.entity.User;
 import com.jzy.model.vo.Announcement;
 import com.jzy.model.vo.PayAnnouncement;
+import com.jzy.model.vo.PayStatus;
+import com.jzy.model.vo.ResultMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -18,9 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName SystemController
@@ -60,7 +63,7 @@ public class SystemController extends AbstractController {
     public Map<String, Object> pushAnnouncement(@RequestParam(value = "clearIfRead", required = false) String clearIfRead, Announcement announcement) {
         Map<String, Object> map = new HashMap<>(1);
 
-        List<User> users = userService.listAllUsers();
+        List<Long> userIds = userService.listAllUserIds();
 
         if (!Constants.ON.equals(clearIfRead)) {
             //是否永久有效
@@ -75,8 +78,8 @@ public class SystemController extends AbstractController {
         if (!announcement.isPermanent()) {
             //推游客的公告
             hashOps.put(RedisConstants.ANNOUNCEMENT_KEY, Constants.GUEST_ID.toString(), announcement);
-            for (User user : users) {
-                hashOps.put(RedisConstants.ANNOUNCEMENT_KEY, user.getId().toString(), announcement);
+            for (Long id : userIds) {
+                hashOps.put(RedisConstants.ANNOUNCEMENT_KEY, id.toString(), announcement);
             }
         }
 
@@ -94,12 +97,12 @@ public class SystemController extends AbstractController {
     public Map<String, Object> deleteAnnouncement() {
         Map<String, Object> map = new HashMap<>(1);
 
-        List<User> users = userService.listAllUsers();
+        List<Long> userIds = userService.listAllUserIds();
 
         hashOps.delete(RedisConstants.ANNOUNCEMENT_KEY, Constants.GUEST_ID.toString());
         hashOps.delete(RedisConstants.ANNOUNCEMENT_KEY, Constants.BASE_ANNOUNCEMENT.toString());
-        for (User user : users) {
-            hashOps.delete(RedisConstants.ANNOUNCEMENT_KEY, user.getId().toString());
+        for (Long userId : userIds) {
+            hashOps.delete(RedisConstants.ANNOUNCEMENT_KEY, userId.toString());
         }
 
         map.put("data", SUCCESS);
@@ -177,9 +180,14 @@ public class SystemController extends AbstractController {
     public Map<String, Object> pushPayAnnouncement(PayAnnouncement announcement) {
         Map<String, Object> map = new HashMap<>(1);
 
+        announcement.parseExpireTimeValueInSecondUnit();
+
         valueOps.set(RedisConstants.PAY_ANNOUNCEMENT_KEY, announcement);
-        //清除所有用户支付成功状态
-        redisOperation.expireKey(RedisConstants.PAY_ANNOUNCEMENT_USER_STATUS_KEY);
+        //清除所有用户支付状态
+        List<Long> userIds = userService.listAllUserIds();
+        for (Long userId : userIds) {
+            redisOperation.expireKey(RedisConstants.getPayAnnouncementUserStatusKey(userId));
+        }
 
         map.put("data", SUCCESS);
         return map;
@@ -196,10 +204,80 @@ public class SystemController extends AbstractController {
         Map<String, Object> map = new HashMap<>(1);
 
         redisOperation.expireKey(RedisConstants.PAY_ANNOUNCEMENT_KEY);
-        redisOperation.expireKey(RedisConstants.PAY_ANNOUNCEMENT_USER_STATUS_KEY);
+        //清除所有用户支付状态
+        List<Long> userIds = userService.listAllUserIds();
+        for (Long userId : userIds) {
+            redisOperation.expireKey(RedisConstants.getPayAnnouncementUserStatusKey(userId));
+        }
+
 
         map.put("data", SUCCESS);
         return map;
     }
 
+    /**
+     * 查询所有需要付费的用户的ajax交互。
+     *
+     * @param myPage    分页{页号，每页数量}
+     * @param needToPay 筛选条件：已付/未付
+     * @return
+     */
+    @RequestMapping("/getNeedToPayUsers")
+    @ResponseBody
+    public ResultMap<List<UserWithPayStatus>> getNeedToPayUsers(MyPage myPage, @RequestParam(value = "needToPay", required = false) String needToPay) {
+        //存放所有需要付费的用户id
+        List<Long> queryIds = new ArrayList<>();
+        //存放所有需要付费的用户id中未付费的用户
+        HashSet<Long> notPaidUserIds = new HashSet<>();
+        //存放所有需要付费的用户id中已付费的用户
+        HashSet<Long> paidUserIds = new HashSet<>();
+        if (redisTemplate.hasKey(RedisConstants.PAY_ANNOUNCEMENT_KEY)) {
+            //有收费公告，才查询已阅但未付费的用户
+            List<Long> userIds = userService.listAllUserIds();
+            for (Long userId : userIds) {
+                String userPayStatusKey = RedisConstants.getPayAnnouncementUserStatusKey(userId);
+                if (redisTemplate.hasKey(userPayStatusKey)) {
+                    //当前用户id有缓存
+                    queryIds.add(userId);
+                    PayStatus payStatus = (PayStatus) valueOps.get(userPayStatusKey);
+                    if (payStatus.isNeedToPay()) {
+                        //未付费
+                        notPaidUserIds.add(userId);
+                    } else {
+                        paidUserIds.add(userId);
+                    }
+                }
+            }
+        }
+
+        if ("0".equals(needToPay)) {
+            //未付
+            queryIds = new ArrayList<>(notPaidUserIds);
+        } else if ("1".equals(needToPay)) {
+            //已付
+            queryIds = new ArrayList<>(paidUserIds);
+        }
+
+        PageInfo<User> pageInfo = userService.listUsers(myPage, queryIds);
+        List<User> users = pageInfo.getList();
+        List<UserWithPayStatus> userWithPayStatuses = new ArrayList<>();
+        for (User user : users) {
+            //将User对象进一步封装成UserWithPayStatus对象
+            UserWithPayStatus userWithPayStatus = new UserWithPayStatus();
+            userWithPayStatus.setId(user.getId());
+            userWithPayStatus.setUserWorkId(user.getUserWorkId());
+            userWithPayStatus.setUserIdCard(user.getUserIdCard());
+            userWithPayStatus.setUserName(user.getUserName());
+            userWithPayStatus.setUserRealName(user.getUserRealName());
+            userWithPayStatus.setUserRole(user.getUserRole());
+            userWithPayStatus.setUserEmail(user.getUserEmail());
+            userWithPayStatus.setUserPhone(user.getUserPhone());
+            if (notPaidUserIds.contains(user.getId())) {
+                //未支付
+                userWithPayStatus.setNeedToPay(true);
+            }
+            userWithPayStatuses.add(userWithPayStatus);
+        }
+        return new ResultMap<>(0, "", (int) pageInfo.getTotal(), userWithPayStatuses);
+    }
 }

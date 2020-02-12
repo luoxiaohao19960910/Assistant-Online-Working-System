@@ -123,9 +123,9 @@
                 , upload = layui.upload
                 , laydate = layui.laydate;
 
-                <#if payAnnouncement.needToPay == true>
-            pushPayAnnouncement('${payAnnouncement.parsedTitle!""}', '${payAnnouncement.parsedContent!""}', '${ctx}/completePay');
-                </#if>
+        <#if payStatus.needToPay == true>
+            pushPayAnnouncement('${payAnnouncement.parsedTitle!""}', '${payAnnouncement.parsedContent!""}', '${payStatus.startDate?string('yyyy-MM-dd HH:mm:ss')}','${payStatus.expirationDate?string('yyyy-MM-dd HH:mm:ss')}','${ctx}/completePay');
+        </#if>
 
 
         //方法级渲染

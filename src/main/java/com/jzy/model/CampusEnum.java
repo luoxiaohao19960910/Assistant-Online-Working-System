@@ -32,7 +32,7 @@ public enum CampusEnum {
     /**
      * 校区总数
      */
-    private static final int CAMPUS_COUNT = CampusEnum.values().length;
+    public static final int CAMPUS_COUNT = CampusEnum.values().length;
 
     /**
      * <校区编码，校区名称>的键值对

@@ -5,12 +5,16 @@ import com.jzy.manager.constant.RedisConstants;
 import com.jzy.model.RoleEnum;
 import com.jzy.model.entity.User;
 import com.jzy.model.vo.PayAnnouncement;
+import com.jzy.model.vo.PayStatus;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName PayAspect
@@ -39,13 +43,17 @@ public class PayAspect extends AbstractLogger {
         for (Object arg : args) {
             if (arg instanceof Model) {
                 Model model = (Model) arg;
-                PayAnnouncement announcement =new PayAnnouncement();
+                PayAnnouncement announcement = new PayAnnouncement();
+                PayStatus payStatus = new PayStatus();
                 if (needToPushPayAnnouncement(user)) {
+                    payStatus = (PayStatus) valueOps.get(RedisConstants.getPayAnnouncementUserStatusKey(user.getId()));
+                    //计时起始时间为当前服务器时间
+                    payStatus.setStartDate(new Date());
                     announcement = (PayAnnouncement) valueOps.get(RedisConstants.PAY_ANNOUNCEMENT_KEY);
-                    announcement.setNeedToPay(true);
                     announcement.parse();
                 }
                 model.addAttribute(ModelConstants.PAY_ANNOUNCEMENT_MODEL_KEY, announcement);
+                model.addAttribute(ModelConstants.PAY_STATUS_MODEL_KEY, payStatus);
             }
         }
     }
@@ -58,8 +66,29 @@ public class PayAspect extends AbstractLogger {
      */
     private boolean needToPushPayAnnouncement(User user) {
         boolean hasPayAnnouncement = redisTemplate.hasKey(RedisConstants.PAY_ANNOUNCEMENT_KEY);
+        if (!hasPayAnnouncement) {
+            return false;
+        }
         boolean userRoleNeedToJudge = RoleEnum.ASSISTANT.equals(user.getUserRole()) || RoleEnum.ASSISTANT_MASTER.equals(user.getUserRole());
-        boolean hasPaid = !hashOps.hasKey(RedisConstants.PAY_ANNOUNCEMENT_USER_STATUS_KEY, user.getId().toString());
-        return hasPayAnnouncement && userRoleNeedToJudge && hasPaid;
+        if (!userRoleNeedToJudge) {
+            return false;
+        }
+        String userPayStatusKey = RedisConstants.getPayAnnouncementUserStatusKey(user.getId());
+        if (!redisTemplate.hasKey(userPayStatusKey)) {
+            //没有缓存，即第一次被推支付公告
+            PayAnnouncement announcement = (PayAnnouncement) valueOps.get(RedisConstants.PAY_ANNOUNCEMENT_KEY);
+            valueOps.set(userPayStatusKey, new PayStatus(announcement.getExpireTimeValueInSecondUnit()));
+            redisTemplate.expire(userPayStatusKey, announcement.getExpireTimeValueInSecondUnit(), TimeUnit.SECONDS);
+            return true;
+        } else {
+            //有缓存，判断是否已支付
+            PayStatus payStatus = (PayStatus) valueOps.get(userPayStatusKey);
+            if (payStatus.isNeedToPay()) {
+                //未支付
+                return true;
+            }
+            return false;
+        }
+
     }
 }

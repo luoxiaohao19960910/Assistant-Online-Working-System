@@ -122,6 +122,11 @@ public final class ModelConstants {
     public static final String PAY_ANNOUNCEMENT_MODEL_KEY = "payAnnouncement";
 
     /**
+     * 跳转页面时，存放的关于用户收费状态的model键
+     */
+    public static final String PAY_STATUS_MODEL_KEY = "payStatus";
+
+    /**
      * 跳转控制台页面时，存放的关于常用信息归属类别的model键
      */
     public static final String USEFUL_INFORMATION_BELONG_TO_MODEL_KEY = "belongTo";
