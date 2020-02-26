@@ -17,6 +17,18 @@
     <div class="layui-card">
         <div class="layui-form layui-card-header layuiadmin-card-header-auto">
             <div class="layui-form-item" id="form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">主题</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">内容</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="content" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
                 <div class="layui-inline">
                     <label class="layui-form-label">类别</label>
                     <div class="layui-input-inline">
@@ -24,20 +36,6 @@
                             <option value="">请选择信息归属类别</option>
                         </select>
                     </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">主题</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="title" placeholder="请输入" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">内容</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="content" placeholder="请输入" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-inline">
                     <label class="layui-form-label">筛选排序</label>
                     <div class="layui-input-inline">
                         <select id="condition1" name="condition1" lay-filter="condition1">
@@ -122,7 +120,7 @@
                 , util = layui.util;
 
                <#if payStatus.needToPay == true>
-            pushPayAnnouncement('${payAnnouncement.parsedTitle!""}', '${payAnnouncement.parsedContent!""}', '${payStatus.startDate?string('yyyy-MM-dd HH:mm:ss')}','${payStatus.expirationDate?string('yyyy-MM-dd HH:mm:ss')}','${ctx}/completePay');
+            pushPayAnnouncement('${payAnnouncement.parsedTitle!""}', '${payAnnouncement.parsedContent!""}', '${payStatus.startDate?string('yyyy-MM-dd HH:mm:ss')}', '${payStatus.expirationDate?string('yyyy-MM-dd HH:mm:ss')}', '${ctx}/completePay');
                </#if>
 
         show_img = function (t) {

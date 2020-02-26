@@ -239,4 +239,23 @@
         ) as class_tmp, student_class sc, student s
         where sc.class_id=class_tmp.id and sc.student_id=s.id)
     </select>
+    <select id="listStudentsLikeStudentName" resultMap="BaseResultMap">
+        select s.* from student s
+        <where>
+            <if test="studentName != null and studentName!=''">
+                <bind name="studentNameLike" value=" '%' + studentName + '%' "/>
+                s.student_name like #{studentNameLike}
+            </if>
+        </where>
+    </select>
+    <select id="listStudentsLikeStudentId" resultMap="BaseResultMap">
+        select s.* from student s
+        <where>
+            <if test="studentId != null and studentId!=''">
+                <bind name="studentIdLike" value=" '%' + studentId + '%' "/>
+                s.student_id like #{studentIdLike}
+            </if>
+        </where>
+        order by s.student_id
+    </select>
 </mapper>

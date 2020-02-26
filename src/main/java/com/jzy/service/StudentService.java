@@ -168,4 +168,20 @@ public interface StudentService {
      * @return 更新记录数
      */
     long deleteStudentsByCondition(StudentSearchCondition condition);
+
+    /**
+     * 根据学生姓名模糊查询助教
+     *
+     * @param studentName 学生姓名关键字
+     * @return 符合条件的学生列表
+     */
+    List<Student> listStudentsLikeStudentName(String studentName);
+
+    /**
+     * 根据学生姓名模糊查询助教
+     *
+     * @param studentId 学员号关键字
+     * @return 符合条件的学生列表
+     */
+    List<Student> listStudentsLikeStudentId(String studentId);
 }

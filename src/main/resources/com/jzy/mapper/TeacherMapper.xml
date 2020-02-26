@@ -153,6 +153,15 @@
             </if>
         </if>
     </select>
+    <select id="listTeachersLikeTeacherName" resultMap="BaseResultMap">
+        select t.* from teacher t
+        <where>
+            <if test="teacherName != null and teacherName!=''">
+                <bind name="teacherNameLike" value=" '%' + teacherName + '%' "/>
+                t.teacher_name like #{teacherNameLike}
+            </if>
+        </where>
+    </select>
 
 
 </mapper>

@@ -1,7 +1,7 @@
 package com.jzy.web.controller;
 
 import com.jzy.model.entity.Class;
-import com.jzy.model.vo.ClassIdSearchResult;
+import com.jzy.model.vo.AutoCompleteSearchResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * @ClassName ClassController
  * @Author JinZhiyun
- * @Description 班级业务的控制器
+ * @Description 班级业务控制器（所有角色通用，不涉及权限问题）
  * @Date 2019/11/22 12:23
  * @Version 1.0
  **/
@@ -57,7 +57,7 @@ public class ClassController extends AbstractController {
      * 将所有结果进一步封装成ClassIdSearchResult返回前端。
      *
      * @param classId 输入字符串作为关键字
-     * @return 含ClassIdSearchResult的列表 {@link ClassIdSearchResult}
+     * @return 符合条件的数据 {@link AutoCompleteSearchResult}
      */
     @RequestMapping("/getClassesLikeClassId")
     @ResponseBody
@@ -68,7 +68,7 @@ public class ClassController extends AbstractController {
 
         classId = StringUtils.upperCase(classId);
         List<Class> classes = classService.listClassesLikeClassId(classId);
-        List<ClassIdSearchResult> results = new ArrayList<>();
+        List<AutoCompleteSearchResult> results = new ArrayList<>();
         //按常识上的开课时间有近至远排序
         Collections.sort(classes, Class.CLASS_YEAR_SEASON_SUB_SEASON_COMPARATOR_DESC);
 
@@ -90,7 +90,7 @@ public class ClassController extends AbstractController {
             String campus = StringUtils.isEmpty(clazz.getClassCampus()) ? "" : clazz.getClassCampus() + "_";
 
             String name = season + campus + clazz.getClassName();
-            ClassIdSearchResult result = new ClassIdSearchResult(clazz.getClassId(), name);
+            AutoCompleteSearchResult result = new AutoCompleteSearchResult(clazz.getClassId(), name);
             results.add(result);
         }
         map.put("data", results);

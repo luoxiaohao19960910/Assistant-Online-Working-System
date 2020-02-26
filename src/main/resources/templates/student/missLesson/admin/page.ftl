@@ -17,79 +17,63 @@
     <div class="layui-card">
         <div class="layui-form layui-card-header layuiadmin-card-header-auto">
             <div class="layui-form-item" id="form">
-                <div class="layui-inline">
+                <div class="layui-form-item">
                     <label class="layui-form-label">补课日期</label>
                     <div class="layui-input-inline">
                         <input type="text" class="layui-input" placeholder="yyyy-MM-dd" id="date" name="date" autocomplete="off">
                     </div>
-                </div>
-                <div class="layui-inline">
                     <label class="layui-form-label">学员号</label>
                     <div class="layui-input-inline">
                         <input type="text" class="layui-input" placeholder="请输入" name="studentId" autocomplete="off">
                     </div>
-                </div>
-                <div class="layui-inline">
                     <label class="layui-form-label">学员姓名</label>
                     <div class="layui-input-inline">
                         <input type="text" class="layui-input" placeholder="请输入" name="studentName" autocomplete="off">
                     </div>
                 </div>
-                <div class="layui-inline">
+                <div class="layui-form-item">
                     <label class="layui-form-label">原班号</label>
                     <div class="layui-input-inline">
                         <input name="originalClassId" id="originalClassId"
                                autocomplete="off" class="layui-input"
                                placeholder="U6MCFC020002">
                     </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">原班级名称</label>
+                    <label class="layui-form-label">原班名称</label>
                     <div class="layui-input-inline">
                         <input type="text" name="originalClassName" placeholder="请输入" autocomplete="off"
                                class="layui-input">
                     </div>
-                </div>
-                <div class="layui-inline">
                     <label class="layui-form-label">原班助教</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="originalAssistantName" placeholder="请输入" autocomplete="off"
+                        <input type="text" id="originalAssistantName" name="originalAssistantName" placeholder="请输入" autocomplete="off"
                                class="layui-input">
                     </div>
-                </div>
-                <div class="layui-inline">
                     <label class="layui-form-label">原班教师</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="originalTeacherName" placeholder="请输入" autocomplete="off"
+                        <input type="text" id="originalTeacherName" name="originalTeacherName" placeholder="请输入" autocomplete="off"
                                class="layui-input">
                     </div>
                 </div>
-                <div class="layui-inline">
+                <div class="layui-form-item">
                     <label class="layui-form-label">补课班号</label>
                     <div class="layui-input-inline">
                         <input name="currentClassId" id="currentClassId"
                                autocomplete="off" class="layui-input"
                                placeholder="U6MCFC020001">
                     </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">补课班级名称</label>
+                    <label class="layui-form-label">补课班名称</label>
                     <div class="layui-input-inline">
                         <input type="text" name="currentClassName" placeholder="请输入" autocomplete="off"
                                class="layui-input">
                     </div>
-                </div>
-                <div class="layui-inline">
                     <label class="layui-form-label">补课助教</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="currentAssistantName" placeholder="请输入" autocomplete="off"
+                        <input type="text" id="currentAssistantName" name="currentAssistantName" placeholder="请输入" autocomplete="off"
                                class="layui-input">
                     </div>
-                </div>
-                <div class="layui-inline">
                     <label class="layui-form-label">补课班教师</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="currentTeacherName" placeholder="请输入" autocomplete="off"
+                        <input type="text" id="currentTeacherName" name="currentTeacherName" placeholder="请输入" autocomplete="off"
                                class="layui-input">
                     </div>
                 </div>
@@ -199,8 +183,8 @@
             cache: true,
             url: '${ctx}/class/getClassesLikeClassId',
             response: {code: 'code', data: 'data'},
-            template_val: '{{d.classId}}',
-            template_txt: '{{d.classId}} <span class=\'layui-badge layui-bg-gray\'>{{d.classGeneralName}}</span>',
+            template_val: '{{d.value}}',
+            template_txt: '{{d.value}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
             onselect: function (resp) {
 
             }
@@ -210,8 +194,50 @@
             cache: true,
             url: '${ctx}/class/getClassesLikeClassId',
             response: {code: 'code', data: 'data'},
-            template_val: '{{d.classId}}',
-            template_txt: '{{d.classId}} <span class=\'layui-badge layui-bg-gray\'>{{d.classGeneralName}}</span>',
+            template_val: '{{d.value}}',
+            template_txt: '{{d.value}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
+            onselect: function (resp) {
+
+            }
+        });
+
+        autocomplete.render({
+            elem: $('#originalAssistantName')[0],
+            url: '${ctx}/assistant/getAssistantsLikeAssistantName',
+            response: {code: 'code', data: 'data'},
+            template_val: '{{d.value}}',
+            template_txt: '{{d.parsedValue}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
+            onselect: function (resp) {
+
+            }
+        });
+        autocomplete.render({
+            elem: $('#originalTeacherName')[0],
+            url: '${ctx}/teacher/getTeachersLikeTeacherName',
+            response: {code: 'code', data: 'data'},
+            template_val: '{{d.value}}',
+            template_txt: '{{d.value}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
+            onselect: function (resp) {
+
+            }
+        });
+
+        autocomplete.render({
+            elem: $('#currentAssistantName')[0],
+            url: '${ctx}/assistant/getAssistantsLikeAssistantName',
+            response: {code: 'code', data: 'data'},
+            template_val: '{{d.value}}',
+            template_txt: '{{d.parsedValue}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
+            onselect: function (resp) {
+
+            }
+        });
+        autocomplete.render({
+            elem: $('#currentTeacherName')[0],
+            url: '${ctx}/teacher/getTeachersLikeTeacherName',
+            response: {code: 'code', data: 'data'},
+            template_val: '{{d.value}}',
+            template_txt: '{{d.value}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
             onselect: function (resp) {
 
             }

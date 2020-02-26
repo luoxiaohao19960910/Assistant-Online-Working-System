@@ -103,7 +103,11 @@ public class ClassServiceImpl extends AbstractServiceImpl implements ClassServic
 
     @Override
     public List<Class> listClassesLikeClassId(String classId) {
-        return StringUtils.isEmpty(classId) ? new ArrayList<>() : classMapper.listClassesLikeClassId(classId);
+        if (StringUtils.isEmpty(classId)){
+            return new ArrayList<>();
+        }
+        List<Class> classesLikeClassId=classMapper.listClassesLikeClassId(classId);
+        return classesLikeClassId;
     }
 
     @Override

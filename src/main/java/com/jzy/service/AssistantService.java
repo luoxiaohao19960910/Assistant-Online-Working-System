@@ -166,4 +166,11 @@ public interface AssistantService {
      */
     long deleteAssistantsByCondition(AssistantSearchCondition condition);
 
+    /**
+     * 根据助教姓名模糊查询助教
+     *
+     * @param assistantName 助教姓名关键字
+     * @return 符合条件的助教列表
+     */
+    List<Assistant> listAssistantsLikeAssistantName(String assistantName);
 }

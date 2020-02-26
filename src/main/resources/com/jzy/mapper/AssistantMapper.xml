@@ -209,5 +209,14 @@
         </where>
         )
     </select>
+    <select id="listAssistantsLikeAssistantName" resultMap="BaseResultMap">
+        select a.* from assistant a
+        <where>
+            <if test="assistantName != null and assistantName!=''">
+                <bind name="assistantNameLike" value=" '%' + assistantName + '%' "/>
+                a.assistant_name like #{assistantNameLike}
+            </if>
+        </where>
+    </select>
 
 </mapper>

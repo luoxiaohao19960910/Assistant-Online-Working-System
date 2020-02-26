@@ -477,4 +477,19 @@ public class StudentServiceImpl extends AbstractServiceImpl implements StudentSe
         return studentMapper.deleteStudentsByCondition(condition);
     }
 
+    @Override
+    public List<Student> listStudentsLikeStudentName(String studentName) {
+        if (StringUtils.isEmpty(studentName)){
+            return new ArrayList<>();
+        }
+        return studentMapper.listStudentsLikeStudentName(studentName);
+    }
+
+    @Override
+    public List<Student> listStudentsLikeStudentId(String studentId) {
+        if (StringUtils.isEmpty(studentId)){
+            return new ArrayList<>();
+        }
+        return studentMapper.listStudentsLikeStudentId(studentId);    }
+
 }

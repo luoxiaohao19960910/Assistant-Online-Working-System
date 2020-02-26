@@ -177,12 +177,37 @@
                </#if>
         layui.link('${ctx}/custom/css/autocomplete.css');
         autocomplete.render({
+            elem: $('#studentName')[0],
+            url: '${ctx}/student/getStudentsLikeStudentName',
+            response: {code: 'code', data: 'data'},
+            template_val: '{{d.value}}',
+            template_txt: '{{d.value}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
+            onselect: function (resp) {
+                $("#studentId").val(resp.studentId);
+                $("#studentPhone").val(resp.studentPhone);
+            }
+        });
+
+        autocomplete.render({
+            elem: $('#studentId')[0],
+            cache: true,
+            url: '${ctx}/student/getStudentsLikeStudentId',
+            response: {code: 'code', data: 'data'},
+            template_val: '{{d.value}}',
+            template_txt: '{{d.value}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
+            onselect: function (resp) {
+                $("#studentName").val(resp.studentName);
+                $("#studentPhone").val(resp.studentPhone);
+            }
+        });
+
+        autocomplete.render({
             elem: $('#originalClassId')[0],
             cache: true,
             url: '${ctx}/class/getClassesLikeClassId',
             response: {code: 'code', data: 'data'},
-            template_val: '{{d.classId}}',
-            template_txt: '{{d.classId}} <span class=\'layui-badge layui-bg-gray\'>{{d.classGeneralName}}</span>',
+            template_val: '{{d.value}}',
+            template_txt: '{{d.value}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
             onselect: function (resp) {
 
             }
@@ -192,8 +217,8 @@
             cache: true,
             url: '${ctx}/class/getClassesLikeClassId',
             response: {code: 'code', data: 'data'},
-            template_val: '{{d.classId}}',
-            template_txt: '{{d.classId}} <span class=\'layui-badge layui-bg-gray\'>{{d.classGeneralName}}</span>',
+            template_val: '{{d.value}}',
+            template_txt: '{{d.value}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
             onselect: function (resp) {
 
             }

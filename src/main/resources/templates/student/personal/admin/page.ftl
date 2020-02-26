@@ -17,19 +17,21 @@
     <div class="layui-card">
         <div class="layui-form layui-card-header layuiadmin-card-header-auto">
             <div class="layui-form-item" id="form">
-                <div class="layui-inline">
+                <div class="layui-form-item">
                     <label class="layui-form-label">学员号</label>
                     <div class="layui-input-inline">
                         <input type="text" class="layui-input" placeholder="请输入" name="studentId" autocomplete="off">
                     </div>
-                </div>
-                <div class="layui-inline">
                     <label class="layui-form-label">学员姓名</label>
                     <div class="layui-input-inline">
                         <input type="text" class="layui-input" placeholder="请输入" name="studentName" autocomplete="off">
                     </div>
+                    <label class="layui-form-label">联系方式</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="studentPhone" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
                 </div>
-                <div class="layui-inline">
+                <div class="layui-form-item">
                     <label class="layui-form-label">性别</label>
                     <div class="layui-input-inline">
                         <select name="sex" id="sex">
@@ -38,14 +40,6 @@
                             <option value="女">女</option>
                         </select>
                     </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">联系方式</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="studentPhone" placeholder="请输入" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-inline">
                     <label class="layui-form-label">学校</label>
                     <div class="layui-input-inline">
                         <input type="text" name="school" placeholder="请输入" autocomplete="off" class="layui-input">

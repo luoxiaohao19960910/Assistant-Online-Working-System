@@ -18,7 +18,7 @@ public final class RedisConstants {
     /**
      * 分隔符
      */
-    private static final String SEPERATOR = ":";
+    private static final String SEPARATOR = ":";
 
     /**
      * 根键
@@ -29,13 +29,17 @@ public final class RedisConstants {
      * 用户缓存根键
      */
     private static final String USER_KEY = ROOT_KEY + ":user";
-
-    public static final String USER_LOGIN_KEY = USER_KEY + ":login";
+    private static final String USER_LOGIN_KEY = USER_KEY + ":login";
 
     /**
      * 用户上次登录成功ip地址缓存
+     *
+     * @param userName 用户名
+     * @return 用户名对应的ip地址缓存的键
      */
-    public static final String USER_LOGIN_IP_KEY = USER_LOGIN_KEY + ":ip";
+    public static String getUserLoginIpKey(String userName) {
+        return USER_LOGIN_KEY + SEPARATOR + "ip" + SEPARATOR + userName;
+    }
 
     /**
      * 用户登录失败错误次数缓存
@@ -77,8 +81,13 @@ public final class RedisConstants {
      * 收费公告的具体某个用户支付状态的键
      */
     public static String getPayAnnouncementUserStatusKey(Long userId) {
-        return PAY_ANNOUNCEMENT_USER_STATUS_KEY + SEPERATOR + (userId == null ? "" : userId.toString());
+        return PAY_ANNOUNCEMENT_USER_STATUS_KEY + SEPARATOR + (userId == null ? "" : userId.toString());
     }
+
+    /**
+     * 根据班级编码模糊查询返回班级对象列表缓存的键
+     */
+    public static final String CLASSES_LIKE_CLASS_ID_KEY = ROOT_KEY + ":classesLikeClassId";
 
     /**
      * 校区-教室列表缓存的键
@@ -151,7 +160,7 @@ public final class RedisConstants {
      * @return 缓存的键
      */
     public static String getIndexVisitorStatisticsKey(Date date) {
-        return INDEX_VISITOR_STATISTICS_KEY + SEPERATOR + MyTimeUtils.dateToStringYMD(date);
+        return INDEX_VISITOR_STATISTICS_KEY + SEPARATOR + MyTimeUtils.dateToStringYMD(date);
     }
 
     /**
@@ -175,7 +184,7 @@ public final class RedisConstants {
      * @return 缓存的键
      */
     public static String getInfoManagementVisitorStatisticsKey(Date date) {
-        return INFO_MANAGEMENT_VISITOR_STATISTICS_KEY + SEPERATOR + MyTimeUtils.dateToStringYMD(date);
+        return INFO_MANAGEMENT_VISITOR_STATISTICS_KEY + SEPARATOR + MyTimeUtils.dateToStringYMD(date);
     }
 
     /**

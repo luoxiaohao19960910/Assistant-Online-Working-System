@@ -17,9 +17,9 @@
     <div class="layui-card">
         <div class="layui-form layui-card-header layuiadmin-card-header-auto">
             <div class="layui-form-item" id="form">
-                <div class="layui-inline">
+                <div class="layui-form-item">
                     <label class="layui-form-label">问题内容</label>
-                    <div class="layui-input-inline">
+                    <div class="layui-input-block">
                         <input type="text" name="content" placeholder="请输入" autocomplete="off" class="layui-input">
                     </div>
                 </div>

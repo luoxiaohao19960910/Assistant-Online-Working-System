@@ -113,8 +113,8 @@
             cache: true,
             url: '${ctx}/class/getClassesLikeClassId',
             response: {code: 'code', data: 'data'},
-            template_val: '{{d.classId}}',
-            template_txt: '{{d.classId}} <span class=\'layui-badge layui-bg-gray\'>{{d.classGeneralName}}</span>',
+            template_val: '{{d.value}}',
+            template_txt: '{{d.value}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
             onselect: function (resp) {
 
             }
@@ -124,8 +124,8 @@
             cache: true,
             url: '${ctx}/class/getClassesLikeClassId',
             response: {code: 'code', data: 'data'},
-            template_val: '{{d.classId}}',
-            template_txt: '{{d.classId}} <span class=\'layui-badge layui-bg-gray\'>{{d.classGeneralName}}</span>',
+            template_val: '{{d.value}}',
+            template_txt: '{{d.value}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
             onselect: function (resp) {
 
             }

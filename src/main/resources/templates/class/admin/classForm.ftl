@@ -107,11 +107,11 @@
     <div class="layui-form-item">
         <label class="layui-form-label">上课教师</label>
         <div class="layui-input-inline">
-            <input type="text" name="teacherName" placeholder="请输入" class="layui-input">
+            <input type="text" id="teacherName" name="teacherName" placeholder="请输入" class="layui-input">
         </div>
         <label class="layui-form-label">助教</label>
         <div class="layui-input-inline">
-            <input type="text" name="assistantName" placeholder="请输入" class="layui-input">
+            <input type="text" id="assistantName" name="assistantName" placeholder="请输入" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
@@ -147,10 +147,11 @@
         base: '${ctx}/plugins/layuiadmin/' //静态资源所在路径
     }).extend({
         index: 'lib/index' //主入口模块
-    }).use(['index', 'user', 'laydate'], function () {
+    }).use(['index', 'user', 'laydate', 'autocomplete'], function () {
         var $ = layui.$
                 , form = layui.form
-                , laydate = layui.laydate;
+                , laydate = layui.laydate
+                , autocomplete = layui.autocomplete;
 
         laydate.render({
             elem: '#year'
@@ -226,6 +227,31 @@
                 form.render('select');
             }
         });
+
+
+        layui.link('${ctx}/custom/css/autocomplete.css');
+        autocomplete.render({
+            elem: $('#assistantName')[0],
+            url: '${ctx}/assistant/getAssistantsLikeAssistantName',
+            response: {code: 'code', data: 'data'},
+            template_val: '{{d.value}}',
+            template_txt: '{{d.parsedValue}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
+            onselect: function (resp) {
+
+            }
+        });
+
+        autocomplete.render({
+            elem: $('#teacherName')[0],
+            url: '${ctx}/teacher/getTeachersLikeTeacherName',
+            response: {code: 'code', data: 'data'},
+            template_val: '{{d.value}}',
+            template_txt: '{{d.value}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
+            onselect: function (resp) {
+
+            }
+        });
+
 
         form.render();
 

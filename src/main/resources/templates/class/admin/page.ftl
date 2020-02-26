@@ -17,9 +17,9 @@
     <div class="layui-card">
         <div class="layui-form layui-card-header layuiadmin-card-header-auto">
             <div class="layui-form-item" id="form">
-                <div class="layui-inline">
-                    <label class="layui-form-label">年份-季度<a style="color: blue"
-                                                            lay-tips="一般情况系统会根据校历缓存自动勾选合适的'年份-季度-分期'。如果当前自动选择的'年份-季度-分期'与实际开课的不符，请联系学管或助教长修改'智能校历'；当下，你可以先手动选择正确的来完成正常查询。">(与实际不符?)</a></label>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><a style="color: blue"
+                                                       lay-tips="与实际不符？一般情况系统会根据校历缓存自动勾选合适的'年份-季度-分期'。如果当前自动选择的'年份-季度-分期'与实际开课的不符，请联系学管或助教长修改'智能校历'；当下，你可以先手动选择正确的来完成正常查询。">年份-季度</a></label>
                     <div class="layui-input-inline">
                         <input type="text" class="layui-input" placeholder="yyyy" id="year" name="year">
                     </div>
@@ -33,8 +33,6 @@
                             <option value="">请选择分期</option>
                         </select>
                     </div>
-                </div>
-                <div class="layui-inline">
                     <label class="layui-form-label">校区</label>
                     <div class="layui-input-inline">
                         <select name="campus" id="campus" lay-filter="campus" lay-search>
@@ -42,18 +40,60 @@
                         </select>
                     </div>
                 </div>
-                <div class="layui-inline">
+                <div class="layui-form-item">
                     <label class="layui-form-label">班级编码</label>
                     <div class="layui-input-inline">
                         <input name="classId" id="classId"
                                autocomplete="off" class="layui-input"
                                placeholder="U6MCFC020001">
                     </div>
-                </div>
-                <div class="layui-inline">
                     <label class="layui-form-label">班级名称</label>
                     <div class="layui-input-inline">
                         <input type="text" name="className" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">上课时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="classTime" placeholder="8:00-10:00" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">助教</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="assistantName" name="assistantName" placeholder="请输入" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                    <label class="layui-form-label">上课教师</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="teacherName" name="teacherName" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                    <label class="layui-form-label"><a style="color: blue"
+                                                       lay-tips="没有下拉选项？选择了'校区'一栏后才能渲染该下拉菜单中的对应教室。">上课教室</a></label>
+                    <div class="layui-input-inline">
+                        <select name="classroom" id="classroom"
+                                lay-search>
+                            <option value="">请选择教室</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">年级</label>
+                    <div class="layui-input-inline">
+                        <select name="grade" id="grade">
+                            <option value="">请选择年级</option>
+                        </select>
+                    </div>
+                    <label class="layui-form-label">学科</label>
+                    <div class="layui-input-inline">
+                        <select name="subject" id="subject">
+                            <option value="">请选择学科</option>
+                        </select>
+                    </div>
+                    <label class="layui-form-label">班型</label>
+                    <div class="layui-input-inline">
+                        <select name="type" id="type">
+                            <option value="">请选择班型</option>
+                        </select>
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -65,61 +105,6 @@
                             <option value="notFull">未满</option>
                         </select>
                     </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">助教</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="assistantName" placeholder="请输入" autocomplete="off"
-                               class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">上课教师</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="teacherName" placeholder="请输入" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">上课时间</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="classTime" placeholder="8:00-10:00" autocomplete="off"
-                               class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">上课教室</label>
-                    <div class="layui-input-inline">
-                        <select name="classroom" id="classroom"
-                                lay-search>
-                            <option value="">请选择教室</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">年级</label>
-                    <div class="layui-input-inline">
-                        <select name="grade" id="grade">
-                            <option value="">请选择年级</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">学科</label>
-                    <div class="layui-input-inline">
-                        <select name="subject" id="subject">
-                            <option value="">请选择学科</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">班型</label>
-                    <div class="layui-input-inline">
-                        <select name="type" id="type">
-                            <option value="">请选择班型</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-inline">
                     <label class="layui-form-label">筛选排序</label>
                     <div class="layui-input-inline">
                         <select id="condition1" name="condition1" lay-filter="condition1">
@@ -254,8 +239,30 @@
             cache: true,
             url: '${ctx}/class/getClassesLikeClassId',
             response: {code: 'code', data: 'data'},
-            template_val: '{{d.classId}}',
-            template_txt: '{{d.classId}} <span class=\'layui-badge layui-bg-gray\'>{{d.classGeneralName}}</span>',
+            template_val: '{{d.value}}',
+            template_txt: '{{d.value}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
+            onselect: function (resp) {
+
+            }
+        });
+
+        autocomplete.render({
+            elem: $('#assistantName')[0],
+            url: '${ctx}/assistant/getAssistantsLikeAssistantName',
+            response: {code: 'code', data: 'data'},
+            template_val: '{{d.value}}',
+            template_txt: '{{d.parsedValue}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
+            onselect: function (resp) {
+
+            }
+        });
+
+        autocomplete.render({
+            elem: $('#teacherName')[0],
+            url: '${ctx}/teacher/getTeachersLikeTeacherName',
+            response: {code: 'code', data: 'data'},
+            template_val: '{{d.value}}',
+            template_txt: '{{d.value}} <span class=\'layui-badge layui-bg-gray\'>{{d.subValue}}</span>',
             onselect: function (resp) {
 
             }

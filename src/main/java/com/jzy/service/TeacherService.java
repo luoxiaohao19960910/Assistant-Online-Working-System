@@ -145,4 +145,12 @@ public interface TeacherService {
      * @return 更新记录数
      */
     long deleteTeachersByCondition(TeacherSearchCondition condition);
+
+    /**
+     * 根据教师姓名模糊查询教师
+     *
+     * @param teacherName 教师姓名关键字
+     * @return 符合条件的教师列表
+     */
+    List<Teacher> listTeachersLikeTeacherName(String teacherName);
 }

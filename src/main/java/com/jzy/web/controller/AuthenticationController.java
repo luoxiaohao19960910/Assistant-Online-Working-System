@@ -84,7 +84,7 @@ public class AuthenticationController extends AbstractController {
 
     @RequestMapping("/")
     public String login0() {
-        return "login";
+        return "redirect:/index";
     }
 
     @RequestMapping("/login")
@@ -185,10 +185,10 @@ public class AuthenticationController extends AbstractController {
         if (StringUtils.isEmpty(userName)) {
             return false;
         }
-        String ipKey = RedisConstants.USER_LOGIN_IP_KEY;
-        if (hashOps.hasKey(ipKey, userName)) {
+        String ipKey = RedisConstants.getUserLoginIpKey(userName);
+        if (redisTemplate.hasKey(ipKey)) {
             //如果缓存中有上次登录成功的ip
-            String originalIp = (String) hashOps.get(ipKey, userName);
+            String originalIp = (String) valueOps.get(ipKey);
             String currentIp = ShiroUtils.getClientIpAddress(request);
             if (currentIp == null || !currentIp.equals(originalIp)) {
                 return false;
@@ -279,8 +279,9 @@ public class AuthenticationController extends AbstractController {
             }
 
             //登录成功ip缓存
-            hashOps.put(RedisConstants.USER_LOGIN_IP_KEY, input.getUserName(), ShiroUtils.getClientIpAddress(request));
-            redisTemplate.expire(RedisConstants.USER_LOGIN_IP_KEY, RedisConstants.USER_LOGIN_IP_EXPIRE, TimeUnit.DAYS);
+            String userLoginIpKey=RedisConstants.getUserLoginIpKey(input.getUserName());
+            valueOps.set(userLoginIpKey, ShiroUtils.getClientIpAddress(request));
+            redisTemplate.expire(userLoginIpKey, RedisConstants.USER_LOGIN_IP_EXPIRE, TimeUnit.DAYS);
 
             session.removeAttribute(SessionConstants.REQUIRE_SLIDER_AUTH_SESSION_KEY);
         } catch (UnknownAccountException e) {

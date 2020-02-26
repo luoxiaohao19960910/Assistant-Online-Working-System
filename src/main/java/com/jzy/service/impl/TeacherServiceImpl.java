@@ -7,7 +7,10 @@ import com.jzy.manager.constant.Constants;
 import com.jzy.manager.constant.ExcelConstants;
 import com.jzy.manager.exception.InvalidParameterException;
 import com.jzy.manager.util.TeacherUtils;
-import com.jzy.model.dto.*;
+import com.jzy.model.dto.DefaultFromExcelUpdateResult;
+import com.jzy.model.dto.InvalidData;
+import com.jzy.model.dto.MyPage;
+import com.jzy.model.dto.UpdateResult;
 import com.jzy.model.dto.search.TeacherSearchCondition;
 import com.jzy.model.entity.Teacher;
 import com.jzy.service.TeacherService;
@@ -17,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -292,5 +296,13 @@ public class TeacherServiceImpl extends AbstractServiceImpl implements TeacherSe
     @Override
     public long deleteTeachersByCondition(TeacherSearchCondition condition) {
         return teacherMapper.deleteTeachersByCondition(condition);
+    }
+
+    @Override
+    public List<Teacher> listTeachersLikeTeacherName(String teacherName) {
+        if (StringUtils.isEmpty(teacherName)){
+            return new ArrayList<>();
+        }
+        return teacherMapper.listTeachersLikeTeacherName(teacherName);
     }
 }

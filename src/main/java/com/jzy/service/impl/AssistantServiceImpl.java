@@ -329,4 +329,12 @@ public class AssistantServiceImpl extends AbstractServiceImpl implements Assista
         }
         return assistantMapper.deleteAssistantsByCondition(condition);
     }
+
+    @Override
+    public List<Assistant> listAssistantsLikeAssistantName(String assistantName) {
+        if (StringUtils.isEmpty(assistantName)){
+            return new ArrayList<>();
+        }
+        return assistantMapper.listAssistantsLikeAssistantName(assistantName);
+    }
 }

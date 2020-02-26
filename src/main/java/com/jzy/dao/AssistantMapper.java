@@ -111,4 +111,12 @@ public interface AssistantMapper {
      * @return 指定开课的年份季度分期和校区的全部助教
      */
     List<Assistant> listAssistantsByClassSeasonAndCampus(@Param("classSeasonDto") ClassSeasonDto classSeasonDto, @Param("campus") String campus);
+
+    /**
+     * 根据助教姓名模糊查询助教
+     *
+     * @param assistantName 助教姓名关键字
+     * @return 符合条件的助教列表
+     */
+    List<Assistant> listAssistantsLikeAssistantName(@Param("assistantName") String assistantName);
 }
