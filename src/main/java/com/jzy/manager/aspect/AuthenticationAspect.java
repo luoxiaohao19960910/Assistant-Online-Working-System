@@ -30,6 +30,10 @@ public class AuthenticationAspect extends AbstractLogger {
     public void loginTestPoints() {
     }
 
+    @Pointcut("execution(* com.jzy.web.controller.AuthenticationController.index(..)) ")
+    public void indexPoint() {
+    }
+
     @AfterReturning(returning = "map", pointcut = "loginTestPoints()")
     public void afterLoginTest(JoinPoint jp, Map<String, Object> map) {
         Object data = map.get("data");
@@ -63,6 +67,14 @@ public class AuthenticationAspect extends AbstractLogger {
             importantLogService.saveImportantLog(message, null, operatorIp);
         }
 
+        logger.info(message);
+    }
+
+    @AfterReturning(pointcut = "indexPoint()")
+    public void visitIndex(JoinPoint jp) {
+        User user = userService.getSessionUserInfo();
+        String message = "用户(姓名=" + user.getUserRealName() + ", id=" + user.getId() + ")访问主页";
+        importantLogService.saveImportantLog(message, user, getIpAddress(jp));
         logger.info(message);
     }
 }

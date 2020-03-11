@@ -56,6 +56,13 @@ public interface AssistantService {
     Assistant getAssistantByName(String assistantName);
 
     /**
+     * 列出所有助教
+     *
+     * @return 所有助教列表
+     */
+    List<Assistant> listAllAssistants();
+
+    /**
      * 根据助教校区查询出助教信息
      *
      * @param campus 助教校区

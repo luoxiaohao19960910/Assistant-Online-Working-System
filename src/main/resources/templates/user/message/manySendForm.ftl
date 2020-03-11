@@ -30,6 +30,12 @@
                                        lay-text="是|否"
                                        lay-filter="hideName">
                             </div>
+                            <label class="layui-form-label">邮件提醒&nbsp; <i class="layui-icon layui-icon-tips"
+                                                                          lay-tips="开启'邮件提醒'后信息还将以邮件形式发送给目标用户，如果目标用户的账号绑定了邮箱的话！"></i></label>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" name="emailTip" lay-skin="switch" lay-text="ON|OFF"
+                                       lay-filter="emailTip" checked>
+                            </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">发送给</label>
@@ -167,6 +173,7 @@
                 type: 'post',
                 data: {
                     hide: field.hideName
+                    , emailTip : field.emailTip
                     , userIds: field.ids
                     , messageTitle: field.title
                     , messageContent: field.content

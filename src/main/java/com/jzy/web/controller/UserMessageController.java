@@ -6,6 +6,7 @@ import com.jzy.manager.constant.Constants;
 import com.jzy.manager.constant.ModelConstants;
 import com.jzy.manager.exception.InvalidParameterException;
 import com.jzy.manager.util.FileUtils;
+import com.jzy.manager.util.SendEmailUtils;
 import com.jzy.manager.util.ShiroUtils;
 import com.jzy.manager.util.UserMessageUtils;
 import com.jzy.model.CampusEnum;
@@ -281,12 +282,14 @@ public class UserMessageController extends AbstractController {
     /**
      * 发送消息给用户，插入数据库
      *
+     * @param hide 是否匿名
+     * @param emailTip 是否开启邮件提醒
      * @param message 新发送的消息
      * @return
      */
     @RequestMapping("/insertSendMessage")
     @ResponseBody
-    public Map<String, Object> insertSendMessage(@RequestParam(value = "hide", required = false) String hide, UserMessage message, HttpServletRequest request) {
+    public Map<String, Object> insertSendMessage(@RequestParam(value = "hide", required = false) String hide, @RequestParam(value = "emailTip", required = false) String emailTip, UserMessage message, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         if (!Constants.ON.equals(hide)) {
@@ -305,7 +308,24 @@ public class UserMessageController extends AbstractController {
 
         map.put("data", userMessageService.insertOneUserMessage(message));
 
+        if (Constants.ON.equals(emailTip)) {
+            //开了邮件提醒
+            sendEmail(message);
+        }
+
         return map;
+    }
+
+    private void sendEmail(UserMessage message){
+        User target = userService.getUserById(message.getUserId());
+        if (StringUtils.isNotEmpty(target.getUserEmail())){
+            User from= userService.getUserById(message.getUserFromId());
+            String content="来自优能助教工作平台"+Constants.INDEX
+                    +"\n==========================\n"+from.getUserRole()+"-"+from.getUserRealName()+"向你发送了一条消息："
+                    +"\n-------------------------------------\n"+message.getMessageContent();
+
+            SendEmailUtils.sendConcurrentEncryptedEmail(target.getUserEmail(), message.getMessageTitle(), content);
+        }
     }
 
     /**
@@ -324,31 +344,31 @@ public class UserMessageController extends AbstractController {
 
     /**
      * 返回@指定用户的字符串显示结果
-     *  如，"@管理员-张三"
+     * 如，"@管理员-张三"
      *
      * @param user 用户
      * @return 回显字串
      */
-    private String getUserSendToShow(User user){
-        if (user == null){
+    private String getUserSendToShow(User user) {
+        if (user == null) {
             return "";
         }
-        return "@" + user.getUserRole() + "-" + user.getUserRealName()+"; ";
+        return "@" + user.getUserRole() + "-" + user.getUserRealName() + "; ";
     }
 
 
     /**
      * 返回@指定用户的字符串显示结果
-     *  如，"@管理员-张三"
+     * 如，"@管理员-张三"
      *
      * @param user 用户
      * @return 回显字串
      */
-    private String getUserSendToShow(UserSendTo user){
-        if (user == null){
+    private String getUserSendToShow(UserSendTo user) {
+        if (user == null) {
             return "";
         }
-        return "@" + user.getUserRole() + "-" + user.getUserRealName()+"; ";
+        return "@" + user.getUserRole() + "-" + user.getUserRealName() + "; ";
     }
 
     /**
@@ -392,12 +412,14 @@ public class UserMessageController extends AbstractController {
     /**
      * 批量发送消息给用户，插入数据库
      *
+     * @param hide 是否匿名
+     * @param emailTip 是否开启邮件提醒
      * @param message 新发送的消息
      * @return
      */
     @RequestMapping("/many/insertSendMessage")
     @ResponseBody
-    public Map<String, Object> manyInsertSendMessage(@RequestParam(value = "hide", required = false) String hide, @RequestParam("userIds") String ids, UserMessage message, HttpServletRequest request) {
+    public Map<String, Object> manyInsertSendMessage(@RequestParam(value = "hide", required = false) String hide,@RequestParam(value = "emailTip", required = false) String emailTip, @RequestParam("userIds") String ids, UserMessage message, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         Long userId = null;
@@ -427,6 +449,11 @@ public class UserMessageController extends AbstractController {
             }
             userMessages.add(userMessage);
 
+
+            if (Constants.ON.equals(emailTip)) {
+                //开了邮件提醒
+                sendEmail(userMessage);
+            }
         }
         try {
             map.put("data", userMessageService.insertManyUserMessages(userMessages));
@@ -453,12 +480,14 @@ public class UserMessageController extends AbstractController {
     /**
      * 发送全体消息给用户，插入数据库
      *
+     * @param hide 是否匿名
+     * @param emailTip 是否开启邮件提醒
      * @param message 新发送的消息
      * @return
      */
     @RequestMapping("/all/insertSendMessage")
     @ResponseBody
-    public Map<String, Object> allInsertSendMessage(@RequestParam(value = "hide", required = false) String hide, UserMessage message, HttpServletRequest request) {
+    public Map<String, Object> allInsertSendMessage(@RequestParam(value = "hide", required = false) String hide,@RequestParam(value = "emailTip", required = false) String emailTip, UserMessage message, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
 
         Long userFromId = null;
@@ -488,6 +517,10 @@ public class UserMessageController extends AbstractController {
             }
             userMessages.add(userMessage);
 
+            if (Constants.ON.equals(emailTip)) {
+                //开了邮件提醒
+                sendEmail(userMessage);
+            }
         }
         try {
             map.put("data", userMessageService.insertManyUserMessages(userMessages));

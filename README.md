@@ -118,7 +118,21 @@
 
    ![Snipaste_2019-07-17_08-49-48](git_screenshot/Snipaste_2019-07-17_08-49-48.jpg)
 
-3. *进入src/main/resources修改application.properties配置文件*
+3. *进入src/main/resources查看application.properties配置文件。第一行dev值表示当前为开发环境，因此springboot还会相应读取application-dev.properties。*
+
+   ```properties
+   #当前为开发环境
+   spring.profiles.active=dev
+   ```
+
+4. *进入src/main/resources查看并修改application-dev.properties。*
+
+   * 当前开发环境默认的部署端口为80。
+
+     ```properties
+     #端口
+     server.port= 80
+     ```
 
    - 修改mysql连接信息
 
@@ -144,14 +158,14 @@
      spring.redis.password = 123
      ```
 
-   - 如果有必要可以修改当前项目部署端口（可选）
+   - project.root.path为用户上传的头像等文件的保存路径，当前为默认为D:\\\\aows_resources\\\\。相应地，在你clone下来的项目的根目录中有一个叫aows_resources的文件夹，将它复制到D盘下即可。**这里project.root.path=D:\\\\aows_resources\\\\指的是D:\\下的名为aows_resources的文件夹。如果你将project.root.path改成C:\\\myFile\\\\aows_resources\\\\，你就应该将aows_resources文件夹整体复制到C:\\myFile\\目录下。**
 
      ```properties
-     #端口
-     server.port= 80
+     # windows下，开发环境使用
+     project.root.path=D:\\aows_resources\\
      ```
 
-4. *进入src/main/resources查看log4j2.xml，如果有必要可以修改日志输出路径rootPath，目前在D://warlogs//logs-aows下，你可选择不修改跳过此步。*
+5. *进入src/main/resources查看log4j2.xml，如果有必要可以修改日志输出路径rootPath，目前在D://warlogs//logs-aows下。*
 
    ```xml
    <configuration status="WARN" monitorInterval="1800">
@@ -162,17 +176,6 @@
        </Properties>
        ...
    </configuration>
-   ```
-
-5. *进入src/main/resources/myConfig查看filePath.properties。其中project.root.path为用户上传的头像等文件的保存路径。注意，在你clone下来的项目的根目录中有一个叫aows_resources的文件夹，将它复制到D盘下即可。**这里project.root.path=D:\\\\aows_resources\\\\指的是D:\\下有一个叫aows_resources的文件夹。如果你将project.root.path改成C:\\\myFile\\\\aows_resources\\\\，你就应该将aows_resources文件夹复制到C:\\myFile\\目录下。***
-
-   ```properties
-   # windows下，开发环境使用
-   project.root.path=D:\\aows_resources\\
-   # ubuntu下，生产环境使用
-   #project.root.path= /root/aows_resources
-   
-   ...
    ```
 
 6. *运行com.jzy.App，在浏览器中输入localhost，进入用户登录页面。使用用户名/密码：kurochan/kurochan，完成登录。*

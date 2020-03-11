@@ -4,7 +4,7 @@ import com.jzy.manager.util.SessionUtils;
 import com.jzy.manager.util.ShiroUtils;
 import com.jzy.web.shiro.UserRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.codec.Base64;
+import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -65,6 +66,9 @@ public class ShiroConfig {
     public ShiroFilterFactoryBean shiroFilterFactoryBean(@Qualifier("securityManager") DefaultWebSecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
+
+        Map<String, Filter> filters = shiroFilterFactoryBean.getFilters();
+
         //添加shrio内置过滤器
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
 
@@ -151,10 +155,10 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/logout", "logout");  // 用户退出，只需配置logout即可实现该功能
 
         /*=======================================================*/
-//        filterChainDefinitionMap.put("/**", "user");   //rememberMe后可以访问的路径
+        filterChainDefinitionMap.put("/**", "user");   //rememberMe后可以访问的路径
 
         /*=======================================================*/
-        filterChainDefinitionMap.put("/**", "authc");       // 其他路径均需要身份认证，一般位于最下面，优先级最低
+//        filterChainDefinitionMap.put("/**", "authc");       // 其他路径均需要身份认证，一般位于最下面，优先级最低
 
         /*=======================================================*/
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
@@ -162,6 +166,14 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSuccessUrl("/index"); // 登录成功后跳转的路径
         shiroFilterFactoryBean.setUnauthorizedUrl("/noPermissions");  // 未授权后跳转的路径
         return shiroFilterFactoryBean;
+    }
+
+    @Bean
+    public EhCacheManager ehCacheManager() {
+        System.out.println("ShiroConfiguration.getEhCacheManager()");
+        EhCacheManager ehCacheManager = new EhCacheManager();
+        ehCacheManager.setCacheManagerConfigFile("classpath:ehcache-shiro.xml");
+        return ehCacheManager;
     }
 
     /**
@@ -174,6 +186,7 @@ public class ShiroConfig {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         // 设置session过期时间2*3600s
         sessionManager.setGlobalSessionTimeout(SessionUtils.SESSION_EXPIRE_TIME);
+
         //是否删除过期session
         sessionManager.setDeleteInvalidSessions(true);
         sessionManager.setSessionIdCookieEnabled(true);
@@ -195,19 +208,18 @@ public class ShiroConfig {
         return simpleCookie;
     }
 
-    /**
+       /**
      * cookie管理对象;
-     * rememberMeManager()方法是生成rememberMe管理器，而且要将这个rememberMe管理器设置到securityManager中
+     * cookieRememberMeManager()方法是生成rememberMe管理器，而且要将这个rememberMe管理器设置到securityManager中
      * @return
      */
-    @Bean
-    public CookieRememberMeManager rememberMeManager(){
-        CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
-        cookieRememberMeManager.setCookie(rememberMeCookie());
-        //rememberMe cookie加密的密钥 建议每个项目都不一样 默认AES算法 密钥长度(128 256 512 位)
-        cookieRememberMeManager.setCipherKey(Base64.decode("2AvVhdsgUs0FSA3SDFAdag=="));
-        return cookieRememberMeManager;
-    }
+       @Bean
+       public CookieRememberMeManager cookieRememberMeManager() {
+           System.out.println("ShiroConfiguration.rememberMeManager()");
+           CookieRememberMeManager manager = new CookieRememberMeManager();
+           manager.setCookie(rememberMeCookie());
+           return manager;
+       }
 
     /**
      * shiro核心安全管理器
@@ -217,9 +229,10 @@ public class ShiroConfig {
     @Bean(name = "securityManager")
     public DefaultWebSecurityManager defaultWebSecurityManager(){
         DefaultWebSecurityManager securityManager=new DefaultWebSecurityManager();
-//        securityManager.setRememberMeManager(rememberMeManager());
         securityManager.setSessionManager(sessionManager());
         securityManager.setRealm(userRealm());
+        securityManager.setRememberMeManager(cookieRememberMeManager()); //注入rememberMeManager;
+        securityManager.setCacheManager(ehCacheManager()); //注入缓存对象。
         return securityManager;
     }
 

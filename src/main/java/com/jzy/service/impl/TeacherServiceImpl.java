@@ -1,10 +1,13 @@
 package com.jzy.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jzy.dao.TeacherMapper;
 import com.jzy.manager.constant.Constants;
 import com.jzy.manager.constant.ExcelConstants;
+import com.jzy.manager.constant.RedisConstants;
 import com.jzy.manager.exception.InvalidParameterException;
 import com.jzy.manager.util.TeacherUtils;
 import com.jzy.model.dto.DefaultFromExcelUpdateResult;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author JinZhiyun
@@ -239,6 +243,11 @@ public class TeacherServiceImpl extends AbstractServiceImpl implements TeacherSe
     }
 
     @Override
+    public List<Teacher> listAllTeachers() {
+        return teacherMapper.listAllTeachers();
+    }
+
+    @Override
     public String updateTeacherInfo(Teacher teacher) {
         if (teacher == null) {
             return FAILURE;
@@ -303,6 +312,25 @@ public class TeacherServiceImpl extends AbstractServiceImpl implements TeacherSe
         if (StringUtils.isEmpty(teacherName)){
             return new ArrayList<>();
         }
-        return teacherMapper.listTeachersLikeTeacherName(teacherName);
+        List<Teacher> teachersLikeTeacherName = new ArrayList<>();
+        String key = RedisConstants.TEACHERS_LIKE_TEACHER_NAME_KEY;
+        if (redisTemplate.hasKey(key)) {
+            //缓存中有
+            String teachersJSON = (String) valueOps.get(key);
+            List<Teacher> allTeachers = JSONArray.parseArray(teachersJSON, Teacher.class);
+            for (Teacher teacher : allTeachers) {
+                if (teacher.getTeacherName().contains(teacherName)) {
+                    //模糊匹配
+                    teachersLikeTeacherName.add(teacher);
+                }
+            }
+        } else {
+            teachersLikeTeacherName = teacherMapper.listTeachersLikeTeacherName(teacherName);
+            List<Teacher> teachers = listAllTeachers();
+            //添加缓存
+            valueOps.set(key, JSON.toJSONString(teachers));
+            redisTemplate.expire(key, RedisConstants.TEACHERS_LIKE_TEACHER_NAME_EXPIRE, TimeUnit.DAYS);
+        }
+        return teachersLikeTeacherName;
     }
 }

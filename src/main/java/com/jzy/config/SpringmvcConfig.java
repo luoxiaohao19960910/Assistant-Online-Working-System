@@ -28,6 +28,11 @@ public class SpringmvcConfig extends WebMvcConfigurerAdapter {
         return new EmailVerifyCodeInterceptor();
     }
 
+    @Bean
+    public RememberMeSessionInterceptor rememberMeSessionInterceptor(){
+        return new RememberMeSessionInterceptor();
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //UpdateSessionUserInfoInterceptor
@@ -43,6 +48,10 @@ public class SpringmvcConfig extends WebMvcConfigurerAdapter {
         //EmailVerifyCodeInterceptor
         registry.addInterceptor(emailVerifyCodeInterceptor())
                 .addPathPatterns("/resetPassword").addPathPatterns("/user/modifyCurrentEmail"); //拦截项目中的哪些请求
+
+        //RememberMeSessionInterceptor
+        registry.addInterceptor(rememberMeSessionInterceptor())
+                .addPathPatterns("/**"); //拦截项目中的哪些请求
 
     }
 }

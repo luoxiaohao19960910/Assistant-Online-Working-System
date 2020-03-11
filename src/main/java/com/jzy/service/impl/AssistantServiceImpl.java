@@ -1,10 +1,13 @@
 package com.jzy.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jzy.dao.AssistantMapper;
 import com.jzy.manager.constant.Constants;
 import com.jzy.manager.constant.ExcelConstants;
+import com.jzy.manager.constant.RedisConstants;
 import com.jzy.manager.exception.InvalidParameterException;
 import com.jzy.manager.util.AssistantUtils;
 import com.jzy.model.dto.*;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author JinZhiyun
@@ -73,6 +77,11 @@ public class AssistantServiceImpl extends AbstractServiceImpl implements Assista
     @Override
     public Assistant getAssistantByName(String assistantName) {
         return StringUtils.isEmpty(assistantName) ? null : assistantMapper.getAssistantByName(assistantName);
+    }
+
+    @Override
+    public List<Assistant> listAllAssistants() {
+        return assistantMapper.listAllAssistants();
     }
 
     @Override
@@ -335,6 +344,25 @@ public class AssistantServiceImpl extends AbstractServiceImpl implements Assista
         if (StringUtils.isEmpty(assistantName)){
             return new ArrayList<>();
         }
-        return assistantMapper.listAssistantsLikeAssistantName(assistantName);
+        List<Assistant> assistantsLikeAssistantName = new ArrayList<>();
+        String key = RedisConstants.ASSISTANTS_LIKE_ASSISTANT_NAME_KEY;
+        if (redisTemplate.hasKey(key)) {
+            //缓存中有
+            String assistantsJSON = (String) valueOps.get(key);
+            List<Assistant> allAssistants = JSONArray.parseArray(assistantsJSON, Assistant.class);
+            for (Assistant assistant : allAssistants) {
+                if (assistant.getAssistantName().contains(assistantName)) {
+                    //模糊匹配
+                    assistantsLikeAssistantName.add(assistant);
+                }
+            }
+        } else {
+            assistantsLikeAssistantName = assistantMapper.listAssistantsLikeAssistantName(assistantName);
+            List<Assistant> assistants = listAllAssistants();
+            //添加缓存
+            valueOps.set(key, JSON.toJSONString(assistants));
+            redisTemplate.expire(key, RedisConstants.ASSISTANTS_LIKE_ASSISTANT_NAME_EXPIRE, TimeUnit.DAYS);
+        }
+        return assistantsLikeAssistantName;
     }
 }

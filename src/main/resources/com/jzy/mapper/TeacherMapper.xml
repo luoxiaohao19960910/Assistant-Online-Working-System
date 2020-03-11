@@ -162,6 +162,9 @@
             </if>
         </where>
     </select>
+    <select id="listAllTeachers" resultMap="BaseResultMap">
+        select * from teacher
+    </select>
 
 
 </mapper>

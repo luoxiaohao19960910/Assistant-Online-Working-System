@@ -101,4 +101,11 @@ public interface TeacherMapper {
      * @return 符合条件的教师列表
      */
     List<Teacher> listTeachersLikeTeacherName(@Param("teacherName") String teacherName);
+
+    /**
+     * 返回所有教师
+     *
+     * @return 所有教师集合
+     */
+    List<Teacher> listAllTeachers();
 }

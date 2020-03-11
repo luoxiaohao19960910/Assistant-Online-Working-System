@@ -16,7 +16,7 @@ import java.io.File;
  * @date 2019/11/18 10:37
  **/
 @Configuration
-@PropertySource("classpath:myConfig/filePath.properties")
+@PropertySource(value = {"classpath:myConfig/filePath.properties"})
 public class FilePathProperties {
     private static final String SEPARATOR = File.separator;
 

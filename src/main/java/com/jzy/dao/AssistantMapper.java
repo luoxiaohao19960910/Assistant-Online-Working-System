@@ -119,4 +119,11 @@ public interface AssistantMapper {
      * @return 符合条件的助教列表
      */
     List<Assistant> listAssistantsLikeAssistantName(@Param("assistantName") String assistantName);
+
+    /**
+     * 列出所有助教
+     *
+     * @return 所有助教列表
+     */
+    List<Assistant> listAllAssistants();
 }

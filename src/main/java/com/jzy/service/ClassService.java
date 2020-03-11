@@ -132,6 +132,13 @@ public interface ClassService {
     List<String> listAllClassIds();
 
     /**
+     * 返回所有的班级
+     *
+     * @return 所有的班级
+     */
+    List<Class> listAllClasses();
+
+    /**
      * 根据班级编码模糊查询返回匹配的班级编码,注意这里classId不是主键id
      *
      * @param classId 班级编码

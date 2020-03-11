@@ -111,6 +111,13 @@ public interface TeacherService {
     PageInfo<Teacher> listTeachers(MyPage myPage, TeacherSearchCondition condition);
 
     /**
+     * 返回所有教师
+     *
+     * @return 所有教师集合
+     */
+    List<Teacher> listAllTeachers();
+
+    /**
      * 修改教师信息由id修改
      *
      * @param teacher 修改后的教师信息

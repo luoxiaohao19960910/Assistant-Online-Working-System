@@ -1,5 +1,7 @@
 package com.jzy.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jzy.dao.ClassMapper;
@@ -103,10 +105,28 @@ public class ClassServiceImpl extends AbstractServiceImpl implements ClassServic
 
     @Override
     public List<Class> listClassesLikeClassId(String classId) {
-        if (StringUtils.isEmpty(classId)){
+        if (StringUtils.isEmpty(classId)) {
             return new ArrayList<>();
         }
-        List<Class> classesLikeClassId=classMapper.listClassesLikeClassId(classId);
+        List<Class> classesLikeClassId = new ArrayList<>();
+        String key = RedisConstants.CLASSES_LIKE_CLASS_ID_KEY;
+        if (redisTemplate.hasKey(key)) {
+            //缓存中有
+            String classesJSON = (String) valueOps.get(key);
+            List<Class> allClasses = JSONArray.parseArray(classesJSON, Class.class);
+            for (Class clazz : allClasses) {
+                if (clazz.getClassId().contains(classId)) {
+                    //模糊匹配
+                    classesLikeClassId.add(clazz);
+                }
+            }
+        } else {
+            classesLikeClassId = classMapper.listClassesLikeClassId(classId);
+            List<Class> allClasses = listAllClasses();
+            //添加缓存
+            valueOps.set(key, JSON.toJSONString(allClasses));
+            redisTemplate.expire(key, RedisConstants.CLASSES_LIKE_CLASS_ID_EXPIRE, TimeUnit.DAYS);
+        }
         return classesLikeClassId;
     }
 
@@ -287,6 +307,11 @@ public class ClassServiceImpl extends AbstractServiceImpl implements ClassServic
     @Override
     public List<String> listAllClassIds() {
         return classMapper.listAllClassIds();
+    }
+
+    @Override
+    public List<Class> listAllClasses() {
+        return classMapper.listAllClasses();
     }
 
     @Override

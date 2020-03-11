@@ -28,3 +28,4 @@ build/
 
 
 /example_hidden/
+/src/main/resources/application-prod.properties

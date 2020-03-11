@@ -68,7 +68,7 @@
                 <#--</div>-->
             <#--</div>-->
             <div class="layui-form-item" style="margin-bottom: 20px;">
-                <input type="checkbox" name="rememberMe" id="rememberMe" lay-skin="primary" title="记住密码">
+                <span lay-tips="记住密码后30天内同一浏览器访问本站自动登录，无需重新输入用户名密码，不是自己的电脑上不要勾选此项~"><input type="checkbox" name="rememberMe" id="rememberMe" lay-skin="primary" title="记住密码"></span>
                 <a href="${ctx}/forget" class="layadmin-user-jump-change layadmin-link"
                    style="margin-top: 7px;">忘记密码？</a>
             </div>

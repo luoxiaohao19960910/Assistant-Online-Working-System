@@ -19,9 +19,9 @@ public class ShiroUtils {
     }
 
     /**
-     * shiro记住我cookie有效时间2小时
+     * shiro记住我cookie有效时间30天
      */
-    public static final int SHIRO_REMEMBER_ME_COOKIE_TIME = 3600 * 2;
+    public static final int SHIRO_REMEMBER_ME_COOKIE_TIME = 259200;
 
     /**
      * hash算法迭代次数

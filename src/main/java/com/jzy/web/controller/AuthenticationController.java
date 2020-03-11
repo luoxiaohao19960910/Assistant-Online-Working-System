@@ -138,6 +138,7 @@ public class AuthenticationController extends AbstractController {
     @RequestMapping("/index")
     public String index(HttpServletRequest request, HttpServletResponse response, Model model) {
         User user = userService.getSessionUserInfo();
+
         Announcement announcement = new Announcement();
 
         Announcement baseAnnouncement = (Announcement) hashOps.get(RedisConstants.ANNOUNCEMENT_KEY, Constants.BASE_ANNOUNCEMENT.toString());
@@ -257,11 +258,7 @@ public class AuthenticationController extends AbstractController {
         //redis用户登录错误次数缓存的键
         String key = UserLoginResult.getUserLoginFailKey(input.getUserName());
 
-        UsernamePasswordToken token = new UsernamePasswordToken(input.getUserName(), input.getUserPassword());
-        //rememberMe功能交给shrio
-        if (Constants.ON.equals(input.getRememberMe())) {
-            token.setRememberMe(true);
-        }
+        UsernamePasswordToken token = new UsernamePasswordToken(input.getUserName(), input.getUserPassword(), Constants.ON.equals(input.getRememberMe()));
         try {
             subject.login(token);
             User userSessionInfo = (User) subject.getPrincipal();

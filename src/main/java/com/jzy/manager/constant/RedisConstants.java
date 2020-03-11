@@ -90,6 +90,31 @@ public final class RedisConstants {
     public static final String CLASSES_LIKE_CLASS_ID_KEY = ROOT_KEY + ":classesLikeClassId";
 
     /**
+     * 根据班级编码模糊查询返回班级对象列表缓存的过期时间：120天
+     */
+    public static final long CLASSES_LIKE_CLASS_ID_EXPIRE = 120;
+
+    /**
+     * 根据助教姓名模糊查询返回助教对象列表缓存的键
+     */
+    public static final String ASSISTANTS_LIKE_ASSISTANT_NAME_KEY = ROOT_KEY + ":assistantsLikeAssistantName";
+
+    /**
+     * 根据助教编码模糊查询返回助教对象列表缓存的过期时间：120天
+     */
+    public static final long ASSISTANTS_LIKE_ASSISTANT_NAME_EXPIRE = CLASSES_LIKE_CLASS_ID_EXPIRE;
+
+    /**
+     * 根据教师姓名模糊查询返回教师对象列表缓存的键
+     */
+    public static final String TEACHERS_LIKE_TEACHER_NAME_KEY = ROOT_KEY + ":teachersLikeTeacherName";
+
+    /**
+     * 根据教师姓名模糊查询返回教师对象列表缓存的过期时间：120天
+     */
+    public static final long TEACHERS_LIKE_TEACHER_NAME_EXPIRE = CLASSES_LIKE_CLASS_ID_EXPIRE;
+
+    /**
      * 校区-教室列表缓存的键
      */
     public static final String CLASSROOMS_KEY = ROOT_KEY + ":classroom";

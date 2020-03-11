@@ -125,4 +125,11 @@ public interface ClassMapper {
      * @return 对应id的班级详细信息
      */
     ClassDetailedDto getClassDetailById(@Param("id") Long id);
+
+    /**
+     * 返回所有的班级
+     *
+     * @return 所有的班级
+     */
+    List<Class> listAllClasses();
 }

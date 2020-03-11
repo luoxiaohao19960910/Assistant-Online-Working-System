@@ -218,5 +218,8 @@
             </if>
         </where>
     </select>
+    <select id="listAllAssistants" resultMap="BaseResultMap">
+        select * from assistant
+    </select>
 
 </mapper>

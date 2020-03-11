@@ -402,6 +402,9 @@
         from class c left join assistant a on c.class_assistant_id = a.id left join teacher t on c.class_teacher_id = t.id
         where c.id=#{id}
   </select>
+    <select id="listAllClasses" resultMap="BaseResultMap">
+      select * from class
+    </select>
 
 
 </mapper>
