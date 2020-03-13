@@ -126,7 +126,8 @@
 
             //请求接口
             $.ajax({
-                url: '${ctx}/loginTestByQuestion' //实际使用请改成服务端真实接口
+                type: "post"
+                , url: '${ctx}/loginTestByQuestion' //实际使用请改成服务端真实接口
                 , data: {"answer": field.answer}
                 , success: function (res) {
                     layer.closeAll('loading'); //关闭loading

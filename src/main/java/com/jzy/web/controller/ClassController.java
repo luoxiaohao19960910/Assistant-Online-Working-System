@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,7 +31,7 @@ public class ClassController extends AbstractController {
      * @param campusName 校区名称
      * @return
      */
-    @RequestMapping("/listClassroomsByCampus")
+    @GetMapping("/listClassroomsByCampus")
     @ResponseBody
     public List<String> listClassroomsByCampus(@RequestParam(value = "campusName", required = false) String campusName) {
         return campusAndClassroomService.listClassroomsByCampus(campusName);
@@ -42,7 +43,7 @@ public class ClassController extends AbstractController {
      * @param classId 班级编码
      * @return 解析后的class对象（作为json返回）
      */
-    @RequestMapping("/getParsedClassByParsingClassId")
+    @GetMapping("/getParsedClassByParsingClassId")
     @ResponseBody
     public Class getParsedClassByParsingClassId(@RequestParam(value = "classId", required = false) String classId) {
         Class clazz = new Class();
@@ -59,7 +60,7 @@ public class ClassController extends AbstractController {
      * @param classId 输入字符串作为关键字
      * @return 符合条件的数据 {@link AutoCompleteSearchResult}
      */
-    @RequestMapping("/getClassesLikeClassId")
+    @GetMapping("/getClassesLikeClassId")
     @ResponseBody
     public Map<String, Object> getClassesLikeClassId(@RequestParam(value = "keywords", required = false) String classId) {
         Map<String, Object> map = new HashMap<>(3);

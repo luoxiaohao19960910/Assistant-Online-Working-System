@@ -3,6 +3,7 @@ package com.jzy.web.controller;
 import com.jzy.model.entity.Teacher;
 import com.jzy.model.vo.AutoCompleteSearchResult;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,7 +29,7 @@ public class TeacherController extends AbstractController {
      * @param teacherName 输入字符串作为关键字
      * @return 符合条件的数据 {@link AutoCompleteSearchResult}
      */
-    @RequestMapping("/getTeachersLikeTeacherName")
+    @GetMapping("/getTeachersLikeTeacherName")
     @ResponseBody
     public Map<String, Object> getTeachersLikeTeacherName(@RequestParam(value = "keywords", required = false) String teacherName) {
         Map<String, Object> map = new HashMap<>(3);

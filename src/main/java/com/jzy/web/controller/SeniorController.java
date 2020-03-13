@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -40,7 +41,7 @@ public class SeniorController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/echarts/stuNumPage")
+    @GetMapping("/echarts/stuNumPage")
     public String stuNumPage(Model model) {
         model.addAttribute(ModelConstants.CURRENT_ClASS_SEASON_MODEL_KEY, classService.getCurrentClassSeason());
 
@@ -56,7 +57,7 @@ public class SeniorController extends AbstractController {
      * @param condition 查询条件封装
      * @return
      */
-    @RequestMapping("/getStudentTotalGroupByClassGrade")
+    @GetMapping("/getStudentTotalGroupByClassGrade")
     @ResponseBody
     public Map<String, Object> getStudentTotalGroupByClassGrade(StudentAndClassSearchCondition condition) {
         Map<String, Object> map = new HashMap<>(2);
@@ -73,7 +74,7 @@ public class SeniorController extends AbstractController {
      * @param condition 查询条件封装
      * @return
      */
-    @RequestMapping("/getStudentTotalGroupByClassSubject")
+    @GetMapping("/getStudentTotalGroupByClassSubject")
     @ResponseBody
     public Map<String, Object> getStudentTotalGroupByClassSubject(StudentAndClassSearchCondition condition) {
         Map<String, Object> map = new HashMap<>(2);
@@ -90,7 +91,7 @@ public class SeniorController extends AbstractController {
      * @param condition 查询条件封装
      * @return
      */
-    @RequestMapping("/getStudentTotalGroupByClassType")
+    @GetMapping("/getStudentTotalGroupByClassType")
     @ResponseBody
     public Map<String, Object> getStudentTotalGroupByClassType(StudentAndClassSearchCondition condition) {
         Map<String, Object> map = new HashMap<>(2);
@@ -109,7 +110,7 @@ public class SeniorController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/echarts/stuNumSeniorPage")
+    @GetMapping("/echarts/stuNumSeniorPage")
     public String stuNumSeniorPage(Model model) {
         model.addAttribute(ModelConstants.CURRENT_ClASS_SEASON_MODEL_KEY, classService.getCurrentClassSeason());
 
@@ -125,7 +126,7 @@ public class SeniorController extends AbstractController {
      * @param condition 查询条件封装
      * @return
      */
-    @RequestMapping("/getStudentTotalGroupByClassGradeAndType")
+    @GetMapping("/getStudentTotalGroupByClassGradeAndType")
     @ResponseBody
     public Map<String, Object> getStudentTotalGroupByClassGradeAndType(StudentAndClassSearchCondition condition) {
         Map<String, Object> map = new HashMap<>();
@@ -203,7 +204,7 @@ public class SeniorController extends AbstractController {
      * @param condition 查询条件封装
      * @return
      */
-    @RequestMapping("/getStudentTotalGroupByClassSubjectAndType")
+    @GetMapping("/getStudentTotalGroupByClassSubjectAndType")
     @ResponseBody
     public Map<String, Object> getStudentTotalGroupByClassSubjectAndType(StudentAndClassSearchCondition condition) {
         Map<String, Object> map = new HashMap<>();

@@ -81,6 +81,7 @@ public class ShiroConfig {
         /**
          * 允许未登录下的访问路径
          */
+        filterChainDefinitionMap.put("/customTip", "anon"); //customTip
         filterChainDefinitionMap.put("/comingSoon", "anon"); //comingSoon
         filterChainDefinitionMap.put("/400", "anon"); //400
         filterChainDefinitionMap.put("/404", "anon"); //404

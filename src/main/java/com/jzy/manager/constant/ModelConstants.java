@@ -11,6 +11,8 @@ public final class ModelConstants {
     private ModelConstants() {
     }
 
+    public static final String TIP = "tip";
+
     /**
      * 值为游客登录问题所对应的model键
      */

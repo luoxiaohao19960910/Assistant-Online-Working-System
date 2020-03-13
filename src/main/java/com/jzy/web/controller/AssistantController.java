@@ -4,6 +4,7 @@ import com.jzy.model.entity.Assistant;
 import com.jzy.model.vo.AssistantSearchResult;
 import com.jzy.model.vo.AutoCompleteSearchResult;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,7 +30,7 @@ public class AssistantController extends AbstractController {
      * @param assistantName 输入字符串作为关键字
      * @return 符合条件的数据 {@link AutoCompleteSearchResult}
      */
-    @RequestMapping("/getAssistantsLikeAssistantName")
+    @GetMapping("/getAssistantsLikeAssistantName")
     @ResponseBody
     public Map<String, Object> getAssistantsLikeAssistantName(@RequestParam(value = "keywords", required = false) String assistantName) {
         Map<String, Object> map = new HashMap<>(3);

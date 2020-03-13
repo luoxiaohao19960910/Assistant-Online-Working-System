@@ -29,9 +29,7 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,57 +50,63 @@ import java.util.concurrent.TimeUnit;
 public class AuthenticationController extends AbstractController {
     private final static Logger logger = LogManager.getLogger(AuthenticationController.class);
 
-    @RequestMapping("/comingSoon")
+    @GetMapping("/customTip")
+    public String customTip(Model model, @RequestParam("tip") String tip) {
+        model.addAttribute(ModelConstants.TIP, tip);
+        return "tips/customTip";
+    }
+
+    @GetMapping("/comingSoon")
     public String comingSoon() {
         return "tips/comingSoon";
     }
 
-    @RequestMapping("/400")
+    @GetMapping("/400")
     public String error400() {
         return "tips/HTTP-400";
     }
 
-    @RequestMapping("/404")
+    @GetMapping("/404")
     public String error404() {
         return "tips/HTTP-404";
     }
 
-    @RequestMapping("/500")
+    @GetMapping("/500")
     public String error500() {
         return "tips/HTTP-500";
     }
 
-    @RequestMapping("/formRepeatSubmit")
+    @GetMapping("/formRepeatSubmit")
     public String formRepeatSubmit() {
         return "tips/formRepeatSubmit";
     }
 
-    @RequestMapping("/noPermissions")
+    @GetMapping("/noPermissions")
     public String noPermissions() {
         return "tips/noPermissions";
     }
 
-    @RequestMapping("/")
+    @GetMapping("/")
     public String login0() {
         return "redirect:/index";
     }
 
-    @RequestMapping("/login")
+    @GetMapping("/login")
     public String login() {
         return "login";
     }
 
-    @RequestMapping("/logout")
+    @GetMapping("/logout")
     public String logout() {
         return "login";
     }
 
-    @RequestMapping("/forget")
+    @GetMapping("/forget")
     public String forget() {
         return "forget";
     }
 
-    @RequestMapping("/loginByEmailCode")
+    @GetMapping("/loginByEmailCode")
     public String loginByEmailCode() {
         return "loginByEmailCode";
     }
@@ -113,7 +117,7 @@ public class AuthenticationController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/guestLogin")
+    @GetMapping("/guestLogin")
     public String guestLogin(Model model) {
         //获得随机问题
         Question question = questionService.getRandomQuestion();
@@ -135,7 +139,7 @@ public class AuthenticationController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/index")
+    @GetMapping("/index")
     public String index(HttpServletRequest request, HttpServletResponse response, Model model) {
         User user = userService.getSessionUserInfo();
 
@@ -230,7 +234,7 @@ public class AuthenticationController extends AbstractController {
      * 3. 账号存在，但密码错误
      * 4. 账户被锁定
      */
-    @RequestMapping("/loginTest")
+    @PostMapping("/loginTest")
     @ResponseBody
     public Map<String, Object> loginTest(UserLoginInput input, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -340,7 +344,7 @@ public class AuthenticationController extends AbstractController {
      * @param userEmail 发送的目标邮箱
      * @return
      */
-    @RequestMapping("/sendVerifyCodeToEmail")
+    @PostMapping("/sendVerifyCodeToEmail")
     @ResponseBody
     public Map<String, Object> sendVerifyCodeToEmail(@RequestParam("userEmail") String userEmail, HttpServletRequest request) {
         Map<String, Object> map = new HashMap(1);
@@ -367,19 +371,24 @@ public class AuthenticationController extends AbstractController {
      * 2. 验证码错误
      * 3. 验证码正确
      */
-    @RequestMapping("/emailVerifyCodeTest")
+    @PostMapping("/emailVerifyCodeTest")
     @ResponseBody
-    public Map<String, Object> emailVerifyCodeTest(@RequestParam(value = "emailVerifyCode", required = false) String emailVerifyCode, User user) {
+    public Map<String, Object> emailVerifyCodeTest(@RequestParam(value = "needExistTest",required = false) boolean needExistTest, @RequestParam(value = "emailVerifyCode", required = false) String emailVerifyCode, User user) {
         Map<String, Object> map = new HashMap(1);
-        if (userService.getUserByEmail(user.getUserEmail()) == null) {
-            map.put("data", "emailUnregistered");
-        } else if (!userService.isValidEmailVerifyCode(new EmailVerifyCode(user.getUserEmail(), emailVerifyCode))) {
+        if (needExistTest) {
+            if (userService.getUserByEmail(user.getUserEmail()) == null) {
+                map.put("data", "emailUnregistered");
+                return map;
+            }
+        }
+        if (!userService.isValidEmailVerifyCode(new EmailVerifyCode(user.getUserEmail(), emailVerifyCode))) {
             map.put("data", "verifyCodeWrong");
         } else {
             //auth=true，即已经经过了服务端验证
             ShiroUtils.setSessionAttribute(SessionConstants.USER_EMAIL_SESSION_KEY, new EmailVerifyCodeSession(user.getUserEmail(), true));
             map.put("data", "verifyCodeCorrect");
         }
+
         return map;
     }
 
@@ -389,7 +398,7 @@ public class AuthenticationController extends AbstractController {
      * @param user 入参用户密码信息
      * @return
      */
-    @RequestMapping("/resetPassword")
+    @PostMapping("/resetPassword")
     @ResponseBody
     public Map<String, Object> resetPassword(User user, HttpServletRequest request) {
         Map<String, Object> map = new HashMap(1);
@@ -421,7 +430,7 @@ public class AuthenticationController extends AbstractController {
      * 2. 邮箱验证码错误
      * 3. 登录成功
      */
-    @RequestMapping("/loginTestByEmailCode")
+    @PostMapping("/loginTestByEmailCode")
     @ResponseBody
     public Map<String, Object> loginTestByEmailCode(@RequestParam(value = "emailVerifyCode", required = false) String emailVerifyCode, User user, HttpServletRequest request) {
         Map<String, Object> map = new HashMap(1);
@@ -460,7 +469,7 @@ public class AuthenticationController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/resetLoginQuestion")
+    @GetMapping("/resetLoginQuestion")
     @ResponseBody
     public Map<String, Object> resetLoginQuestion() {
         Map<String, Object> map = new HashMap(1);
@@ -493,7 +502,7 @@ public class AuthenticationController extends AbstractController {
      * @return 1. 回答错误
      * 2. 登录成功
      */
-    @RequestMapping("/loginTestByQuestion")
+    @PostMapping("/loginTestByQuestion")
     @ResponseBody
     public Map<String, Object> loginTestByQuestion(@RequestParam("answer") String answer, HttpServletRequest request) {
         Map<String, Object> map = new HashMap(1);

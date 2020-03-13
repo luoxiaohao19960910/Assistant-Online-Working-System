@@ -19,9 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -42,7 +40,7 @@ public class SystemController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/announcement")
+    @GetMapping("/announcement")
     public String announcement(Model model) {
         Announcement announcement = (Announcement) hashOps.get(RedisConstants.ANNOUNCEMENT_KEY, Constants.BASE_ANNOUNCEMENT.toString());
         model.addAttribute(ModelConstants.ANNOUNCEMENT_EDIT_MODEL_KEY, announcement == null ? new Announcement() : announcement);
@@ -58,7 +56,7 @@ public class SystemController extends AbstractController {
      * @param announcement 推送的信息
      * @return
      */
-    @RequestMapping("/pushAnnouncement")
+    @PostMapping("/pushAnnouncement")
     @ResponseBody
     public Map<String, Object> pushAnnouncement(@RequestParam(value = "clearIfRead", required = false) String clearIfRead, Announcement announcement) {
         Map<String, Object> map = new HashMap<>(1);
@@ -92,7 +90,7 @@ public class SystemController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/deleteAnnouncement")
+    @PostMapping("/deleteAnnouncement")
     @ResponseBody
     public Map<String, Object> deleteAnnouncement() {
         Map<String, Object> map = new HashMap<>(1);
@@ -114,7 +112,7 @@ public class SystemController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/intelliClassSeason/page")
+    @GetMapping("/intelliClassSeason/page")
     public String intelliClassSeason(Model model) {
         model.addAttribute(ModelConstants.CAMPUS_NAMES_MODEL_KEY, JSON.toJSONString(CampusEnum.getCampusNamesList()));
         model.addAttribute(ModelConstants.SEASONS_MODEL_KEY, JSON.toJSONString(Class.SEASONS));
@@ -130,7 +128,7 @@ public class SystemController extends AbstractController {
      * @param classSeason 修改后的校历信息
      * @return
      */
-    @RequestMapping("/intelliClassSeason/update")
+    @PostMapping("/intelliClassSeason/update")
     @ResponseBody
     public Map<String, Object> updateIntelliClassSeason(ClassSeasonDto classSeason) {
         Map<String, Object> map = new HashMap<>(1);
@@ -146,7 +144,7 @@ public class SystemController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/intelliClassSeason/delete")
+    @PostMapping("/intelliClassSeason/delete")
     @ResponseBody
     public Map<String, Object> deleteIntelliClassSeason() {
         Map<String, Object> map = new HashMap<>(1);
@@ -162,7 +160,7 @@ public class SystemController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/payAnnouncement")
+    @GetMapping("/payAnnouncement")
     public String payAnnouncement(Model model) {
         PayAnnouncement announcement = (PayAnnouncement) valueOps.get(RedisConstants.PAY_ANNOUNCEMENT_KEY);
         model.addAttribute(ModelConstants.PAY_ANNOUNCEMENT_EDIT_MODEL_KEY, announcement == null ? new PayAnnouncement() : announcement);
@@ -175,7 +173,7 @@ public class SystemController extends AbstractController {
      * @param announcement 推送的信息
      * @return
      */
-    @RequestMapping("/pushPayAnnouncement")
+    @PostMapping("/pushPayAnnouncement")
     @ResponseBody
     public Map<String, Object> pushPayAnnouncement(PayAnnouncement announcement) {
         Map<String, Object> map = new HashMap<>(1);
@@ -198,7 +196,7 @@ public class SystemController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/deletePayAnnouncement")
+    @PostMapping("/deletePayAnnouncement")
     @ResponseBody
     public Map<String, Object> deletePayAnnouncement() {
         Map<String, Object> map = new HashMap<>(1);
@@ -222,7 +220,7 @@ public class SystemController extends AbstractController {
      * @param needToPay 筛选条件：已付/未付
      * @return
      */
-    @RequestMapping("/getNeedToPayUsers")
+    @GetMapping("/getNeedToPayUsers")
     @ResponseBody
     public ResultMap<List<UserWithPayStatus>> getNeedToPayUsers(MyPage myPage, @RequestParam(value = "needToPay", required = false) String needToPay) {
         //存放所有需要付费的用户id

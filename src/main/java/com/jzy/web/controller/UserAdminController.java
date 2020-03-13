@@ -24,9 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +52,7 @@ public class UserAdminController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/page")
+    @GetMapping("/page")
     public String page(Model model) {
         model.addAttribute(ModelConstants.ROLES_MODEL_KEY, JSON.toJSONString(User.ROLES));
         return "user/admin/page";
@@ -123,7 +121,7 @@ public class UserAdminController extends AbstractController {
      * @param user  当前要被编辑的用户信息
      * @return
      */
-    @RequestMapping("/updateForm")
+    @GetMapping("/updateForm")
     public String updateForm(Model model, User user) {
         try {
             if (!hasAccessToEditUser(user, model)) {
@@ -144,7 +142,7 @@ public class UserAdminController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/insertForm")
+    @GetMapping("/insertForm")
     public String insertForm(Model model) {
         try {
             setEditUserModel(model);
@@ -165,7 +163,7 @@ public class UserAdminController extends AbstractController {
      * @param condition 查询条件入参
      * @return
      */
-    @RequestMapping("/getUserInfo")
+    @GetMapping("/getUserInfo")
     @ResponseBody
     public ResultMap<List<User>> getUserInfo(MyPage myPage, UserSearchCondition condition) {
         condition.setUserIdCard(StringUtils.upperCase(condition.getUserIdCard()));
@@ -180,7 +178,7 @@ public class UserAdminController extends AbstractController {
      * @param user 要上传头像的用户
      * @return
      */
-    @RequestMapping("/uploadUserIcon")
+    @PostMapping("/uploadUserIcon")
     @ResponseBody
     public Map<String, Object> uploadUserIcon(@RequestParam(value = "file", required = false) MultipartFile file, User user) {
         Map<String, Object> map2 = new HashMap<>(1);
@@ -202,7 +200,7 @@ public class UserAdminController extends AbstractController {
      * @param user 修改后的用户信息
      * @return
      */
-    @RequestMapping("/updateById")
+    @PostMapping("/updateById")
     @ResponseBody
     public Map<String, Object> updateById(User user, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -224,7 +222,7 @@ public class UserAdminController extends AbstractController {
      * @param user 新添加用户的信息
      * @return
      */
-    @RequestMapping("/insert")
+    @PostMapping("/insert")
     @ResponseBody
     public Map<String, Object> insert(User user, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -248,7 +246,7 @@ public class UserAdminController extends AbstractController {
      * @param userRole 被删除用户的角色
      * @return
      */
-    @RequestMapping("/deleteOne")
+    @PostMapping("/deleteOne")
     @ResponseBody
     public Map<String, Object> deleteOne(@RequestParam("id") Long id, @RequestParam("userRole") String userRole) {
         Map<String, Object> map = new HashMap(1);
@@ -280,7 +278,7 @@ public class UserAdminController extends AbstractController {
      * @param users 多个用户的json串，用fastjson转换为list<User>
      * @return
      */
-    @RequestMapping("/deleteMany")
+    @PostMapping("/deleteMany")
     @ResponseBody
     public Map<String, Object> deleteMany(@RequestParam("users") String users) {
         Map<String, Object> map = new HashMap(1);
@@ -318,7 +316,7 @@ public class UserAdminController extends AbstractController {
      * @param condition 输入的查询条件
      * @return
      */
-    @RequestMapping("/deleteByCondition")
+    @PostMapping("/deleteByCondition")
     @ResponseBody
     public Map<String, Object> deleteByCondition(UserSearchCondition condition) {
         Map<String, Object> map = new HashMap(1);
@@ -336,7 +334,7 @@ public class UserAdminController extends AbstractController {
      * @param request
      * @return
      */
-    @RequestMapping("/import")
+    @PostMapping("/import")
     @ResponseBody
     public Map<String, Object> importExcel(@RequestParam(value = "file", required = false) MultipartFile file, @RequestParam(value = "type") Integer type, HttpServletRequest request) {
         Map<String, Object> map2 = new HashMap<>(1);

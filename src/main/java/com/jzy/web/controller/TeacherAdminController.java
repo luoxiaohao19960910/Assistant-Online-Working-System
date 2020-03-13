@@ -14,9 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -41,7 +39,7 @@ public class TeacherAdminController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/page")
+    @GetMapping("/page")
     public String page(Model model) {
         return "teacher/admin/page";
     }
@@ -53,7 +51,7 @@ public class TeacherAdminController extends AbstractController {
      * @param condition 查询条件入参
      * @return
      */
-    @RequestMapping("/getTeacherInfo")
+    @GetMapping("/getTeacherInfo")
     @ResponseBody
     public ResultMap<List<Teacher>> getTeacherInfo(MyPage myPage, TeacherSearchCondition condition) {
         PageInfo<Teacher> pageInfo = teacherService.listTeachers(myPage, condition);
@@ -65,7 +63,7 @@ public class TeacherAdminController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/updateForm")
+    @GetMapping("/updateForm")
     public String updateForm() {
         return "teacher/admin/teacherForm";
     }
@@ -77,7 +75,7 @@ public class TeacherAdminController extends AbstractController {
      * @param teacher 修改后的教师信息
      * @return
      */
-    @RequestMapping("/updateById")
+    @PostMapping("/updateById")
     @ResponseBody
     public Map<String, Object> updateById(Teacher teacher, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -100,7 +98,7 @@ public class TeacherAdminController extends AbstractController {
      * @param teacher 新添加教师的信息
      * @return
      */
-    @RequestMapping("/insert")
+    @PostMapping("/insert")
     @ResponseBody
     public Map<String, Object> insert(Teacher teacher, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -122,7 +120,7 @@ public class TeacherAdminController extends AbstractController {
      * @param id 被删除教师的id
      * @return
      */
-    @RequestMapping("/deleteOne")
+    @PostMapping("/deleteOne")
     @ResponseBody
     public Map<String, Object> deleteOne(@RequestParam("id") Long id) {
         Map<String, Object> map = new HashMap(1);
@@ -138,7 +136,7 @@ public class TeacherAdminController extends AbstractController {
      * @param teachers 多个教师的json串，用fastjson转换为list
      * @return
      */
-    @RequestMapping("/deleteMany")
+    @PostMapping("/deleteMany")
     @ResponseBody
     public Map<String, Object> deleteMany(@RequestParam("teachers") String teachers) {
         Map<String, Object> map = new HashMap(1);
@@ -159,7 +157,7 @@ public class TeacherAdminController extends AbstractController {
      * @param condition 输入的查询条件
      * @return
      */
-    @RequestMapping("/deleteByCondition")
+    @PostMapping("/deleteByCondition")
     @ResponseBody
     public Map<String, Object> deleteByCondition(TeacherSearchCondition condition) {
         Map<String, Object> map = new HashMap(1);

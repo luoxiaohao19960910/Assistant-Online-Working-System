@@ -13,9 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +38,7 @@ public class ImportantLogAdminController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/page")
+    @GetMapping("/page")
     public String page(Model model) {
         model.addAttribute(ModelConstants.LEVELS_MODEL_KEY, JSON.toJSONString(LogLevelEnum.getLevelsList()));
         model.addAttribute(ModelConstants.ROLES_MODEL_KEY, JSON.toJSONString(User.ROLES));
@@ -54,7 +52,7 @@ public class ImportantLogAdminController extends AbstractController {
      * @param condition 查询条件入参
      * @return 分页结果
      */
-    @RequestMapping("/getImportantLogInfo")
+    @GetMapping("/getImportantLogInfo")
     @ResponseBody
     public ResultMap<List<ImportantLogDetailedDto>> getAssistantInfo(MyPage myPage, ImportantLogSearchCondition condition) {
         PageInfo<ImportantLogDetailedDto> pageInfo = importantLogService.listImportantLog(myPage, condition);
@@ -67,7 +65,7 @@ public class ImportantLogAdminController extends AbstractController {
      * @param allLog 多个日志记录的json串，用fastjson转换为list
      * @return
      */
-    @RequestMapping("/deleteMany")
+    @PostMapping("/deleteMany")
     @ResponseBody
     public Map<String, Object> deleteMany(@RequestParam("allLog") String allLog) {
         Map<String, Object> map = new HashMap(1);
@@ -88,7 +86,7 @@ public class ImportantLogAdminController extends AbstractController {
      * @param condition 输入的查询条件
      * @return
      */
-    @RequestMapping("/deleteByCondition")
+    @PostMapping("/deleteByCondition")
     @ResponseBody
     public Map<String, Object> deleteByCondition(ImportantLogSearchCondition condition) {
         Map<String, Object> map = new HashMap(1);

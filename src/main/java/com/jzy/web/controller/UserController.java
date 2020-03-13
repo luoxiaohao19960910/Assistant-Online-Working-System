@@ -15,9 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +43,7 @@ public class UserController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/setInfo")
+    @GetMapping("/setInfo")
     public String setInfo() {
         return "user/set/setInfo";
     }
@@ -59,7 +57,7 @@ public class UserController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/setEmail")
+    @GetMapping("/setEmail")
     public String setEmail() {
         User user = userService.getSessionUserInfo();
         if (StringUtils.isNotEmpty(user.getUserEmail())) {
@@ -74,7 +72,7 @@ public class UserController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/setPhone")
+    @GetMapping("/setPhone")
     public String setPhone() {
         return "user/set/modifyCurrentPhone";
     }
@@ -84,7 +82,7 @@ public class UserController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/setPassword")
+    @GetMapping("/setPassword")
     public String setPassword() {
         return "user/set/setPassword";
     }
@@ -96,7 +94,7 @@ public class UserController extends AbstractController {
      * @param file
      * @return
      */
-    @RequestMapping("/uploadUserIcon")
+    @PostMapping("/uploadUserIcon")
     @ResponseBody
     public Map<String, Object> uploadUserIcon(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile file) {
         Map<String, Object> map2 = new HashMap<>(1);
@@ -119,7 +117,7 @@ public class UserController extends AbstractController {
      * @param user 用户更改后的信息
      * @return
      */
-    @RequestMapping("/updateOwnInfo")
+    @PostMapping("/updateOwnInfo")
     @ResponseBody
     public Map<String, Object> updateInfoByCurrentUser(User user, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -144,7 +142,7 @@ public class UserController extends AbstractController {
      * @return 1. 输入原始密码错误
      * 2.更新成功
      */
-    @RequestMapping("/updateOwnPassword")
+    @PostMapping("/updateOwnPassword")
     @ResponseBody
     public Map<String, Object> updatePasswordByCurrentUser(@RequestParam("oldPassword") String userOldPassword, @RequestParam("newPassword") String userNewPassword, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -177,7 +175,7 @@ public class UserController extends AbstractController {
      * @param response
      * @param user     含用户头像信息
      */
-    @RequestMapping("/showIcon")
+    @GetMapping("/showIcon")
     public void showIcon(HttpServletRequest request, HttpServletResponse response, User user) {
         //生成验证码
         FileInputStream fis = null;
@@ -220,7 +218,7 @@ public class UserController extends AbstractController {
      * @param newEmail 用户更改后的邮箱
      * @return
      */
-    @RequestMapping("/addNewEmail")
+    @PostMapping("/addNewEmail")
     @ResponseBody
     public Map<String, Object> addNewEmail(@RequestParam(value = "emailVerifyCode", required = false) String emailVerifyCode, @RequestParam("newEmail") String newEmail, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -270,7 +268,7 @@ public class UserController extends AbstractController {
      * @param userNewEmail 用户新邮箱
      * @return
      */
-    @RequestMapping("/modifyCurrentEmail")
+    @PostMapping("/modifyCurrentEmail")
     @ResponseBody
     public Map<String, Object> modifyCurrentEmail(@RequestParam("oldEmail") String userOldEmail, @RequestParam("newEmail") String userNewEmail, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -314,7 +312,7 @@ public class UserController extends AbstractController {
      * @param userNewPhone 修改后的手机
      * @return
      */
-    @RequestMapping("/modifyCurrentPhone")
+    @PostMapping("/modifyCurrentPhone")
     @ResponseBody
     public Map<String, Object> modifyCurrentPhone(@RequestParam("newPhone") String userNewPhone, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);

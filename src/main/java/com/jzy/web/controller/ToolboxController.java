@@ -30,10 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -71,17 +68,6 @@ public class ToolboxController extends AbstractController {
      */
     private static Map<Long, StudentSchoolExcel> studentSchoolUploadCache = new HashMap<>();
 
-    static {
-        //每天定时清理cache，改用springboot定时任务
-//        TimerManager.startDailyTask(new TimerTask() {
-//            @Override
-//            public void run() {
-//                ToolboxController.clearCache();
-//                logger.info("定时清理ToolboxController的cache执行！----" + MyTimeUtils.dateToStringYMDHMS(new Date()));
-//            }
-//        });
-    }
-
     /**
      * 清除指定用户id的文件cache
      *
@@ -108,7 +94,7 @@ public class ToolboxController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/assistant/startClassExcel")
+    @GetMapping("/assistant/startClassExcel")
     public String startClassExcel(Model model, ClassDetailedDto classDetailedDto) {
         model.addAttribute(ModelConstants.CAMPUS_NAMES_MODEL_KEY, JSON.toJSONString(CampusEnum.getCampusNamesList()));
 
@@ -125,7 +111,7 @@ public class ToolboxController extends AbstractController {
      * @param file 上传的表格
      * @return
      */
-    @RequestMapping("/assistant/uploadStudentList")
+    @PostMapping("/assistant/uploadStudentList")
     @ResponseBody
     public Map<String, Object> uploadStudentList(@RequestParam(value = "file", required = false) MultipartFile file) {
         Map<String, Object> map2 = new HashMap<>(1);
@@ -190,7 +176,7 @@ public class ToolboxController extends AbstractController {
      * @param classDetailedDto 输入的校区班号等信息的封装
      * @return
      */
-    @RequestMapping("/assistant/exportAssistantTutorialWithoutSeatTable")
+    @GetMapping("/assistant/exportAssistantTutorialWithoutSeatTable")
     public String exportAssistantTutorialWithoutSeatTable(HttpServletRequest request, HttpServletResponse response,
                                                           @RequestParam(value = "magic", required = false) String magic, ClassDetailedDto classDetailedDto) {
         AssistantTutorialExcel excel = null;
@@ -249,7 +235,7 @@ public class ToolboxController extends AbstractController {
      * @param classDetailedDto 输入的校区班号等信息的封装
      * @return
      */
-    @RequestMapping("/assistant/exportAssistantTutorialAndSeatTable")
+    @GetMapping("/assistant/exportAssistantTutorialAndSeatTable")
     public String exportAssistantTutorialAndSeatTable(HttpServletRequest request, HttpServletResponse response,
                                                       @RequestParam(value = "magic", required = false) String magic, ClassDetailedDto classDetailedDto) throws InvalidFileTypeException {
         SeatTableTemplateExcel excel = null;
@@ -303,7 +289,7 @@ public class ToolboxController extends AbstractController {
      * @param file 上传的表格
      * @return
      */
-    @RequestMapping("/assistant/uploadStudentListForSeatTable")
+    @PostMapping("/assistant/uploadStudentListForSeatTable")
     @ResponseBody
     public Map<String, Object> uploadStudentListForSeatTable(@RequestParam(value = "file", required = false) MultipartFile file) {
         Map<String, Object> map2 = new HashMap<>(1);
@@ -362,7 +348,7 @@ public class ToolboxController extends AbstractController {
      * @param classDetailedDto 输入的校区班号等信息的封装
      * @return
      */
-    @RequestMapping("/assistant/exportSeatTable")
+    @GetMapping("/assistant/exportSeatTable")
     public String exportSeatTable(HttpServletRequest request, HttpServletResponse response, ClassDetailedDto classDetailedDto) {
         SeatTableTemplateExcel excel = null;
         try {
@@ -408,7 +394,7 @@ public class ToolboxController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/assistant/missLessonStudentExcel")
+    @GetMapping("/assistant/missLessonStudentExcel")
     public String missLessonStudentExcel(Model model, StudentAndClassDetailedDto dto) {
         model.addAttribute(ModelConstants.CAMPUS_NAMES_MODEL_KEY, JSON.toJSONString(CampusEnum.getCampusNamesList()));
 
@@ -423,7 +409,7 @@ public class ToolboxController extends AbstractController {
      * @param wrongClassId 错误的班号
      * @return
      */
-    @RequestMapping("/assistant/wrongClassId")
+    @GetMapping("/assistant/wrongClassId")
     public String missLessonStudentExcel(Model model, @RequestParam("classId") String wrongClassId) {
         model.addAttribute(ModelConstants.WRONG_CLASS_ID, wrongClassId);
         return "tips/classNotExist";
@@ -437,7 +423,7 @@ public class ToolboxController extends AbstractController {
      * @param currentClassId  补课班号
      * @return
      */
-    @RequestMapping("/assistant/exportAssistantMissLessonTableParamTest")
+    @GetMapping("/assistant/exportAssistantMissLessonTableParamTest")
     @ResponseBody
     public Map<String, Object> exportAssistantMissLessonTableParamTest(@RequestParam("originalClassId") String originalClassId, @RequestParam("currentClassId") String currentClassId) {
         Map<String, Object> map = new HashMap<>(1);
@@ -472,7 +458,7 @@ public class ToolboxController extends AbstractController {
      * @param missLessonStudentDetailedDto 补课班号，原班号，学员姓名等封装
      * @return
      */
-    @RequestMapping("/assistant/exportAssistantMissLessonTable")
+    @GetMapping("/assistant/exportAssistantMissLessonTable")
     public String exportAssistantMissLessonTable(RedirectAttributes attr, HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "sync", required = false) String sync, @RequestParam(value = "emailTip", required = false) String emailTip
             , @RequestParam("originalCampus") String originalCampus, @RequestParam("currentCampus") String currentCampus, MissManyDaysLessonStudentDetailedDto missLessonStudentDetailedDto) {
 
@@ -659,7 +645,7 @@ public class ToolboxController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/assistantAdministrator/infoImport")
+    @GetMapping("/assistantAdministrator/infoImport")
     public String infoImport(Model model) {
         model.addAttribute(ModelConstants.CAMPUS_NAMES_MODEL_KEY, JSON.toJSONString(CampusEnum.getCampusNamesList()));
         model.addAttribute(ModelConstants.SEASONS_MODEL_KEY, JSON.toJSONString(Class.SEASONS));
@@ -675,7 +661,7 @@ public class ToolboxController extends AbstractController {
      * @param type     不同的type对应不同的文件 {@link FileUtils}
      * @return
      */
-    @RequestMapping("/assistantAdministrator/downloadExample/{type}")
+    @GetMapping("/assistantAdministrator/downloadExample/{type}")
     public String downloadExample(HttpServletRequest request, HttpServletResponse response, @PathVariable String type) {
         int typeVal = Integer.parseInt(type);
         if (typeVal <= 0) {
@@ -707,7 +693,7 @@ public class ToolboxController extends AbstractController {
      * @param campus   指定校区下的模板
      * @return
      */
-    @RequestMapping("/assistantAdministrator/downloadTemplate/{type}")
+    @GetMapping("/assistantAdministrator/downloadTemplate/{type}")
     public String downloadTemplate(HttpServletRequest request, HttpServletResponse response, @PathVariable String type, @RequestParam("campus") String campus) {
         int typeVal = Integer.parseInt(type);
         if (typeVal <= 0) {
@@ -741,7 +727,7 @@ public class ToolboxController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/assistantAdministrator/templateImport")
+    @GetMapping("/assistantAdministrator/templateImport")
     public String templateImport(Model model) {
         model.addAttribute(ModelConstants.CAMPUS_NAMES_MODEL_KEY, JSON.toJSONString(CampusEnum.getCampusNamesList()));
         return "toolbox/assistantAdministrator/templateImport";
@@ -755,7 +741,7 @@ public class ToolboxController extends AbstractController {
      * @param request
      * @return
      */
-    @RequestMapping("/assistantAdministrator/seatTableTemplateImport")
+    @PostMapping("/assistantAdministrator/seatTableTemplateImport")
     @ResponseBody
     public Map<String, Object> seatTableTemplateImport(@RequestParam(value = "file", required = false) MultipartFile file, @RequestParam(value = "classCampus", required = false) String classCampus, HttpServletRequest request) {
         Map<String, Object> map2 = new HashMap<>(1);
@@ -842,7 +828,7 @@ public class ToolboxController extends AbstractController {
      * @param request
      * @return
      */
-    @RequestMapping("/assistantAdministrator/assistantTutorialTemplateImport")
+    @PostMapping("/assistantAdministrator/assistantTutorialTemplateImport")
     @ResponseBody
     public Map<String, Object> assistantTutorialTemplateImport(@RequestParam(value = "file", required = false) MultipartFile file, @RequestParam(value = "classCampus", required = false) String classCampus, HttpServletRequest request) {
         Map<String, Object> map2 = new HashMap<>(1);
@@ -889,7 +875,7 @@ public class ToolboxController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/common/studentSchoolExport")
+    @GetMapping("/common/studentSchoolExport")
     public String studentSchoolExport(Model model) {
         return "toolbox/common/studentSchoolExport";
     }
@@ -901,7 +887,7 @@ public class ToolboxController extends AbstractController {
      * @param file 上传的表格
      * @return
      */
-    @RequestMapping("/common/uploadStudentSchool")
+    @PostMapping("/common/uploadStudentSchool")
     @ResponseBody
     public Map<String, Object> uploadStudentSchool(@RequestParam(value = "file", required = false) MultipartFile file) {
         Map<String, Object> map2 = new HashMap<>(1);
@@ -975,7 +961,7 @@ public class ToolboxController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/common/downloadStudentSchool")
+    @GetMapping("/common/downloadStudentSchool")
     public String exportSeatTable(HttpServletRequest request, HttpServletResponse response) {
         StudentSchoolExcel excelCache = studentSchoolUploadCache.get(userService.getSessionUserInfo().getId());
         //下载完学校统计表，清除缓存
@@ -1010,7 +996,7 @@ public class ToolboxController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/assistant/exportStudentPhonePage")
+    @GetMapping("/assistant/exportStudentPhonePage")
     public String exportStudentPhonePage(Model model) {
         model.addAttribute(ModelConstants.CURRENT_ClASS_SEASON_MODEL_KEY, classService.getCurrentClassSeason());
 
@@ -1031,7 +1017,7 @@ public class ToolboxController extends AbstractController {
      * @param nameSuffix 导出姓名后缀
      * @return
      */
-    @RequestMapping("/assistant/exportStudentPhoneToForm")
+    @GetMapping("/assistant/exportStudentPhoneToForm")
     @ResponseBody
     public Map<String, Object> exportStudentPhoneToForm(HttpServletRequest request, StudentAndClassSearchCondition condition, @RequestParam("namePrefix") String namePrefix, @RequestParam("nameSuffix") String nameSuffix) {
         Map<String, Object> map = new HashMap<>(2);
@@ -1056,7 +1042,7 @@ public class ToolboxController extends AbstractController {
      * @param nameSuffix 导出姓名后缀
      * @return
      */
-    @RequestMapping("/assistant/exportStudentPhoneToExcel")
+    @GetMapping("/assistant/exportStudentPhoneToExcel")
     @ResponseBody
     public String exportStudentPhoneToExcel(HttpServletRequest request, HttpServletResponse response,
                                             StudentAndClassSearchCondition condition, @RequestParam("namePrefix") String namePrefix, @RequestParam("nameSuffix") String nameSuffix) {

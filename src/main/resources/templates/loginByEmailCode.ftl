@@ -22,7 +22,7 @@
         </div>
         <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
             <div class="layui-form-item">
-                <label class="layadmin-user-login-icon layui-icon layui-icon-list"
+                <label class="layadmin-user-login-icon layui-icon layui-icon-release"
                        for="LAY-user-login-email"></label>
                 <input type="text" name="email" id="LAY-user-login-email" lay-verify="email" lay-verType="tips" placeholder="请输入您绑定的邮箱"
                        class="layui-input">
@@ -108,7 +108,7 @@
             });
             //请求发送验证码
             $.ajax({
-                type: "get",
+                type: "post",
                 url: "${ctx}/sendVerifyCodeToEmail",
                 data: {"userEmail": email},
                 success: function (obj) {
@@ -137,7 +137,8 @@
 
             //请求接口
             $.ajax({
-                url: '${ctx}/loginTestByEmailCode' //实际使用请改成服务端真实接口
+                type:'post'
+                , url: '${ctx}/loginTestByEmailCode' //实际使用请改成服务端真实接口
                 , data: {"emailVerifyCode": field.emailcode, "userEmail": field.email}
                 , success: function (res) {
                     layer.closeAll('loading'); //关闭loading

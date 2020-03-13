@@ -16,9 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -43,7 +41,7 @@ public class QuestionAdminController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/page")
+    @GetMapping("/page")
     public String page(Model model) {
         return "question/admin/page";
     }
@@ -55,7 +53,7 @@ public class QuestionAdminController extends AbstractController {
      * @param condition 查询条件入参
      * @return
      */
-    @RequestMapping("/getQuestionInfo")
+    @GetMapping("/getQuestionInfo")
     @ResponseBody
     public ResultMap<List<QuestionWithCreatorDto>> getQuestionInfo(MyPage myPage, QuestionSearchCondition condition) {
         PageInfo<QuestionWithCreatorDto> pageInfo = questionService.listQuestions(myPage, condition);
@@ -68,7 +66,7 @@ public class QuestionAdminController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/updateForm")
+    @GetMapping("/updateForm")
     public String updateForm(Model model) {
         return "question/admin/questionFormEdit";
     }
@@ -79,7 +77,7 @@ public class QuestionAdminController extends AbstractController {
      * @param question 修改后的问题信息
      * @return
      */
-    @RequestMapping("/updateById")
+    @PostMapping("/updateById")
     @ResponseBody
     public Map<String, Object> updateById(Question question, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -102,7 +100,7 @@ public class QuestionAdminController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/insertForm")
+    @GetMapping("/insertForm")
     public String insertForm(Model model) {
         return "question/admin/questionFormAdd";
     }
@@ -114,7 +112,7 @@ public class QuestionAdminController extends AbstractController {
      * @param question  添加问题的封装
      * @return
      */
-    @RequestMapping("/insert")
+    @PostMapping("/insert")
     @ResponseBody
     public Map<String, Object> insert(@RequestParam(value = "anonymous", required = false) String anonymous, Question question, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -142,7 +140,7 @@ public class QuestionAdminController extends AbstractController {
      * @param id 被删除问题限的id
      * @return
      */
-    @RequestMapping("/deleteOne")
+    @PostMapping("/deleteOne")
     @ResponseBody
     public Map<String, Object> deleteOne(@RequestParam("id") Long id) {
         Map<String, Object> map = new HashMap(1);
@@ -157,7 +155,7 @@ public class QuestionAdminController extends AbstractController {
      * @param questions 多个问题的json串，用fastjson转换为list
      * @return
      */
-    @RequestMapping("/deleteMany")
+    @PostMapping("/deleteMany")
     @ResponseBody
     public Map<String, Object> deleteMany(@RequestParam("questions") String questions) {
         Map<String, Object> map = new HashMap(1);

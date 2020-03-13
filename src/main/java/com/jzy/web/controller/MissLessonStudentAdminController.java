@@ -16,9 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -43,7 +41,7 @@ public class MissLessonStudentAdminController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/page")
+    @GetMapping("/page")
     public String page(Model model) {
         return "student/missLesson/admin/page";
     }
@@ -56,7 +54,7 @@ public class MissLessonStudentAdminController extends AbstractController {
      * @param condition 查询条件入参
      * @return
      */
-    @RequestMapping("/getMissLessonStudentInfo")
+    @GetMapping("/getMissLessonStudentInfo")
     @ResponseBody
     public ResultMap<List<MissLessonStudentDetailedDto>> getMissLessonStudentInfo(MyPage myPage, MissLessonStudentSearchCondition condition) {
         condition.setStudentId(StringUtils.upperCase(condition.getStudentId()));
@@ -74,7 +72,7 @@ public class MissLessonStudentAdminController extends AbstractController {
      * @param condition 查询条件入参
      * @return
      */
-    @RequestMapping("/getMissLessonStudentInfoFromMyClass")
+    @GetMapping("/getMissLessonStudentInfoFromMyClass")
     @ResponseBody
     public ResultMap<List<MissLessonStudentDetailedDto>> getMissLessonStudentInfoFromMyClass(MyPage myPage, MissLessonStudentSearchCondition condition) {
         User user = userService.getSessionUserInfo();
@@ -91,7 +89,7 @@ public class MissLessonStudentAdminController extends AbstractController {
      * @param condition 查询条件入参
      * @return
      */
-    @RequestMapping("/getMissLessonStudentInfoToMyClass")
+    @GetMapping("/getMissLessonStudentInfoToMyClass")
     @ResponseBody
     public ResultMap<List<MissLessonStudentDetailedDto>> getMissLessonStudentInfoToMyClass(MyPage myPage, MissLessonStudentSearchCondition condition) {
         User user = userService.getSessionUserInfo();
@@ -105,7 +103,7 @@ public class MissLessonStudentAdminController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/updateForm")
+    @GetMapping("/updateForm")
     public String updateForm() {
 //        model.addAttribute(ModelConstants.MISS_LESSON_STUDENT_EDIT_MODEL_KEY, missLessonStudentDetailedDto);
         return "student/missLesson/admin/missLessonStudentFormEdit";
@@ -116,7 +114,7 @@ public class MissLessonStudentAdminController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/insertForm")
+    @GetMapping("/insertForm")
     public String insertForm() {
         return "student/missLesson/admin/missLessonStudentFormAdd";
     }
@@ -127,7 +125,7 @@ public class MissLessonStudentAdminController extends AbstractController {
      * @param missLessonStudentDetailedDto 修改后的补课学生信息
      * @return
      */
-    @RequestMapping("/updateById")
+    @PostMapping("/updateById")
     @ResponseBody
     public Map<String, Object> updateById(MissLessonStudentDetailedDto missLessonStudentDetailedDto, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -149,7 +147,7 @@ public class MissLessonStudentAdminController extends AbstractController {
      * @param missLessonStudentDetailedDto 新添加补课学生
      * @return
      */
-    @RequestMapping("/insert")
+    @PostMapping("/insert")
     @ResponseBody
     public Map<String, Object> insert(MissLessonStudentDetailedDto missLessonStudentDetailedDto, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -171,7 +169,7 @@ public class MissLessonStudentAdminController extends AbstractController {
      * @param id 被删除补课学生的id
      * @return
      */
-    @RequestMapping("/deleteOne")
+    @PostMapping("/deleteOne")
     @ResponseBody
     public Map<String, Object> deleteOne(@RequestParam("id") Long id) {
         Map<String, Object> map = new HashMap(1);
@@ -187,7 +185,7 @@ public class MissLessonStudentAdminController extends AbstractController {
      * @param missLessonStudents 多个补课学生的json串，用fastjson转换为list
      * @return
      */
-    @RequestMapping("/deleteMany")
+    @PostMapping("/deleteMany")
     @ResponseBody
     public Map<String, Object> deleteMany(@RequestParam("missLessonStudents") String missLessonStudents) {
         Map<String, Object> map = new HashMap(1);
@@ -208,7 +206,7 @@ public class MissLessonStudentAdminController extends AbstractController {
      * @param condition 输入的查询条件
      * @return
      */
-    @RequestMapping("/deleteByCondition")
+    @PostMapping("/deleteByCondition")
     @ResponseBody
     public Map<String, Object> deleteByCondition(MissLessonStudentSearchCondition condition) {
         Map<String, Object> map = new HashMap(1);

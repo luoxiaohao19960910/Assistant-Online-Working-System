@@ -24,9 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +51,7 @@ public class UserMessageController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/page")
+    @GetMapping("/page")
     public String page(Model model) {
         Long userId = userService.getSessionUserInfo().getId();
         long countUnread = userMessageService.countUserMessagesByUserIdAndRead(userId, false);
@@ -66,7 +64,7 @@ public class UserMessageController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/detail")
+    @GetMapping("/detail")
     public String detail(Model model, @RequestParam("id") Long id) {
         UserMessageDto userMessageDto = userMessageService.getUserMessageDtoById(id);
         if (!userMessageDto.isRead()) {
@@ -89,7 +87,7 @@ public class UserMessageController extends AbstractController {
      * @param myPage 分页{页号，每页数量}
      * @return
      */
-    @RequestMapping("/getAllMessageInfo")
+    @GetMapping("/getAllMessageInfo")
     @ResponseBody
     public ResultMap<List<UserMessageDto>> getAllMessageInfo(MyPage myPage) {
         Long userId = userService.getSessionUserInfo().getId();
@@ -105,7 +103,7 @@ public class UserMessageController extends AbstractController {
      * @param myPage 分页{页号，每页数量}
      * @return
      */
-    @RequestMapping("/getMessageUnreadInfo")
+    @GetMapping("/getMessageUnreadInfo")
     @ResponseBody
     public ResultMap<List<UserMessageDto>> getMessageUnreadInfo(MyPage myPage) {
         Long userId = userService.getSessionUserInfo().getId();
@@ -121,7 +119,7 @@ public class UserMessageController extends AbstractController {
      * @param response
      * @param message  含消息配图信息
      */
-    @RequestMapping("/getPicture")
+    @GetMapping("/getPicture")
     public void getPicture(HttpServletRequest request, HttpServletResponse response, UserMessage message) {
         if (message == null || StringUtils.isEmpty(message.getMessagePicture()) || !FileUtils.isImage(message.getMessagePicture())) {
             String msg = "getPicture方法错误入参";
@@ -161,7 +159,7 @@ public class UserMessageController extends AbstractController {
      * @param messages 多个消息的json串，用fastjson转换为list
      * @return
      */
-    @RequestMapping("/readMany")
+    @PostMapping("/readMany")
     @ResponseBody
     public Map<String, Object> readMany(@RequestParam("messages") String messages) {
         Map<String, Object> map = new HashMap(1);
@@ -184,7 +182,7 @@ public class UserMessageController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/readAll")
+    @PostMapping("/readAll")
     @ResponseBody
     public Map<String, Object> readAll() {
         Map<String, Object> map = new HashMap(1);
@@ -200,7 +198,7 @@ public class UserMessageController extends AbstractController {
      * @param messages 多个消息的json串，用fastjson转换为list
      * @return
      */
-    @RequestMapping("/deleteMany")
+    @PostMapping("/deleteMany")
     @ResponseBody
     public Map<String, Object> deleteMany(@RequestParam("messages") String messages) {
         Map<String, Object> map = new HashMap(1);
@@ -222,7 +220,7 @@ public class UserMessageController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/send")
+    @GetMapping("/send")
     public String send(Model model) {
         model.addAttribute(ModelConstants.ROLES_MODEL_KEY, JSON.toJSONString(User.ROLES));
         model.addAttribute(ModelConstants.CAMPUS_NAMES_MODEL_KEY, JSON.toJSONString(CampusEnum.getCampusNamesList()));
@@ -236,7 +234,7 @@ public class UserMessageController extends AbstractController {
      * @param condition 查询条件入参
      * @return
      */
-    @RequestMapping("/getUserSendTo")
+    @GetMapping("/getUserSendTo")
     @ResponseBody
     public ResultMap<List<UserSendTo>> getUserSendTo(MyPage myPage, UserSendToSearchCondition condition) {
         PageInfo<UserSendTo> pageInfo = userService.listUsersSendTo(myPage, condition);
@@ -250,7 +248,7 @@ public class UserMessageController extends AbstractController {
      * @param user  发送的用户信息
      * @return
      */
-    @RequestMapping("/sendForm")
+    @GetMapping("/sendForm")
     public String sendForm(Model model, User user) {
         model.addAttribute(ModelConstants.USER_SEND_TO_MODEL_KEY, user);
         model.addAttribute(ModelConstants.USER_SEND_TO_SHOW_MODEL_KEY, "@" + user.getUserRole() + "-" + user.getUserRealName());
@@ -263,7 +261,7 @@ public class UserMessageController extends AbstractController {
      * @param file
      * @return
      */
-    @RequestMapping("/uploadPicture")
+    @PostMapping("/uploadPicture")
     @ResponseBody
     public Map<String, Object> uploadUserIcon(@RequestParam(value = "file", required = false) MultipartFile file) {
         Map<String, Object> map2 = new HashMap<>(1);
@@ -287,7 +285,7 @@ public class UserMessageController extends AbstractController {
      * @param message 新发送的消息
      * @return
      */
-    @RequestMapping("/insertSendMessage")
+    @PostMapping("/insertSendMessage")
     @ResponseBody
     public Map<String, Object> insertSendMessage(@RequestParam(value = "hide", required = false) String hide, @RequestParam(value = "emailTip", required = false) String emailTip, UserMessage message, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -335,7 +333,7 @@ public class UserMessageController extends AbstractController {
      * @param user  发送的用户信息
      * @return
      */
-    @RequestMapping("/reply")
+    @GetMapping("/reply")
     public String reply(Model model, User user) {
         model.addAttribute(ModelConstants.USER_SEND_TO_MODEL_KEY, user);
         model.addAttribute(ModelConstants.USER_SEND_TO_SHOW_MODEL_KEY, "@" + user.getUserRole() + "-" + user.getUserRealName());
@@ -379,7 +377,7 @@ public class UserMessageController extends AbstractController {
      * @param title 原消息标题
      * @return
      */
-    @RequestMapping("/replyForm")
+    @GetMapping("/replyForm")
     public String replyForm(Model model, @RequestParam("id") Long id, @RequestParam(value = "title", required = false) String title) {
         User user = userService.getUserById(id);
         model.addAttribute(ModelConstants.USER_SEND_TO_MODEL_KEY, user);
@@ -395,7 +393,7 @@ public class UserMessageController extends AbstractController {
      * @param users 批量发送的用户信息的json串
      * @return
      */
-    @RequestMapping("/many/sendForm")
+    @GetMapping("/many/sendForm")
     public String manySendForm(Model model, @RequestParam("users") String users) {
         List<UserSendTo> usersParsed = JSON.parseArray(users, UserSendTo.class);
         List<Long> ids = new ArrayList<>();
@@ -417,7 +415,7 @@ public class UserMessageController extends AbstractController {
      * @param message 新发送的消息
      * @return
      */
-    @RequestMapping("/many/insertSendMessage")
+    @PostMapping("/many/insertSendMessage")
     @ResponseBody
     public Map<String, Object> manyInsertSendMessage(@RequestParam(value = "hide", required = false) String hide,@RequestParam(value = "emailTip", required = false) String emailTip, @RequestParam("userIds") String ids, UserMessage message, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -471,7 +469,7 @@ public class UserMessageController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/all/sendForm")
+    @PostMapping("/all/sendForm")
     public String allSendForm(Model model) {
         model.addAttribute(ModelConstants.USER_SEND_TO_SHOW_MODEL_KEY, "@全体用户");
         return "user/message/allSendForm";
@@ -485,7 +483,7 @@ public class UserMessageController extends AbstractController {
      * @param message 新发送的消息
      * @return
      */
-    @RequestMapping("/all/insertSendMessage")
+    @PostMapping("/all/insertSendMessage")
     @ResponseBody
     public Map<String, Object> allInsertSendMessage(@RequestParam(value = "hide", required = false) String hide,@RequestParam(value = "emailTip", required = false) String emailTip, UserMessage message, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);

@@ -30,9 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,7 +67,7 @@ public class ClassAdminController extends AbstractController {
      * @param request
      * @return [更新结果, [更新条数，速度]]
      */
-    @RequestMapping("/import")
+    @PostMapping("/import")
     @ResponseBody
     public Map<String, Object> importExcel(@RequestParam(value = "file", required = false) MultipartFile file, @RequestParam("parseClassId") boolean parseClassIdChecked,
                                            @RequestParam("deleteFirst") boolean deleteFirstChecked, @RequestParam("chooseSeason") boolean chooseSeason, Class clazz, HttpServletRequest request) {
@@ -256,7 +254,7 @@ public class ClassAdminController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/page")
+    @GetMapping("/page")
     public String page(Model model) {
         model.addAttribute(ModelConstants.CURRENT_ClASS_SEASON_MODEL_KEY, classService.getCurrentClassSeason());
 
@@ -277,7 +275,7 @@ public class ClassAdminController extends AbstractController {
      * @param condition 查询条件入参
      * @return
      */
-    @RequestMapping("/getClassInfo")
+    @GetMapping("/getClassInfo")
     @ResponseBody
     public ResultMap<List<ClassDetailedDto>> getClassInfo(MyPage myPage, ClassSearchCondition condition) {
         condition.setClassId(StringUtils.upperCase(condition.getClassId()));
@@ -293,7 +291,7 @@ public class ClassAdminController extends AbstractController {
      * @param condition 查询条件入参
      * @return
      */
-    @RequestMapping("/getOwnClassInfoByAssistant")
+    @GetMapping("/getOwnClassInfoByAssistant")
     @ResponseBody
     public ResultMap<List<ClassDetailedDto>> getOwnClassInfoByAssistant(MyPage myPage, ClassSearchCondition condition) {
         User user = userService.getSessionUserInfo();
@@ -310,7 +308,7 @@ public class ClassAdminController extends AbstractController {
      * @param clazz 当前要被编辑的班级信息
      * @return
      */
-    @RequestMapping("/updateForm")
+    @GetMapping("/updateForm")
     public String updateForm(Model model, Class clazz) {
         model.addAttribute(ModelConstants.CAMPUS_NAMES_MODEL_KEY, JSON.toJSONString(CampusEnum.getCampusNamesList()));
         model.addAttribute(ModelConstants.SEASONS_MODEL_KEY, JSON.toJSONString(Class.SEASONS));
@@ -329,7 +327,7 @@ public class ClassAdminController extends AbstractController {
      * @param classDetailedDto 修改后的班级信息
      * @return
      */
-    @RequestMapping("/updateById")
+    @PostMapping("/updateById")
     @ResponseBody
     public Map<String, Object> updateById(ClassDetailedDto classDetailedDto, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -352,7 +350,7 @@ public class ClassAdminController extends AbstractController {
      * @param classDetailedDto 新添加班级的信息
      * @return
      */
-    @RequestMapping("/insert")
+    @PostMapping("/insert")
     @ResponseBody
     public Map<String, Object> insert(ClassDetailedDto classDetailedDto, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -374,7 +372,7 @@ public class ClassAdminController extends AbstractController {
      * @param id 被删除班级的id
      * @return
      */
-    @RequestMapping("/deleteOne")
+    @PostMapping("/deleteOne")
     @ResponseBody
     public Map<String, Object> deleteOne(@RequestParam("id") Long id) {
         Map<String, Object> map = new HashMap(1);
@@ -390,7 +388,7 @@ public class ClassAdminController extends AbstractController {
      * @param classes 多个班级的json串，用fastjson转换为list
      * @return
      */
-    @RequestMapping("/deleteMany")
+    @PostMapping("/deleteMany")
     @ResponseBody
     public Map<String, Object> deleteMany(@RequestParam("classes") String classes) {
         Map<String, Object> map = new HashMap(1);
@@ -411,7 +409,7 @@ public class ClassAdminController extends AbstractController {
      * @param condition 输入的查询条件
      * @return
      */
-    @RequestMapping("/deleteByCondition")
+    @PostMapping("/deleteByCondition")
     @ResponseBody
     public Map<String, Object> deleteByCondition(ClassSearchCondition condition) {
         Map<String, Object> map = new HashMap(1);
@@ -427,7 +425,7 @@ public class ClassAdminController extends AbstractController {
      * @param classId 当前输入的班号
      * @return
      */
-    @RequestMapping("/getPreviewClassInfo")
+    @GetMapping("/getPreviewClassInfo")
     public String getPreviewClassInfo(Model model, @RequestParam(value = "classId", required = false) String classId) {
         ClassDetailedDto classDetailedDto = classService.getClassDetailByClassId(classId);
         if (classDetailedDto == null) {

@@ -78,10 +78,11 @@
                 </button>
             </div>
             <div class="layui-trans layui-form-item layadmin-user-login-other">
-                <label>验证码登入</label>
-                <a href="${ctx}/loginByEmailCode"><i class="layui-icon layui-icon-cellphone"></i></a>
-
-                <a href="${ctx}/guestLogin" class="layadmin-user-jump-change layadmin-link">懒癌患者登录方式?</a>
+                <label>其他登入方式</label>
+                <a href="${ctx}/loginByEmailCode"><i class="layui-icon layui-icon-release"></i></a>
+                <a href="${ctx}/customTip?tip=尚未开放"><i class="layui-icon layui-icon-login-qq"></i></a>
+                <a href="${ctx}/customTip?tip=尚未开放"><i class="layui-icon layui-icon-login-wechat"></i></a>
+                <a href="${ctx}/guestLogin" class="layadmin-user-jump-change layadmin-link">懒癌患者登入</a>
             </div>
             <#--<div class="layui-form-item"  align="center"><img width="66%" src="${ctx}/custom/img/background/wu_han_fight.png"></div>-->
 

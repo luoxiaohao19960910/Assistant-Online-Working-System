@@ -5,6 +5,7 @@ import com.jzy.model.vo.AutoCompleteSearchResult;
 import com.jzy.model.vo.StudentSearchResult;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,7 +31,7 @@ public class StudentController extends AbstractController {
      * @param studentName 输入字符串作为关键字
      * @return 符合条件的数据 {@link AutoCompleteSearchResult}
      */
-    @RequestMapping("/getStudentsLikeStudentName")
+    @GetMapping("/getStudentsLikeStudentName")
     @ResponseBody
     public Map<String, Object> getStudentsLikeStudentName(@RequestParam(value = "keywords", required = false) String studentName) {
         Map<String, Object> map = new HashMap<>(3);
@@ -63,7 +64,7 @@ public class StudentController extends AbstractController {
      * @param studentId 输入字符串作为关键字
      * @return 符合条件的数据 {@link AutoCompleteSearchResult}
      */
-    @RequestMapping("/getStudentsLikeStudentId")
+    @GetMapping("/getStudentsLikeStudentId")
     @ResponseBody
     public Map<String, Object> getStudentsLikeStudentId(@RequestParam(value = "keywords", required = false) String studentId) {
         Map<String, Object> map = new HashMap<>(3);

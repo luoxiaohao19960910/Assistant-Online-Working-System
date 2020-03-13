@@ -17,9 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -44,7 +42,7 @@ public class PermissionAdminController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/page")
+    @GetMapping("/page")
     public String page(Model model) {
         model.addAttribute(ModelConstants.ROLES_MODEL_KEY, JSON.toJSONString(User.ROLES));
         return "permission/admin/page";
@@ -58,7 +56,7 @@ public class PermissionAdminController extends AbstractController {
      * @param condition 查询条件入参
      * @return
      */
-    @RequestMapping("/getRoleAndPermission")
+    @GetMapping("/getRoleAndPermission")
     @ResponseBody
     public ResultMap<List<RoleAndPermission>> getRoleAndPermission(MyPage myPage, RoleAndPermissionSearchCondition condition) {
         PageInfo<RoleAndPermission> pageInfo = roleAndPermissionService.listRoleAndPerms(myPage, condition);
@@ -73,7 +71,7 @@ public class PermissionAdminController extends AbstractController {
      * @param roleAndPermission 当前要被编辑的权限信息
      * @return
      */
-    @RequestMapping("/updateForm")
+    @GetMapping("/updateForm")
     public String updateForm(Model model, RoleAndPermission roleAndPermission) {
         model.addAttribute(ModelConstants.ROLES_MODEL_KEY, JSON.toJSONString(User.ROLES));
         model.addAttribute(ModelConstants.PERMISSION_EDIT_MODEL_KEY, roleAndPermission);
@@ -86,7 +84,7 @@ public class PermissionAdminController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/insertForm")
+    @GetMapping("/insertForm")
     public String addForm(Model model) {
         model.addAttribute(ModelConstants.ROLES_MODEL_KEY, JSON.toJSONString(User.ROLES));
         return "permission/admin/permissionFormAdd";
@@ -99,7 +97,7 @@ public class PermissionAdminController extends AbstractController {
      * @param roleAndPermission 修改后的权限信息
      * @return
      */
-    @RequestMapping("/updateById")
+    @PostMapping("/updateById")
     @ResponseBody
     public Map<String, Object> updateById(RoleAndPermission roleAndPermission, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -123,7 +121,7 @@ public class PermissionAdminController extends AbstractController {
      * @param roleAndPermission 新添加角色权限的信息
      * @return
      */
-    @RequestMapping("/insert")
+    @PostMapping("/insert")
     @ResponseBody
     public Map<String, Object> insert(RoleCheckbox roleCheckbox, RoleAndPermission roleAndPermission, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -155,7 +153,7 @@ public class PermissionAdminController extends AbstractController {
      * @param id 被删除角色权限的id
      * @return
      */
-    @RequestMapping("/deleteOne")
+    @PostMapping("/deleteOne")
     @ResponseBody
     public Map<String, Object> deleteOne(@RequestParam("id") Long id) {
         Map<String, Object> map = new HashMap(1);
@@ -171,7 +169,7 @@ public class PermissionAdminController extends AbstractController {
      * @param roleAndPermissions 多个角色权限的json串，用fastjson转换为list
      * @return
      */
-    @RequestMapping("/deleteMany")
+    @PostMapping("/deleteMany")
     @ResponseBody
     public Map<String, Object> deleteMany(@RequestParam("roleAndPermissions") String roleAndPermissions) {
         Map<String, Object> map = new HashMap(1);

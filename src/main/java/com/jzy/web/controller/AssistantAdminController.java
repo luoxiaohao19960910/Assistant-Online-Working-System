@@ -16,9 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -44,7 +42,7 @@ public class AssistantAdminController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/page")
+    @GetMapping("/page")
     public String page(Model model) {
         model.addAttribute(ModelConstants.CAMPUS_NAMES_MODEL_KEY, JSON.toJSONString(CampusEnum.getCampusNamesList()));
         return "assistant/admin/page";
@@ -57,7 +55,7 @@ public class AssistantAdminController extends AbstractController {
      * @param condition 查询条件入参
      * @return
      */
-    @RequestMapping("/getAssistantInfo")
+    @GetMapping("/getAssistantInfo")
     @ResponseBody
     public ResultMap<List<Assistant>> getAssistantInfo(MyPage myPage, AssistantSearchCondition condition) {
         PageInfo<Assistant> pageInfo = assistantService.listAssistants(myPage, condition);
@@ -72,7 +70,7 @@ public class AssistantAdminController extends AbstractController {
      * @param assistant 当前要被编辑的助教信息
      * @return
      */
-    @RequestMapping("/updateForm")
+    @GetMapping("/updateForm")
     public String updateForm(Model model, Assistant assistant) {
         model.addAttribute(ModelConstants.CAMPUS_NAMES_MODEL_KEY, JSON.toJSONString(CampusEnum.getCampusNamesList()));
         model.addAttribute(ModelConstants.ASSISTANT_EDIT_MODEL_KEY, assistant);
@@ -85,7 +83,7 @@ public class AssistantAdminController extends AbstractController {
      * @param assistant 修改后的助教信息
      * @return
      */
-    @RequestMapping("/updateById")
+    @PostMapping("/updateById")
     @ResponseBody
     public Map<String, Object> updateById(Assistant assistant, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -108,7 +106,7 @@ public class AssistantAdminController extends AbstractController {
      * @param assistant 新添加助教的信息
      * @return
      */
-    @RequestMapping("/insert")
+    @PostMapping("/insert")
     @ResponseBody
     public Map<String, Object> insert(Assistant assistant, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -130,7 +128,7 @@ public class AssistantAdminController extends AbstractController {
      * @param id 被删除助教的id
      * @return
      */
-    @RequestMapping("/deleteOne")
+    @PostMapping("/deleteOne")
     @ResponseBody
     public Map<String, Object> deleteOne(@RequestParam("id") Long id) {
         Map<String, Object> map = new HashMap(1);
@@ -146,7 +144,7 @@ public class AssistantAdminController extends AbstractController {
      * @param assistants 多个助教的json串，用fastjson转换为list
      * @return
      */
-    @RequestMapping("/deleteMany")
+    @PostMapping("/deleteMany")
     @ResponseBody
     public Map<String, Object> deleteMany(@RequestParam("assistants") String assistants) {
         Map<String, Object> map = new HashMap(1);
@@ -167,7 +165,7 @@ public class AssistantAdminController extends AbstractController {
      * @param condition 输入的查询条件 {@link AssistantSearchCondition}
      * @return
      */
-    @RequestMapping("/deleteByCondition")
+    @PostMapping("/deleteByCondition")
     @ResponseBody
     public Map<String, Object> deleteByCondition(AssistantSearchCondition condition) {
         Map<String, Object> map = new HashMap(1);

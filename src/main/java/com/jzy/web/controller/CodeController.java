@@ -26,7 +26,6 @@ import java.awt.image.BufferedImage;
  * @date 2019/11/14 14:35
  **/
 @Controller
-@Deprecated
 public class CodeController extends AbstractController {
     private final static Logger logger = LogManager.getLogger(CodeController.class);
 

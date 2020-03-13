@@ -117,7 +117,7 @@
             });
             //请求发送验证码
             $.ajax({
-                type: "get",
+                type: "post",
                 url: "${ctx}/sendVerifyCodeToEmail",
                 data: {"userEmail": email},
                 success: function (obj) {
@@ -141,8 +141,9 @@
 
             //请求接口
             $.ajax({
-                url: '${ctx}/emailVerifyCodeTest' //实际使用请改成服务端真实接口
-                , data: {"emailVerifyCode": field.emailcode, "userEmail": field.email}
+                type:'post'
+                ,url: '${ctx}/emailVerifyCodeTest' //实际使用请改成服务端真实接口
+                , data: {"needExistTest": true, "emailVerifyCode": field.emailcode, "userEmail": field.email}
                 , success: function (res) {
                     if (res.data === "verifyCodeCorrect") {
                         location.hash = '/type=resetpass';

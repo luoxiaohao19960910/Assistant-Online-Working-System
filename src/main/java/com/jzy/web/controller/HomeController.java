@@ -19,7 +19,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +43,7 @@ public class HomeController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/console")
+    @GetMapping("/console")
     public String console(Model model) {
         List<String> belongsTo = usefulInformationService.listAllBelongTo();
         model.addAttribute(ModelConstants.USEFUL_INFORMATION_BELONG_TO_MODEL_KEY, JSON.toJSONString(belongsTo));
@@ -54,7 +55,7 @@ public class HomeController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/problemCollection")
+    @GetMapping("/problemCollection")
     public String problemCollection() {
         return "home/problemCollection";
     }
@@ -69,7 +70,7 @@ public class HomeController extends AbstractController {
      * @param problemCollection 前台表单参数封装 {@link ProblemCollection}
      * @return
      */
-    @RequestMapping("/sendProblem")
+    @PostMapping("/sendProblem")
     @ResponseBody
     public Map<String, Object> sendProblem(ProblemCollection problemCollection, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -106,7 +107,7 @@ public class HomeController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/visitorStatistics")
+    @GetMapping("/visitorStatistics")
     public String visitorStatistics() {
         return "home/visitorStatistics";
     }
@@ -116,7 +117,7 @@ public class HomeController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/getRecentVisitorStatistics")
+    @GetMapping("/getRecentVisitorStatistics")
     @ResponseBody
     public Map<String, Object> getRecentVisitorStatistics() {
         Map<String, Object> map = new HashMap<>();
@@ -183,7 +184,7 @@ public class HomeController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/completePay")
+    @PostMapping("/completePay")
     @ResponseBody
     public Map<String, Object> completePay() {
         Map<String, Object> map = new HashMap<>(1);

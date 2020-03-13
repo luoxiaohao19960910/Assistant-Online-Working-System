@@ -20,9 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -44,7 +42,7 @@ public class StudentAndClassAdminController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/page")
+    @GetMapping("/page")
     public String page(Model model, Class clazz) {
         model.addAttribute(ModelConstants.CAMPUS_NAMES_MODEL_KEY, JSON.toJSONString(CampusEnum.getCampusNamesList()));
         model.addAttribute(ModelConstants.SEASONS_MODEL_KEY, JSON.toJSONString(Class.SEASONS));
@@ -74,7 +72,7 @@ public class StudentAndClassAdminController extends AbstractController {
      * @param condition 查询条件入参
      * @return
      */
-    @RequestMapping("/getStudentAndClassInfo")
+    @GetMapping("/getStudentAndClassInfo")
     @ResponseBody
     public ResultMap<List<StudentAndClassDetailedDto>> getStudentAndClassInfo(MyPage myPage, StudentAndClassSearchCondition condition) {
         condition.setStudentId(StringUtils.upperCase(condition.getStudentId()));
@@ -89,7 +87,7 @@ public class StudentAndClassAdminController extends AbstractController {
      *
      * @return
      */
-    @RequestMapping("/updateForm")
+    @GetMapping("/updateForm")
     public String updateForm() {
         return "student/sc/admin/studentAndClassFormEdit";
     }
@@ -100,7 +98,7 @@ public class StudentAndClassAdminController extends AbstractController {
      * @param studentAndClassDetailedDto 修改后的学员上课信息
      * @return
      */
-    @RequestMapping("/updateById")
+    @PostMapping("/updateById")
     @ResponseBody
     public Map<String, Object> updateById(@RequestParam(value = "currentTime", required = false) String currentTimeSwitch, StudentAndClassDetailedDto studentAndClassDetailedDto, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -127,7 +125,7 @@ public class StudentAndClassAdminController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/insertForm")
+    @GetMapping("/insertForm")
     public String insertForm(Model model) {
         return "student/sc/admin/studentAndClassFormAdd";
     }
@@ -138,7 +136,7 @@ public class StudentAndClassAdminController extends AbstractController {
      * @param studentAndClassDetailedDto 新添加de 报班信息
      * @return
      */
-    @RequestMapping("/insert")
+    @PostMapping("/insert")
     @ResponseBody
     public Map<String, Object> insert(StudentAndClassDetailedDto studentAndClassDetailedDto, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -161,7 +159,7 @@ public class StudentAndClassAdminController extends AbstractController {
      * @param id 被删除学员上课的id
      * @return
      */
-    @RequestMapping("/deleteOne")
+    @PostMapping("/deleteOne")
     @ResponseBody
     public Map<String, Object> deleteOne(@RequestParam("id") Long id) {
         Map<String, Object> map = new HashMap(1);
@@ -177,7 +175,7 @@ public class StudentAndClassAdminController extends AbstractController {
      * @param studentAndClasses 多个学员上课记录的json串，用fastjson转换为list
      * @return
      */
-    @RequestMapping("/deleteMany")
+    @PostMapping("/deleteMany")
     @ResponseBody
     public Map<String, Object> deleteMany(@RequestParam("studentAndClasses") String studentAndClasses) {
         Map<String, Object> map = new HashMap(1);
@@ -198,7 +196,7 @@ public class StudentAndClassAdminController extends AbstractController {
      * @param condition 输入的查询条件
      * @return
      */
-    @RequestMapping("/deleteByCondition")
+    @PostMapping("/deleteByCondition")
     @ResponseBody
     public Map<String, Object> deleteByCondition(StudentAndClassSearchCondition condition) {
         Map<String, Object> map = new HashMap(1);

@@ -1,4 +1,4 @@
-<#assign ctx=request.contextPath/>
+ <#assign ctx=request.contextPath/>
 <!DOCTYPE html>
 <html>
 <head>

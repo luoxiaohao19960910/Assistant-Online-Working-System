@@ -17,9 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +48,7 @@ public class UsefulInformationAdminController extends AbstractController {
      * @param belongTo 信息所属
      * @return
      */
-    @RequestMapping("/getByBelongTo")
+    @GetMapping("/getByBelongTo")
     @ResponseBody
     public List<UsefulInformation> getByBelongTo(@RequestParam(value = "belongTo", required = false) String belongTo, HttpServletRequest request) {
         if (StringUtils.isNotEmpty(belongTo) && !UsefulInformationUtils.isValidBelongTo(belongTo)) {
@@ -69,7 +67,7 @@ public class UsefulInformationAdminController extends AbstractController {
      * @param model
      * @return
      */
-    @RequestMapping("/page")
+    @GetMapping("/page")
     public String page(Model model) {
         List<String> belongsTo = usefulInformationService.listAllBelongTo();
         model.addAttribute(ModelConstants.USEFUL_INFORMATION_BELONG_TO_MODEL_KEY, JSON.toJSONString(belongsTo));
@@ -83,7 +81,7 @@ public class UsefulInformationAdminController extends AbstractController {
      * @param condition 查询条件入参
      * @return
      */
-    @RequestMapping("/getUsefulInformationInfo")
+    @GetMapping("/getUsefulInformationInfo")
     @ResponseBody
     public ResultMap<List<UsefulInformation>> getUsefulInformationInfo(MyPage myPage, UsefulInformationSearchCondition condition) {
         PageInfo<UsefulInformation> pageInfo = usefulInformationService.listUsefulInformation(myPage, condition);
@@ -98,7 +96,7 @@ public class UsefulInformationAdminController extends AbstractController {
      * @param response
      * @param information 含配图信息
      */
-    @RequestMapping("/getImage")
+    @GetMapping("/getImage")
     public void showIcon(HttpServletRequest request, HttpServletResponse response, UsefulInformation information) {
         FileInputStream fis = null;
         OutputStream os = null;
@@ -141,7 +139,7 @@ public class UsefulInformationAdminController extends AbstractController {
      * @param information 当前要被编辑的常用信息
      * @return
      */
-    @RequestMapping("/updateForm")
+    @GetMapping("/updateForm")
     public String updateForm(Model model, UsefulInformation information) {
         List<String> belongsTo = usefulInformationService.listAllBelongTo();
         model.addAttribute(ModelConstants.USEFUL_INFORMATION_BELONG_TO_MODEL_KEY, JSON.toJSONString(belongsTo));
@@ -156,7 +154,7 @@ public class UsefulInformationAdminController extends AbstractController {
      * @param belongTo 所属类别
      * @return
      */
-    @RequestMapping("/getRecommendedSequence")
+    @GetMapping("/getRecommendedSequence")
     @ResponseBody
     public Map<String, Object> getRecommendedSequence(@RequestParam(value = "belongTo", required = false) String belongTo, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -179,7 +177,7 @@ public class UsefulInformationAdminController extends AbstractController {
      * @param file 配图文件
      * @return
      */
-    @RequestMapping("/updateUploadImage")
+    @PostMapping("/updateUploadImage")
     @ResponseBody
     public Map<String, Object> updateUploadImage(@RequestParam(value = "file", required = false) MultipartFile file) {
         Map<String, Object> map2 = new HashMap<>(1);
@@ -202,7 +200,7 @@ public class UsefulInformationAdminController extends AbstractController {
      * @param information 修改后的常用信息
      * @return
      */
-    @RequestMapping("/updateById")
+    @PostMapping("/updateById")
     @ResponseBody
     public Map<String, Object> updateById(UsefulInformation information, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -226,7 +224,7 @@ public class UsefulInformationAdminController extends AbstractController {
      * @param information 新添加常用信息
      * @return
      */
-    @RequestMapping("/insert")
+    @PostMapping("/insert")
     @ResponseBody
     public Map<String, Object> insert(UsefulInformation information, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>(1);
@@ -249,7 +247,7 @@ public class UsefulInformationAdminController extends AbstractController {
      * @param id 被删除常用信息的id
      * @return
      */
-    @RequestMapping("/deleteOne")
+    @PostMapping("/deleteOne")
     @ResponseBody
     public Map<String, Object> deleteOne(@RequestParam("id") Long id) {
         Map<String, Object> map = new HashMap(1);
@@ -266,7 +264,7 @@ public class UsefulInformationAdminController extends AbstractController {
      * @param allUsefulInformation 多个常用信息的json串，用fastjson转换为list
      * @return
      */
-    @RequestMapping("/deleteMany")
+    @PostMapping("/deleteMany")
     @ResponseBody
     public Map<String, Object> deleteMany(@RequestParam("allUsefulInformation") String allUsefulInformation) {
         Map<String, Object> map = new HashMap(1);
